@@ -1,0 +1,231 @@
+/* ============================================================================
+   RTGo_slate — 轨交速查设计系统（通用 CSS 资产包）
+   母本：GuijiaoSucha-DevArea（微信小程序 WXSS）→ 通用 CSS，全部数值 1:1 照抄。
+   ----------------------------------------------------------------------------
+   分层纪律（design-migration-parity · 2026-10-29）：
+     资产包 = 全部样式（颜色/字阶/圆角/间距/定高/按压档位/弹层骨架），对母本样式表逐件断言；
+     宿主   = 只有状态、导航、取数，对「接线」断言。
+   件号表：同目录 件号表.md（ID 与本文件节标题一一对应）。
+   检查：  自检脚本 —— A 类断言从母本样式表现查值，不写死期望。
+   ----------------------------------------------------------------------------
+   平台机制换件记录（B 类，详见件号表 T15；值无一改动）：
+     T15-01 page{} → body{}（WXSS 页根 → Web 文档体；暗档同走 prefers-color-scheme）
+     T15-02 hover-class → 类本体照抄；接线由消费端负责（gallery 用 pointerdown/up 模拟
+            hover-class 挂摘类语义，start/stay=1ms；或 :active 同名类）
+     T15-03 rpx → px（设计宽 375，52rpx→26px；全母本仅 .hscroll-fade 一处）
+     T15-04 字号缩放通道 = rem 死区公式照抄；默认档 1rem=16px≤17 → 基准 px 精确成立；
+            缩放由宿主调 html{font-size}（对应母本 <page-meta root-font-size="system">）
+     T15-05 styleIsolation 镜像合并：4 个 isolated 组件镜像的 .press* / .chip / .line-pill 合并为
+            一份；值以活文件为准；map 组基态多出的 background/opacity 过渡**不合并**（C 手感）
+     T15-06 @import 链合并；同值镜像去重；index.wxss 残留的站选器页面副本是死样式且值已落后
+            （件号表 D-01），本文件取组件侧活值
+     T15-07 原生组件（switch/picker-view/map/scroll-view）不在资产包内；转轮选中带视觉在
+            .dtp-band，吸附行为=宿主职责
+     T15-08 placeholder-class → ::placeholder（色值照抄）
+     T15-09 env(safe-area-inset-bottom) / position:fixed 原样照抄
+   例外（件号表）：.snp-panel .line-pill 的 min-height 26px（母本 isolated 内的同名差异，
+   用作用域承载）；.station-picker-panel .hscroll-fade 渐隐端 --sheet（组件表面）。
+   ========================================================================== */
+
+/* ===== T01 色彩令牌（浅）— 母本 app.wxss:7-69，page{} → body{} ===== */
+body {
+  /* 表面 */
+  --bg: #f4f6fa;
+  --card: #fff;
+  --card-lift: #fff;        /* 弹层内的次级表面（车站列表） */
+  --sheet: #f4f6fa;               /* 底部弹层面板：同背景色，两套模式统一 */
+  --fill: #f0f2f8;            /* 操作类填充（次级按钮 / api 预览 / 途经站胶囊） */
+  /* 极淡填充（2026-09-29）：对话框里的**次级按钮**用。Flyme 风格。⚠ 别拿它当通用的次级按钮底 */
+  --fill-plain: #fafafa;
+  --input-on-card: #EEEEEF;   /* 卡片上的输入框 */
+  --input-on-bg: #E8EAEE;     /* 页面底上的输入框 */
+  --pills-bg: #E8EAEE;        /* 筛选类按钮的背景 */
+
+  /* 顶栏（保持原有透明度设计） */
+  --topbar-bg: rgba(244,246,250,.98);
+  --topbar-bd: rgba(228,231,239,.92);
+  --topbar-bd-strong: rgba(228,231,239,.96);
+
+  /* 边框与分隔 */
+  --border: #e4e7ef;
+  --border-weak: #edf0f5;
+  --sep: rgba(154,162,179,.18);
+
+  /* 文字 */
+  --text: #171b28;
+  --text-2: #6f788b;
+  --text-3: #9aa2b3;
+  --text-strong: #4b5568;
+
+  /* 品牌与浅底 */
+  --brand: #3970e5;
+  /* T16-26（v1.3 回流自另一产品 另一产品）：品牌色作**前景文字**的语义位。
+     当前两档都映射 --brand 现值（1:1，零视觉变化）；用途与提亮判据见注释末节。
+     背景：另一产品 实证「承白字的品牌色」与「暗底上的品牌色文字」可读性方向相反，
+     深色下不拆开则二者只能取其一（另一产品 深色目录选中态 3.23:1 → 拆开后 8.81:1）。 */
+  --brand-ink: #3970e5;
+  --brand-tint: #eaf1ff;
+  --tint-2: #eef0fa;          /* 城际换乘 / 站内换乘底 */
+  --tint-2-text: #414f8d;
+  --tint-2-border: #dadeef;
+  --tint-border: #d7e4ff;     /* 换乘提示框描边 */
+  --timeline-intercity: #414f8d;
+
+  /* 语义色 */
+  --green: #35a85a;
+  --danger: #c0392b;
+  --error-bg: #fff0f0;
+  --error-text: #b33;
+  --warn: #d97706;
+  --mask: rgba(23,27,40,.42);
+  --press: #e7eaf3;           /* 按压态 */
+  --train-carriage-4: #4F8064;
+  --train-carriage-8: #D98A5B;
+
+  /* mark 旁注文字色（仅选择器使用；纯文字、无底无框） */
+  --mark-blue-text: #2f5aa8;   --mark-red-text: #a6332a;
+  --mark-green-text: #2e8449;  --mark-orange-text: #b96407;
+  --mark-gray-text: #6f788b;
+
+  background: #f4f6fa;
+  color: #1f2937;
+}
+
+/* ===== T01 色彩令牌（暗）— 母本 app.wxss:71-123 ===== */
+@media (prefers-color-scheme: dark) {
+  body {
+    --bg: #0B0B0C;
+    --card: #1C1C1E;
+    --card-lift: #1C1C1E;
+    --sheet: #0B0B0C;
+    --fill: #2A2A2D;
+    --fill-plain: #1b1b1e;
+    --input-on-card: #3C3C3E;
+    --input-on-bg: #18181b;
+    --pills-bg: #18181b;
+
+    --topbar-bg: rgba(11,11,12,.98);
+    --topbar-bd: rgba(44,44,46,.92);
+    --topbar-bd-strong: rgba(44,44,46,.96);
+
+    --border: #2C2C2E;
+    --border-weak: #262628;
+    --sep: rgba(255,255,255,.08);
+
+    --text: #EDEDF0;
+    --text-2: #98989E;
+    --text-3: #86868B;
+    --text-strong: #C7C7CC;
+
+    --brand: #5B8DF5;
+    --brand-ink: #5B8DF5;      /* T16-26 暗档：暂映射 --brand 现值（对 #0B0B0C 约 5.5:1 已达标）；可读性复测后再议提亮 */
+    --brand-tint: #252C3C;
+    --tint-2: #232637;
+    --tint-2-text: #9AA7D6;
+    --tint-2-border: #343A55;
+    --tint-border: #333B54;
+    --timeline-intercity: #414f8d;
+
+    --green: #4FC47A;
+    --danger: #E26D6D;
+    --error-bg: #3B2225;
+    --error-text: #FF9C9C;
+    --warn: #E39A3C;
+    --mask: rgba(0,0,0,.55);
+    --press: #2E2E31;
+    --train-carriage-4: #70A985;
+    --train-carriage-8: #E0A078;
+
+    --mark-blue-text: #a7c0ee;   --mark-red-text: #ee9b96;
+    --mark-green-text: #8bd4a4;  --mark-orange-text: #eab674;
+    --mark-gray-text: #a6a9b3;
+
+    background: #0B0B0C;
+    color: #EDEDF0;
+  }
+}
+
+/* ===== T02 字号令牌（rem+max() 死区，双写降级逐字保留）— 母本 app.wxss:156-183 =====
+   机制：calc(<基准px>px + <强度k> * max(0px, 1rem - 17px))；默认档 1rem≤17 → 增量=0。
+   第 1 行固定基准 px 兜底，第 2 行 calc+max 真缩放；宿主缩放通道 = html{font-size}（T15-04）。 */
+body {
+  /* 超大数值 / 页面主视觉数字 */
+  --fs-hero-30: 30px;  --fs-hero-30: calc(30px + 0.90 * max(0px, 1rem - 17px));
+  --fs-hero-27: 27px;  --fs-hero-27: calc(27px + 0.90 * max(0px, 1rem - 17px));
+  --fs-hero-26: 26px;  --fs-hero-26: calc(26px + 0.90 * max(0px, 1rem - 17px));
+  --fs-hero-25: 25px;  --fs-hero-25: calc(25px + 0.90 * max(0px, 1rem - 17px));
+  --fs-title-24: 24px; --fs-title-24: calc(24px + 0.88 * max(0px, 1rem - 17px));
+  --fs-title-23: 23px; --fs-title-23: calc(23px + 0.88 * max(0px, 1rem - 17px));
+  --fs-title-21: 21px; --fs-title-21: calc(21px + 0.88 * max(0px, 1rem - 17px));
+
+  /* 站名 / 次级强调标题 */
+  --fs-strong-19: 19px; --fs-strong-19: calc(19px + 0.85 * max(0px, 1rem - 17px));
+  --fs-strong-18: 18px; --fs-strong-18: calc(18px + 0.85 * max(0px, 1rem - 17px));
+  --fs-strong-17: 17px; --fs-strong-17: calc(17px + 0.85 * max(0px, 1rem - 17px));
+  --fs-strong-16: 16px; --fs-strong-16: calc(16px + 0.85 * max(0px, 1rem - 17px));
+
+  /* 正文 / 控件文字 */
+  --fs-body-15: 15px; --fs-body-15: calc(15px + 0.82 * max(0px, 1rem - 17px));
+  --fs-body-14: 14px; --fs-body-14: calc(14px + 0.82 * max(0px, 1rem - 17px));
+
+  /* 说明 / 次要文字 */
+  --fs-sub-13: 13px; --fs-sub-13: calc(13px + 0.78 * max(0px, 1rem - 17px));
+  --fs-small-12: 12px; --fs-small-12: calc(12px + 0.72 * max(0px, 1rem - 17px));
+  --fs-micro-11: 11px; --fs-micro-11: calc(11px + 0.65 * max(0px, 1rem - 17px));
+
+  /* 容器内小标（定高胶囊/单元格里的微型文字） */
+  --fs-tag-10: 10px; --fs-tag-10: calc(10px + 0.55 * max(0px, 1rem - 17px));
+}
+
+/* ----------------------------------------------------------------------------
+   消费规则（M1）：
+   · 本文件是**宿主唯一入口**：宿主只许改这里（或覆盖令牌），components.css 不含裸色值语义；
+   · components.css 只消费 var(--*)，两文件由 构建脚本 拼合为 rtgo-slate.css（断言看守一致）；
+   · 基值清单（primitive）暂以文档承载：docs/令牌口径.md §基值盘点；升格为 CSS 间接层的触发条件
+     = 出现第二主题或第二品牌（届时语义令牌改引 --rtgo-raw-*，值仍以母本为真值）。
+   ========================================================================== */
+
+/* ===== T16 资产归纳层（v1.3 回流自另一产品 另一产品 的 ui-asset-kit）=====
+   派生参数令牌：把母本里**内联在组件样式中的重复值**归纳为令牌，供新宿主/新项目直接引用。
+   纪律：每一枚的值都有母本现查出处（自检脚本 T16 断言从源头取值，不写死期望）；
+   组件层（rtgo-components.css）**暂不引用**这些令牌（组件值仍内联，1:1 不动）——
+   迁移到引用是后续独立轮次，届时逐件对账。--z-mark 不收录（母本无对应内联值，kit 独有归纳）。
+   值不变式：改这里的值 = 开例外，组件值另行对账。 */
+body {
+  /* 圆角档（母本内联：999=.chip/.line-pill；24=卡壳；16=.transfer-box；14=.input/.actions .primary；
+     12=.error/.metric；10=.lasttime-close） */
+  --radius-pill: 999px;
+  --radius-card: 24px;
+  --radius-box: 16px;
+  --radius-ctrl: 14px;
+  --radius-inner: 12px;
+  --radius-chip: 10px;
+
+  /* 阴影（浅色口径；深色模式投影天然被底吞掉，母本不另设） */
+  --shadow-card: 0 10px 28px rgba(35,47,78,.08);      /* .panel,.route-card,.summary,.segment */
+  --shadow-pop: 0 4px 12px rgba(35,47,78,.06);        /* .back / .station-picker-close */
+  --shadow-topbar: 0 4px 14px rgba(35,47,78,.05);     /* .ios-fixed-topbar */
+  --shadow-sheet: 0 -12px 36px rgba(23,27,40,.16);    /* .station-picker-panel */
+
+  /* 动效档（C 类参数与进出场时长的归纳） */
+  --ease-press: cubic-bezier(.33,.33,.67,1);   /* .press 两向共用曲线 */
+  --ease-sheet: cubic-bezier(0.32,0.72,0,1);   /* iOS sheet 标准曲线（与母本逐字） */
+  --dur-press: .25s;                           /* 按压下沉/浮起（两向同值） */
+  --dur-fade: 180ms;                           /* 局部展开淡入（母本 160~180ms 区间的主体档） */
+  --dur-screen: 220ms;                         /* 全屏切屏 */
+  --dur-mask: 200ms;                           /* 遮罩淡入/淡出 */
+  --dur-sheet-in: 380ms;                       /* 底部弹层滑入（含回弹） */
+  --dur-sheet-out: 300ms;                      /* 底部弹层滑出（无回弹） */
+
+  /* 布局 */
+  --page-max: 780px;                           /* .app 内容最大宽 */
+  --page-pad: 14px;                            /* 页面左右边距（.screen-body） */
+  --bp-narrow: 430px;                          /* 窄屏断点（≤430px 专项覆盖） */
+
+  /* z-index 档 */
+  --z-node: 2;                                 /* 轴节点 */
+  --z-overlay: 10;                             /* 面板内覆盖层 */
+  --z-fade: 999;                               /* 横滚渐隐 */
+  --z-mask: 999;                               /* 弹层遮罩 */
+  --z-topbar: 1000;                            /* 固定顶栏 */
+}

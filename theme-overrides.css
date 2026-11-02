@@ -1,0 +1,127 @@
+/* ============================================================================
+   RTGo_slate 主题档（手动切换用）—— 由 构建脚本从 rtgo-tokens.css 生成，**勿手改**。
+   ----------------------------------------------------------------------------
+   什么时候需要它：prefers-color-scheme 只能跟随系统；宿主若要给用户
+   「浅色 / 深色 / 跟随系统」三选一，就要能在不跟系统时强行覆盖。
+   怎么用：<link rel="stylesheet" href="theme-overrides.css">
+          <body class="theme-light"> 或 <body class="theme-dark">；
+          两个类都不加 = 跟随系统（回落到 rtgo-slate.css 里的 @media 档）。
+   口径：本文件的令牌值**逐字来自令牌层**，不含任何新值；改令牌请改 rtgo-tokens.css 后重建。
+   ⚠ 只改作用域、不改规则体 —— 见 构建脚本 里 cssBlocks() 的说明
+     （正则改作用域会吃掉以字母开头的声明，曾导致切深色后底色不变）。
+   ============================================================================ */
+body.theme-light{
+  /* 表面 */
+  --bg: #f4f6fa;
+  --card: #fff;
+  --card-lift: #fff;        /* 弹层内的次级表面（车站列表） */
+  --sheet: #f4f6fa;               /* 底部弹层面板：同背景色，两套模式统一 */
+  --fill: #f0f2f8;            /* 操作类填充（次级按钮 / api 预览 / 途经站胶囊） */
+  /* 极淡填充（2026-09-29）：对话框里的**次级按钮**用。Flyme 风格。⚠ 别拿它当通用的次级按钮底 */
+  --fill-plain: #fafafa;
+  --input-on-card: #EEEEEF;   /* 卡片上的输入框 */
+  --input-on-bg: #E8EAEE;     /* 页面底上的输入框 */
+  --pills-bg: #E8EAEE;        /* 筛选类按钮的背景 */
+
+  /* 顶栏（保持原有透明度设计） */
+  --topbar-bg: rgba(244,246,250,.98);
+  --topbar-bd: rgba(228,231,239,.92);
+  --topbar-bd-strong: rgba(228,231,239,.96);
+
+  /* 边框与分隔 */
+  --border: #e4e7ef;
+  --border-weak: #edf0f5;
+  --sep: rgba(154,162,179,.18);
+
+  /* 文字 */
+  --text: #171b28;
+  --text-2: #6f788b;
+  --text-3: #9aa2b3;
+  --text-strong: #4b5568;
+
+  /* 品牌与浅底 */
+  --brand: #3970e5;
+  /* T16-26（v1.3 回流自另一产品 另一产品）：品牌色作**前景文字**的语义位。
+     当前两档都映射 --brand 现值（1:1，零视觉变化）；用途与提亮判据见注释末节。
+     背景：另一产品 实证「承白字的品牌色」与「暗底上的品牌色文字」可读性方向相反，
+     深色下不拆开则二者只能取其一（另一产品 深色目录选中态 3.23:1 → 拆开后 8.81:1）。 */
+  --brand-ink: #3970e5;
+  --brand-tint: #eaf1ff;
+  --tint-2: #eef0fa;          /* 城际换乘 / 站内换乘底 */
+  --tint-2-text: #414f8d;
+  --tint-2-border: #dadeef;
+  --tint-border: #d7e4ff;     /* 换乘提示框描边 */
+  --timeline-intercity: #414f8d;
+
+  /* 语义色 */
+  --green: #35a85a;
+  --danger: #c0392b;
+  --error-bg: #fff0f0;
+  --error-text: #b33;
+  --warn: #d97706;
+  --mask: rgba(23,27,40,.42);
+  --press: #e7eaf3;           /* 按压态 */
+  --train-carriage-4: #4F8064;
+  --train-carriage-8: #D98A5B;
+
+  /* mark 旁注文字色（仅选择器使用；纯文字、无底无框） */
+  --mark-blue-text: #2f5aa8;   --mark-red-text: #a6332a;
+  --mark-green-text: #2e8449;  --mark-orange-text: #b96407;
+  --mark-gray-text: #6f788b;
+
+  background: #f4f6fa;
+  color: #1f2937;
+}
+
+body.theme-dark{
+    --bg: #0B0B0C;
+    --card: #1C1C1E;
+    --card-lift: #1C1C1E;
+    --sheet: #0B0B0C;
+    --fill: #2A2A2D;
+    --fill-plain: #1b1b1e;
+    --input-on-card: #3C3C3E;
+    --input-on-bg: #18181b;
+    --pills-bg: #18181b;
+
+    --topbar-bg: rgba(11,11,12,.98);
+    --topbar-bd: rgba(44,44,46,.92);
+    --topbar-bd-strong: rgba(44,44,46,.96);
+
+    --border: #2C2C2E;
+    --border-weak: #262628;
+    --sep: rgba(255,255,255,.08);
+
+    --text: #EDEDF0;
+    --text-2: #98989E;
+    --text-3: #86868B;
+    --text-strong: #C7C7CC;
+
+    --brand: #5B8DF5;
+    --brand-ink: #5B8DF5;      /* T16-26 暗档：暂映射 --brand 现值（对 #0B0B0C 约 5.5:1 已达标）；可读性复测后再议提亮 */
+    --brand-tint: #252C3C;
+    --tint-2: #232637;
+    --tint-2-text: #9AA7D6;
+    --tint-2-border: #343A55;
+    --tint-border: #333B54;
+    --timeline-intercity: #414f8d;
+
+    --green: #4FC47A;
+    --danger: #E26D6D;
+    --error-bg: #3B2225;
+    --error-text: #FF9C9C;
+    --warn: #E39A3C;
+    --mask: rgba(0,0,0,.55);
+    --press: #2E2E31;
+    --train-carriage-4: #70A985;
+    --train-carriage-8: #E0A078;
+
+    --mark-blue-text: #a7c0ee;   --mark-red-text: #ee9b96;
+    --mark-green-text: #8bd4a4;  --mark-orange-text: #eab674;
+    --mark-gray-text: #a6a9b3;
+
+    background: #0B0B0C;
+    color: #EDEDF0;
+  }
+
+body.theme-dark .input-ph{color:#6D6D72}
