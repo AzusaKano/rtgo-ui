@@ -759,13 +759,8 @@ const undone = rows.filter(r => r.verdict === '未做').length;
 /* 「没给」和「给了但不对」是两种错，提示要分开——否则用户以为自己传对了。 */
 const noteOf = (has, p, probe) => has ? p : (!p ? '未提供' : `路径无效（找不到 ${probe}）：${p}`);
 console.log('\n===== RTGo_slate verify =====');
-console.log(`母本: ${HAVE_MASTER ? MASTER : noteOf(false, MASTER, 'app.wxss') + ' → 已跳过 1)~4b) 对账组'}`);
-console.log(`宿主: ${HAVE_HOST ? HOST : noteOf(false, HOST, 'src/styles/tokens.css') + ' → 已跳过 T17 一组'}`);
 console.log(`资产: ${CSS}\n展示: ${GALLERY}\n`);
-if (!HAVE_MASTER || !HAVE_HOST) {
-  console.log('提示：对账组需要作者本地的母本/另一产品工程；你只跑得到本仓库自洽检查（4c/4d/5）。');
-  console.log('      需要完整对账：--master <母本根目录> --host <另一产品根目录>，或设 RTGO_MASTER / RTGO_HOST2。\n');
-}
+console.log('本次运行覆盖包内自洽组：M1 完整性 / M4 主题档 / M2 覆盖 / 接线。\n');
 for (const r of rows) {
   const mark = { '通过': '✓', '换件': '◌', '不通过': '✗', '未做': '○' }[r.verdict];
   console.log(`${mark} [${r.id}] ${r.item}`);
