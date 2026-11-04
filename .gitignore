@@ -1,0 +1,7 @@
+# 自检运行时生成的记录（每次 node check/verify.js 都会重写，不入库）
+check/last-run.md
+check/last-run-nomaster.md
+
+# 操作系统杂物
+.DS_Store
+Thumbs.db
