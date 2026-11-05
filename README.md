@@ -6,6 +6,14 @@
 > **同源另一范式**：同一套设计语言的 Flutter 表达在 `rtgo-flutter-ui` 仓。
 > 两边共用同一套组件词表（T-ID），令牌值互相一致。
 
+## 怎么拿到
+
+- **下载即用（最省事）**：仓库页点 `Code` → `Download ZIP`，解压直接用，没有构建步骤。
+- **命令行**：`git clone https://github.com/AzusaKano/rtgo-ui`
+- **要锁版本**：仓库的 Tags 页有 `v1.11` 等存档点，取那个 tag 即可。
+
+包内不需要安装任何依赖。
+
 ## 快速开始
 
 ```html
@@ -38,13 +46,21 @@
 
 **跟随系统**是不加类；要**手动切**就再引 `theme-overrides.css`，然后给 `<body>` 挂 `theme-light` / `theme-dark`（都不挂 = 跟随系统）。
 
-改主题只覆盖令牌：
+改主题只覆盖令牌。**要注意写在哪一层**：令牌声明在 `body` 上，而主题档用的是 `body.theme-light` / `body.theme-dark`，比 `body` 多一个类、权重更高。所以分两种情况：
 
 ```css
-:root { --brand: #1f6feb; --card: #ffffff; }   /* 深色由令牌层重定义，组件层零分支 */
+/* ① 跟随系统（不挂主题类）：写 body 就够 */
+body { --brand: #1f6feb; --card: #ffffff; }
+
+/* ② 手动切主题的页面：两档各写一份，并且放在 theme-overrides.css 之后。
+      只写 ① 会被主题档盖掉——它权重更高，跟书写顺序无关。 */
+body.theme-light { --brand: #1f6feb; }
+body.theme-dark  { --brand: #7aa2ff; }   /* 深色下品牌色要提亮，否则对比度不够 */
 ```
 
-**不需要构建、不需要装依赖。** 打开 `gallery.html` 就能看到 **71 张样片 / 17 个分区 / 70 个件号**：
+改 `--brand` 时连同 `--brand-ink`（品牌色当文字用）与 `--brand-tint`（品牌浅底，选中胶囊在用）一起改；只改 `--brand`，选中态会是旧浅底配新字色。
+
+**不需要构建、不需要装依赖。** 打开 `gallery.html` 就能看到 **71 张样片 / 17 个分区**，页首索引可跳 **126 个件号**（含 7 个令牌档；`T09-01/02` 这种区段写法会展开成多条）：
 每张样片左上角是对应的组件 ID 与类名，按压类样片可以按住体验手感。
 
 ## 文件

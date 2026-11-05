@@ -26,12 +26,15 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Micros
 .g-hero h1{margin:0 0 6px;font-size:26px;font-weight:800;color:var(--text)}
 .g-hero p{margin:0;color:var(--text-2);font-size:13px;line-height:1.7}
 .g-hero code{font-family:Consolas,monospace;font-size:12px;color:var(--brand)}
-.g-sec{margin-top:44px}
+.g-sec{margin-top:44px;scroll-margin-top:56px}
 .g-sec>h2{margin:0 0 4px;font-size:19px;font-weight:800;color:var(--text);display:flex;align-items:baseline;gap:10px}
 .g-sec>h2 .g-secid{font-size:12px;font-weight:600;color:var(--brand);font-family:Consolas,monospace}
 .g-sec>p.g-note{margin:0 0 14px;font-size:12px;color:var(--text-2);line-height:1.7}
 .g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.g-spec{margin:0;border:1px dashed var(--border);border-radius:12px;overflow:hidden;background:var(--card)}
+/* scroll-margin-top：顶栏是 sticky 的，索引跳转时不给留位，目标样片的
+   「ID + 类名」标签栏会被顶栏盖住（索引共 126 条，区段写法会展开）。
+   值 = 顶栏高 49 + 余量。 */
+.g-spec{margin:0;border:1px dashed var(--border);border-radius:12px;overflow:hidden;background:var(--card);scroll-margin-top:64px}
 .g-spec>.g-tag{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:7px 12px;border-bottom:1px solid var(--border-weak);background:var(--bg)}
 .g-spec>.g-tag .g-id{font-family:Consolas,monospace;font-size:11px;font-weight:700;color:var(--brand)}
 .g-spec>.g-tag .g-cls{font-family:Consolas,monospace;font-size:11px;color:var(--text-2);word-break:break-all}

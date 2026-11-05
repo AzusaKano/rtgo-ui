@@ -167,7 +167,7 @@ button::after{display:none;width:0;height:0;border:0}
 .advanced .actions{justify-content:flex-start;flex-wrap:wrap}
 .advanced .actions .secondary{min-width:112px}
 
-/* ===== T06-12 独立按钮原语（v1.3 资产归纳——另一产品 另一产品 现场手搓过 .btn-primary 的词汇表缺口）=====
+/* ===== T06-12 独立按钮原语（v1.3 资产归纳——另一产品 现场手搓过 .btn-primary 的词汇表缺口）=====
    与 .actions .primary 同值（48/radius14/brand 白字/15px·750），但不依赖 .actions 容器，
    供脱离容器布局的场景（弹层内、独立行、工具页）。值 1:1 镜像自母本 .actions .primary/.secondary；
    另一产品 侧现为 46px 自有件——是否迁移由该宿主拍板（迁移=接受 48）。 */
