@@ -1,0 +1,58 @@
+/* 宿主胶水 + 演示外壳。
+   上面这一段是「换成 Web 宿主必须自己补」的部分（见 docs/宿主适配.md T15 表）；
+   下面这一段只服务于这个样板，不属于资产。 */
+
+/* ── 宿主胶水 ───────────────────────────────────────────── */
+view{display:block}
+text{display:inline}
+view[hidden]{display:none}
+/* 母本用 wx:if 控制显隐；Web 侧等价物就是这个类。资产里 .is-hidden 只对两个弹层
+   做过 display:none，不是通用工具类，所以在这里补一条。 */
+.is-hidden{display:none}
+/* 原生输入框默认样式压制：母本的 <input> 在微信里无边框无底色，Web 上要自己抹掉。
+   另外母本用 placeholder-class="input-ph" / "dtp-ph" 指定占位文字颜色，这条属性在
+   Web 没有对应物，改用 ::placeholder。 */
+input{background:transparent;border:0;outline:0;padding:0;font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+input::placeholder{color:var(--text-3)}
+html,body{margin:0;height:100%}
+button{font-family:inherit}
+.screen-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+/* 同一条配方里的第二个容器（docs/宿主适配.md T15 第 3 条）：选站列表在母本是 scroll-view */
+.station-picker-list{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.screen-body{padding-top:calc(62px + env(safe-area-inset-top) + 14px)}
+/* `.route-actions .expand-btn` 给了 justify-content:center，这条只有 flex 父级才成立，
+   但资产里没有 display:flex —— 小程序端由 button 默认盒模型兜住了，Web 上不补就会
+   把 .action-glyph 挤到文字上一行。 */
+.expand-btn{display:flex;align-items:center;justify-content:center}
+
+/* 时间轮：母本用 <picker-view>（微信原生滚轮），Web 没有对应物。
+   这里用两个可滚动列做替身：列高 190、行高 38，行间距靠上下各 76px 的占位撑出来，
+   滚动停靠用 scroll-snap 对齐到中间的选中带。 */
+.dtp-wheel{display:flex}
+.dtp-col{flex:1 1 0;min-width:0;height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.dtp-col::-webkit-scrollbar{display:none}
+.dtp-col::before,.dtp-col::after{content:'';display:block;height:76px}
+.dtp-col .dtp-wheel-item{scroll-snap-align:center}
+
+/* 关闭钮的 × 是字符（Arial 30px / line-height:1），墨迹中心随字体与像素密度上下浮动：
+   这是实测的 —— 同一份样式，微信端与 2x 屏上基本居中，桌面 1x~1.6x 的 Chrome 上会高出 1~2px。
+   按本机实拍补 1px 下移（与母本给 .back-glyph 做 translateY 校准是同一类做法）。
+   ⚠ 换字体或换密度后要重新看图调这个值，它不是设计值。 */
+.station-picker-close-x{transform:translateY(1px)}
+/* 顶栏高度：资产里写的是 height:72 / padding-top:20 —— 那是样式表值，把 20 当成了状态栏。
+   母本运行时改写成「高度 = 状态栏 + 62、内距 = 状态栏」，62 才是真正的内容区高度。
+   Web 上状态栏对应 env(safe-area-inset-top)，照母本口径还原 —— 标题才会落在内容区的正中，
+   而不是被那 20px 假状态栏往下顶一截。 */
+.ios-fixed-topbar{
+  height:calc(62px + env(safe-area-inset-top));
+  min-height:calc(62px + env(safe-area-inset-top));
+  padding-top:env(safe-area-inset-top);
+}
+
+/* ── 演示外壳（不属于资产，别抄进业务页面）─────────────── */
+.demo-note{
+  position:fixed;left:0;right:0;bottom:0;z-index:200;
+  margin:0;padding:6px 12px calc(6px + env(safe-area-inset-bottom));
+  background:var(--sheet);color:var(--text-3);
+  font-size:11px;text-align:center;border-top:1px solid var(--border-weak);
+}

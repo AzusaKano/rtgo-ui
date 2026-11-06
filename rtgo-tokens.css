@@ -82,6 +82,15 @@ body {
   --train-carriage-4: #4F8064;
   --train-carriage-8: #D98A5B;
 
+  /* 方案标签（T07-15）：**只有结果页的标签用**。不与 --fill / --brand / --green 共用，
+     调色只改这一组，不动别的场景。 */
+  --route-tag-bg: #f0f2f8;
+  --route-tag-recommend-bg: #3970e5;
+  --route-tag-recommend-text: #ffffff;
+  --route-tag-time: #3970e5;
+  --route-tag-comfort: #6554A6;
+  --route-tag-price: #1F7A3F;
+
   /* mark 旁注文字色（仅选择器使用；纯文字、无底无框） */
   --mark-blue-text: #2f5aa8;   --mark-red-text: #a6332a;
   --mark-green-text: #2e8449;  --mark-orange-text: #b96407;
@@ -135,6 +144,14 @@ body {
     --press: #2E2E31;
     --train-carriage-4: #70A985;
     --train-carriage-8: #E0A078;
+
+    /* 方案标签（T07-15）：只给结果页标签用 */
+    --route-tag-bg: #2A2A2D;
+    --route-tag-recommend-bg: #5B8DF5;
+    --route-tag-recommend-text: #ffffff;
+    --route-tag-time: #5B8DF5;
+    --route-tag-comfort: #B8A8E8;
+    --route-tag-price: #4FC47A;
 
     --mark-blue-text: #a7c0ee;   --mark-red-text: #ee9b96;
     --mark-green-text: #8bd4a4;  --mark-orange-text: #eab674;

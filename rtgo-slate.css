@@ -121,6 +121,15 @@ body {
   --train-carriage-4: #4F8064;
   --train-carriage-8: #D98A5B;
 
+  /* 方案标签（T07-15）：**只有结果页的标签用**。不与 --fill / --brand / --green 共用，
+     调色只改这一组，不动别的场景。 */
+  --route-tag-bg: #f0f2f8;
+  --route-tag-recommend-bg: #3970e5;
+  --route-tag-recommend-text: #ffffff;
+  --route-tag-time: #3970e5;
+  --route-tag-comfort: #6554A6;
+  --route-tag-price: #1F7A3F;
+
   /* mark 旁注文字色（仅选择器使用；纯文字、无底无框） */
   --mark-blue-text: #2f5aa8;   --mark-red-text: #a6332a;
   --mark-green-text: #2e8449;  --mark-orange-text: #b96407;
@@ -174,6 +183,14 @@ body {
     --press: #2E2E31;
     --train-carriage-4: #70A985;
     --train-carriage-8: #E0A078;
+
+    /* 方案标签（T07-15）：只给结果页标签用 */
+    --route-tag-bg: #2A2A2D;
+    --route-tag-recommend-bg: #5B8DF5;
+    --route-tag-recommend-text: #ffffff;
+    --route-tag-time: #5B8DF5;
+    --route-tag-comfort: #B8A8E8;
+    --route-tag-price: #4FC47A;
 
     --mark-blue-text: #a7c0ee;   --mark-red-text: #ee9b96;
     --mark-green-text: #8bd4a4;  --mark-orange-text: #eab674;
@@ -483,6 +500,29 @@ button::after{display:none;width:0;height:0;border:0}
     -0.3px 0 0 currentColor;
 }
 
+/* ===== T06-13 中性圆钮（.icon-btn）— Web / 原生宿主新增，母本无此件 =====
+   顶栏右动作位、页面内的小圆钮用它；字形自选，几何与 .back 同（42 / 圆 / 描边 / 投影）。
+   ⚠ .back 的 .back-glyph 是按 ‹ 的光学位置调的（height 30 / line-height 27 / translateY -1），
+     换别的字符会偏上。要放非箭头图标用本件，不要让 .back 兼职。 */
+.icon-btn{
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  padding:0;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--border);
+  border-radius:50%;
+  background:var(--card);
+  box-shadow:var(--shadow-pop);
+  color:var(--text);
+  font-size:19px;
+  line-height:1;
+  overflow:hidden;
+}
+
 /* ===== T07-01 胶囊定稿（原生 button 压制三件套 + 真机行高校准）— index:281-293 ===== */
 .toolbar-inner{align-items:center;display:inline-flex;width:max-content}
 .chip{
@@ -695,6 +735,7 @@ button::after{display:none;width:0;height:0;border:0}
   text-overflow:ellipsis;
   line-height:1.35;
 }
+
 @media(max-width:430px){
   .ios-fixed-topbar{padding-left:14px;padding-right:14px;gap:10px}
   .ios-fixed-topbar .title{font-size:var(--fs-title-24)}
@@ -771,6 +812,14 @@ button::after{display:none;width:0;height:0;border:0}
 .route-badges{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:8px;max-width:132px}
 .route-badges .warning-badge{width:max-content;max-width:132px;min-height:36px;padding:0 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-pill);font-size:var(--fs-small-12);font-weight:700;line-height:1.25;text-align:center;white-space:normal;word-break:keep-all}
 .warning-badge{background:var(--warn);color:#fff}
+
+/* ===== T07-15 方案标签行 — index:642-648 ===== */
+.route-tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.route-tag{display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 10px;border-radius:999px;font-size:var(--fs-small-12);font-weight:750;line-height:1;white-space:nowrap;box-sizing:border-box;flex:0 0 auto;background:var(--route-tag-bg);color:var(--text-2)}
+.route-tag.is-recommend{background:var(--route-tag-recommend-bg);color:var(--route-tag-recommend-text);font-weight:800}
+.route-tag.is-time{color:var(--route-tag-time)}
+.route-tag.is-comfort{color:var(--route-tag-comfort)}
+.route-tag.is-price{color:var(--route-tag-price)}
 .service-warning-card{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding:16px;box-sizing:border-box;border-radius:20px;background:var(--warn);color:#fff;box-shadow:0 8px 24px rgba(240,100,59,.24)}
 .service-warning-card.status-late{background:var(--danger);box-shadow:0 8px 24px rgba(192,57,43,.24)}
 .service-warning-card.status-ok{background:var(--green);box-shadow:0 8px 24px rgba(53,168,90,.24)}
@@ -903,6 +952,18 @@ button::after{display:none;width:0;height:0;border:0}
 .recent-scroll-wrap{position:relative;min-width:0}
 .hscroll-fade{position:absolute;z-index:var(--z-fade);top:0;right:0;width:26px;height:100%;pointer-events:none;
   background:linear-gradient(to left,var(--card),transparent)}
+
+/* ===== T04-09 横滑容器（.hscroll）— Web / 原生宿主新增，母本无此件 =====
+   母本的横向滚动靠原生 scroll-view，通用 CSS 里没有对应物；没有它，横滑行会把
+   外层容器撑宽，整页跟着左右拖。配合 .chip-bar-wrap / .recent-scroll-wrap + .hscroll-fade 用。
+   滚动条隐掉（触屏本来就看不见，桌面端留着会破坏圆角）。 */
+.hscroll{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+}
+.hscroll::-webkit-scrollbar{display:none}
 .chip-bar-wrap{position:relative;min-width:0;margin-bottom:14px}
 .chip-bar-wrap>.toolbar{margin-bottom:0}
 .hscroll-fade.is-page{background:linear-gradient(to left,var(--bg),transparent)}

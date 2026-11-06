@@ -746,9 +746,26 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
   const declared = new Set(defined);
   [...inlineCss.matchAll(/\.([a-zA-Z_][\w-]*)/g)].forEach(m => declared.add(m[1]));
   const allowUndef = new Set(['theme-']);   // 'theme-'+t 运行时拼接，静态只看得到前缀
-  const undef = [...used].filter(c => !declared.has(c) && !allowUndef.has(c)).sort();
-  row('接线·空类', 'gallery 挂的类都有样式定义（拼错/不存在的类不会报错，只会没样式）',
-    '0', undef.length ? undef.join(', ') : '0', undef.length ? '不通过' : '通过');
+  /* 样板（sample/）：同一套反向检查。样板是给外部 AI 照抄的，类名写错同样静默失效；
+     它自己的外壳类（sample.css 里定义的）算已声明，不算资产件。 */
+  const sampleDir = path.join(HERE, '..', 'sample');
+  const sampleFiles = ['index.html', 'app.js', 'mock.js', 'sample.css'];
+  const sampleMissing = sampleFiles.filter(f => !fs.existsSync(path.join(sampleDir, f)));
+  const sampleUsed = new Set();
+  sampleFiles.forEach(f => {
+    const p = path.join(sampleDir, f);
+    if (!fs.existsSync(p)) return;
+    const t = fs.readFileSync(p, 'utf8');
+    /* 模板字符串里的 class="……${x}……" 要先去掉插值，否则 ${p.last ? 'a' : ''} 会被当成类名 */
+    const flat = t.replace(/\$\{[^}]*\}/g, ' ');
+    [...flat.matchAll(/class="([^"]+)"/g)].forEach(m => m[1].split(/\s+/).forEach(c => c && sampleUsed.add(c)));
+    [...t.matchAll(/classList\.(?:add|toggle|remove)\('([^']+)'/g)].forEach(m => sampleUsed.add(m[1]));
+    if (f.endsWith('.css')) [...t.matchAll(/\.([a-zA-Z_][\w-]*)/g)].forEach(m => declared.add(m[1]));
+  });
+  const undef = [...new Set([...used, ...sampleUsed])].filter(c => !declared.has(c) && !allowUndef.has(c)).sort();
+  const undefNote = [undef.length ? undef.join(', ') : '0', sampleMissing.length ? '缺文件:' + sampleMissing.join(',') : ''].filter(Boolean).join(' · ');
+  row('接线·空类', 'gallery / 样板 挂的类都有样式定义（拼错/不存在的类不会报错，只会没样式）',
+    '0', undefNote, undef.length || sampleMissing.length ? '不通过' : '通过');
 })();
 
 /* ---------- 输出 ---------- */

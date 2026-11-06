@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RTGo 样板 · 轨交速查</title>
+<link rel="stylesheet" href="../rtgo-slate.css">
+<link rel="stylesheet" href="sample.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="screen">
+
+    <div class="ios-fixed-topbar is-translucent">
+      <view class="back" id="btnBack" data-hover-class="press" hidden><text class="back-glyph">‹</text></view>
+      <div class="topbar-main">
+        <div class="title" id="pageTitle">查询</div>
+        <div class="sub" id="pageSub">真实数据 · 只看结构与接线</div>
+      </div>
+      <div class="topbar-actions">
+        <view class="icon-btn" id="btnTheme" data-hover-class="press">☾</view>
+      </div>
+    </div>
+
+    <div class="screen-scroll" id="scroll">
+      <div class="screen-body" id="view"></div>
+    </div>
+
+  </div>
+</div>
+
+<div id="overlays"></div>
+
+<p class="demo-note">RTGo 样板 · 切页 / 选站弹层 / 日期时间弹层都可点；方案数据取自 2026-11-03 的真实查询（竹料 → 广州南站）</p>
+
+<script src="mock.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

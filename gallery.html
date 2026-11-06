@@ -139,7 +139,7 @@ button{cursor:pointer;pointer-events:auto}
         <p style="margin:2px 0 0;font-size:11px;color:var(--text-2);line-height:1.6">⚠ 只给 <code>.topbar-actions</code> 而不给 <code>.topbar-main</code>：标题组没人吃剩余宽度，标题缩到内容宽、动作钮紧贴标题右侧 —— 看起来像"右侧没对齐"，其实是标题没撑开。</p>
       </div></div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-05</span><span class="g-cls">.back-glyph .home-glyph（栈根 ⌂ 字形）</span><span class="g-src">index:243-258</span></figcaption>
+        <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-05</span><span class="g-cls">.back-glyph .home-glyph（栈根 ⌂ 字形）</span><span class="g-src">index:243-258</span></figcaption>
       <div class="g-stage"><div style="display:flex;gap:12px">
         <view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view>
         <view class="back" data-hover-class="press"><text class="back-glyph home-glyph">⌂</text></view>
@@ -196,6 +196,20 @@ button{cursor:pointer;pointer-events:auto}
           <div class="custom-entry-line" data-hover-class="press-flat"><text>自定义换乘</text><text class="custom-entry-line-arrow">›</text></div>
           <div class="advanced-pane" style="padding:10px 2px;font-size:12px;color:var(--text-2)">↑ 展开面板（.advanced-pane · rail-fade-in 180ms）</div>
         </div>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T04-09</span><span class="g-cls">.hscroll .recent-scroll-wrap .recent-scroll .hscroll-fade</span><span class="g-src">宿主新增件：母本的横滑靠原生 scroll-view，通用 CSS 无对应物</span></figcaption>
+      <div class="g-stage bg-page">
+        <div class="recent-scroll-wrap">
+          <div class="recent-scroll hscroll">
+            <button class="recent-combo" data-hover-class="press">体育西路 → 广州塔</button>
+            <button class="recent-combo" data-hover-class="press">淘金 → 珠江新城</button>
+            <button class="recent-combo" data-hover-class="press">广州南站 → 深圳北</button>
+            <button class="recent-combo" data-hover-class="press">公园前 → 客村</button>
+          </div>
+          <div class="hscroll-fade is-page"></div>
+        </div>
+        <p class="g-hint">左右拖得动，外层页面不跟着横移。去掉 <code>.hscroll</code> 就退回「整页可横向拖动」的样子。</p>
       </div>
     </figure>
   </div>
@@ -301,6 +315,17 @@ button{cursor:pointer;pointer-events:auto}
         <div class="route-actions" style="margin-top:12px;padding:0"><button class="expand-btn" data-hover-class="expand-hover"><view class="action-glyph"></view>路线预览</button></div>
       </div>
     </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-13</span><span class="g-cls">.icon-btn（对照 .back .back-glyph）</span><span class="g-src">宿主新增件：几何沿用 .back，字形自选</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:12px">
+          <view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view>
+          <view class="icon-btn" data-hover-class="press">☾</view>
+          <view class="icon-btn" data-hover-class="press">☀</view>
+          <view class="icon-btn" data-hover-class="press">⋯</view>
+        </div>
+        <p class="g-hint">左边是返回钮 <code>.back</code>（字形按 ‹ 调过）；右边三颗是 <code>.icon-btn</code>，换任何字符都居中对齐，不会被字形带偏。</p>
+      </div>
+    </figure>
   </div>
 </section>
 
@@ -358,6 +383,12 @@ button{cursor:pointer;pointer-events:auto}
         <div class="trip-head"><text class="trip-badge is-circle">1</text><text class="trip-badge">第 1 程</text><text class="trip-head-sub">3号线 · 途经 8 站</text></div>
         <div style="display:flex;gap:10px;margin-top:10px;justify-content:flex-end"><div class="route-badges"><text class="warning-badge">末班车 22:45 · 紧张</text><text class="warning-badge">换乘通道关闭</text></div></div>
         <div style="display:flex;gap:10px;margin-top:10px;align-items:center"><view class="sd-nav" data-hover-class="press-scale">导航<i class="sd-nav-glyph"></i></view><text class="sd-ex-letter">A</text><text class="sd-ex-letter">B1</text></div>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-15</span><span class="g-cls">.route-tag-row .route-tag .is-recommend .is-time .is-comfort .is-price</span><span class="g-src">index:642-648</span></figcaption>
+      <div class="g-stage">
+        <div class="route-tag-row"><view class="route-tag is-recommend">推荐</view><view class="route-tag is-time">等待最少</view><view class="route-tag is-comfort">少换乘</view><view class="route-tag is-price">最便宜</view></div>
+        <p class="g-hint">结果页卡内标签行。底色走 <code>--route-tag-bg</code>，四档只换前景色；推荐档是实心（底 <code>--route-tag-recommend-bg</code> + 白字 + 800 字重）。这 6 枚令牌只服务这一处，不与其他浅底/品牌色共用。</p>
       </div>
     </figure>
   </div>
