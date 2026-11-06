@@ -61,6 +61,19 @@ const host = { kitui: parseRules(hostText.kitui), kitapp: parseRules(hostText.ki
 
 /* ---------- 极简 CSS 解析：剥注释；顶层规则；@media 抓一层 ---------- */
 function stripComments(t) { return t.replace(/\/\*[\s\S]*?\*\//g, ''); }
+/* 选择器列表要拆开：「.a,.b{}」在 CSS 里是两条规则，不拆的话按单个选择器查找会全部落空
+   （2026-11-06 引入 .sheet-* 别名时发现：合并写法用旧解析器一条都取不到）。 */
+function splitSel(s) {
+  const out = []; let depth = 0, cur = '';
+  for (const ch of s) {
+    if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') depth--;
+    if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; }
+    else cur += ch;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
 function parseRules(text) {
   const t = stripComments(text), out = [], media = [];
   const readBlock = (from) => { let d = 0; for (let j = from; j < t.length; j++) { if (t[j] === '{') d++; else if (t[j] === '}') { d--; if (!d) return j; } } return -1; };
@@ -73,7 +86,8 @@ function parseRules(text) {
       media.push({ cond: sel, ...parseRules(t.slice(b + 1, end)) }); i = end + 1; continue;
     }
     const end = readBlock(b); if (end < 0) break;
-    out.push({ sel, decls: parseDecls(t.slice(b + 1, end)) });
+    const decls = parseDecls(t.slice(b + 1, end));
+    splitSel(sel).forEach(one => out.push({ sel: one, decls }));
     i = end + 1;
   }
   return { rules: out, media };
@@ -676,6 +690,79 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     staticLink && !runtimeRewrite ? '通过' : '不通过', runtimeRewrite ? '运行时正则改作用域会吞掉 background/color 声明' : '');
 })();
 
+/* ========== 4c-2) T18 自建图形件（origin=本仓：没有母本可对，查「件在 + mask + 样片」） ========== */
+/* 这一类件的真值源是本仓代码本身，所以不进母本对账；能查的是「件还在不在、尺寸还是不是那个、
+   样片有没有接上」。盒子尺寸是按墨迹反算的（19/26/16 ↔ 13.1/12.8/11.3px），改盒子等于改墨迹，
+   所以这里写死断言 —— 图形件是静态层，不会随产品设计漂。 */
+(function selfGlyphs() {
+  const norm = stripComments(componentsText).replace(/\s+/g, ' ');
+  const blockOf = (cls) => {
+    const i = norm.indexOf('.' + cls + '{');
+    if (i < 0) return '';
+    return norm.slice(i, norm.indexOf('}', i) + 1);
+  };
+  const want = [
+    ['T18-01', 'glyph-back', 'width:19px;height:19px'],
+    ['T18-02', 'glyph-close', 'width:26px;height:26px'],
+    ['T18-03', 'glyph-chevron', 'width:16px;height:16px']
+  ];
+  want.forEach(([id, cls, size]) => {
+    const blk = blockOf(cls);
+    const hasSize = blk.includes(size);
+    /* webkit 前缀 + 标准各一条：少一条就有浏览器画不出来 */
+    const masks = (blk.match(/mask-image:url\("data:image\/svg/g) || []).length;
+    const inGallery = galleryText.includes('.' + cls);
+    row(id, '自建图形件 .' + cls + '（尺寸 + 双前缀 mask + 样片）', size + ' / 2 条 / 有',
+      (hasSize ? size : '缺') + ' / ' + masks + ' 条 / ' + (inGallery ? '有' : '缺'),
+      hasSize && masks === 2 && inGallery ? '通过' : '不通过',
+      '自建件无母本可对，只查件本身与样片是否在位');
+  });
+  const hasCompare = galleryText.includes('字符版（历史）vs 图形版（现行）');
+  row('T18-对照', '样片含字符版与图形版的对照（迁移依据）', '有', hasCompare ? '有' : '缺',
+    hasCompare ? '通过' : '不通过', '两版并存时没有对照，宿主会不知道新页面该用哪个');
+})();
+
+/* ========== 4c-3) T17-19 设置列表（自建：照抄 另一产品 基底 + 3 处修正） ========== */
+/* 查的是「修正在不在」：行必须居中（宿主原实现是 flex-start，箭头会顶对齐）、
+   样片里的行尾必须是图形箭头而不是字符。 */
+(function settingsList() {
+  const norm = stripComments(componentsText).replace(/\s+/g, ' ');
+  const blockOf = (cls) => {
+    const i = norm.indexOf('.' + cls + '{');
+    return i < 0 ? '' : norm.slice(i, norm.indexOf('}', i) + 1);
+  };
+  const rowRule = blockOf('set-row');
+  const centered = rowRule.includes('align-items:center');
+  const pad = rowRule.includes('padding:14px');
+  const inGallery = galleryText.includes('set-row') && galleryText.includes('glyph-chevron set-chev');
+  row('T17-19', '设置列表 .set-row（行居中 + 14 内距 + 样片用图形箭头）', 'center / 14px / 有',
+    (centered ? 'center' : '非 center') + ' / ' + (pad ? '14px' : '非 14') + ' / ' + (inGallery ? '有' : '缺'),
+    centered && pad && inGallery ? '通过' : '不通过',
+    '宿主原实现是 flex-start，行尾箭头会顶对齐 —— 这是本件存在的理由');
+})();
+
+/* ========== 4c-4) T10-01 壳别名（.sheet-* ≡ .station-picker-*） ========== */
+/* 两套名写在同一规则里时，声明本来就是一份（解析器按逗号拆开、共用同一 decls）；
+   这条断言守的是「将来别有人把它们拆成两条规则各写一份值」—— 拆了就从这里红出来。 */
+(function sheetAlias() {
+  const pairs = [
+    ['.sheet-mask', '.station-picker-mask', ['position', 'background', 'align-items']],
+    ['.sheet-panel', '.station-picker-panel', ['height', 'background', 'border-radius']]
+  ];
+  pairs.forEach(([a, b, props]) => {
+    const diff = props.filter(p => {
+      const va = findDecl(rtgo, 'css', a, p, 'last');
+      const vb = findDecl(rtgo, 'css', b, p, 'last');
+      return va == null || vb == null || norm(va) !== norm(vb);
+    });
+    row(a + ' ≡ ' + b,
+      '壳别名两套名取同一份声明（' + props.join('/') + '）', '一致',
+      diff.length ? ('不一致：' + diff.join('/')) : '一致',
+      diff.length ? '不通过' : '通过',
+      'v1.13 起 .sheet-* 为正式名，旧名共存；拆成两条规则就会漂');
+  });
+})();
+
 /* ========== 4d) M2 手册覆盖：件号表 ↔ 参考文档 双向（防文档腐烂 / 防造 ID） ========== */
 (function manualCoverage() {
   // 展开简写：T06-01/02、T02-01~07、T03-01/02/06 → 全量 ID（与 gallery 索引同一口径）
@@ -731,8 +818,27 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
   const defined = new Set();
   rtgo.css.rules.concat(rtgo.css.media.flatMap(m => m.rules)).forEach(r =>
     (r.sel.match(/\.([a-zA-Z_][\w-]*)/g) || []).forEach(c => defined.add(c.slice(1))));
+  /* 别名组（2026-11-06）：同一声明块里的多个「纯单类」选择器互为别名
+     （如 .sheet-mask,.station-picker-mask）——值是一份，接线也是同一条。
+     只要组里有一个接到样片上，其余都不算孤儿；否则每加一个别名就要在 gallery 补一份重复样片。 */
+  const dgroups = new Map();
+  rtgo.css.rules.concat(rtgo.css.media.flatMap(m => m.rules)).forEach(r => {
+    if (!dgroups.has(r.decls)) dgroups.set(r.decls, []);
+    dgroups.get(r.decls).push(r.sel);
+  });
+  dgroups.forEach(sels => {
+    const singles = sels.map(x => (x.match(/^\.([a-zA-Z_][\w-]*)$/) || [])[1]).filter(Boolean);
+    if (singles.length !== sels.length || singles.length < 2) return;   // 不是纯别名组
+    if (!singles.some(c => used.has(c))) return;
+    singles.forEach(c => used.add(c));
+  });
+
   // 件号表已记录的死选择器（W-01）：保留为级联安全，不要求接线
-  const allow = new Set(['mode-arrow']);
+  /* 保留但不再演示的类：
+     - mode-arrow（W-01 死选择器）
+     - picker-hidden / picker-closing：站选器旧状态类，v1.13 壳改名后样板改用 .is-hidden/.is-closing；
+       旧类与 .station-picker-mask 配对，保留给既有宿主，不要求再接演示。 */
+  const allow = new Set(['mode-arrow', 'picker-hidden', 'picker-closing']);
   const orphans = [...defined].filter(c => !used.has(c) && !allow.has(c)).sort();
   row('接线·孤儿', '资产类在 gallery 零引用（写好了没接线）', '0', orphans.length ? orphans.join(', ') : '0', orphans.length ? '不通过' : '通过', orphans.join(', '));
   const tiers = new Set(['press', 'press-scale', 'press-flat', 'expand-hover', 'station-picker-close-hover', 'station-nav-hover', 'dtp-press-round', 'dtp-press-scale', 'dtp-press-flat', 'snp-press']);

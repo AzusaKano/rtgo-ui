@@ -53,7 +53,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Micros
 .demo-viewport{--status-bar-height:0px;position:relative;height:190px;overflow:hidden;background:var(--bg);border-radius:8px;border:1px solid var(--border-weak)}
 .demo-viewport .ios-fixed-topbar,.demo-viewport .fixed-topbar{position:absolute}
 .demo-viewport .screen{position:absolute}
-.demo-viewport .station-picker-mask,.demo-viewport .dtp-mask,.demo-viewport .snp-mask,.demo-viewport .nb-sheet-mask,.demo-viewport .sd-mask{position:absolute}
+.demo-viewport .sheet-mask,.demo-viewport .dtp-mask,.demo-viewport .snp-mask,.demo-viewport .nb-sheet-mask,.demo-viewport .sd-mask{position:absolute}
 .demo-mask{position:absolute;inset:0;z-index:20}
 .g-panel-ctx{background:var(--card);border-radius:16px;padding:4px}
 .g-hint{margin:10px 2px 0;font-size:11px;color:var(--text-3);line-height:1.6}
@@ -340,7 +340,7 @@ button{cursor:pointer;pointer-events:auto}
         <div class="chip-bar-wrap"><div class="toolbar"><div class="toolbar-inner"><button class="chip active" data-hover-class="press-scale">乘车方案</button><button class="chip" data-hover-class="press-scale">城际时刻表</button><button class="chip" data-hover-class="press-scale">时间最短</button><button class="chip" data-hover-class="press-scale">少换乘</button></div></div><div class="hscroll-fade is-page"></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-02 · T10-06</span><span class="g-cls">.station-line-bar .station-line-chip .station-line-dot .line-expand-btn .line-expand-arrow .station-line-list .station-line-scroll-wrap .station-picker-panel .hscroll-fade</span><span class="g-src">station-picker:58-80</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-02 · T10-06</span><span class="g-cls">.station-line-bar .station-line-chip .station-line-dot .line-expand-btn .line-expand-arrow .station-line-list .station-line-scroll-wrap .sheet-panel .hscroll-fade</span><span class="g-src">station-picker:58-80</span></figcaption>
       <div class="g-stage">
         <div class="station-line-bar"><div class="station-line-scroll-wrap"><div class="station-line-scroll"><div class="station-line-list"><button class="station-line-chip active" data-hover-class="press-scale"><i class="station-line-dot" style="background:#3970e5"></i>3号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#D98A5B"></i>14号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#4F8064"></i>21号线</button></div></div><div class="hscroll-fade"></div></div><view class="line-expand-btn" data-hover-class="press"><text class="line-expand-arrow">▾</text></view></div>
       </div>
@@ -538,13 +538,13 @@ button{cursor:pointer;pointer-events:auto}
   <p class="g-note">半屏四件：通栏 / 只上圆角 24 / 贴底（safe 由 padding 吃）/ 只向上投影。配色独立选档：<code>--sheet</code>（同页底）或 <code>--card</code>（亮一档，dtp）。悬浮对话框档：宽 calc(100%−32px)、四角 24、投影向下。点「打开」体验 380ms 回弹滑入（62% 处 −3px 折返）。</p>
   <div class="g-togglebar"><button id="openSheet">打开半屏 sheet（station-picker）</button><button id="openDtp">打开日期时间（dtp · 卡底）</button><button id="openSnp">打开悬浮对话框（snp）</button><button id="toggleNb">显隐 nb sheet（冻结/重放）</button></div>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01/05/07</span><span class="g-cls">.station-picker-mask .station-picker-panel .picker-hidden .picker-closing .station-picker-head .station-picker-title .station-picker-close .station-picker-close-x .station-picker-close-hover .station-picker-head-acts .station-picker-map .station-picker-map-glyph .station-picker-map-label .station-picker-list .station-picker-item .station-picker-title-row .station-picker-name .station-picker-mark .mark-tone-* .station-picker-meta .station-picker-translation .next-station</span><span class="g-src">station-picker.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01/05/07</span><span class="g-cls">.sheet-mask .sheet-panel .picker-hidden .picker-closing .station-picker-head .station-picker-title .station-picker-close .station-picker-close-x .station-picker-close-hover .station-picker-head-acts .station-picker-map .station-picker-map-glyph .station-picker-map-label .station-picker-list .station-picker-item .station-picker-title-row .station-picker-name .station-picker-mark .mark-tone-* .station-picker-meta .station-picker-translation .next-station</span><span class="g-src">station-picker.wxss</span></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" id="vp-sheet" style="height:78vh">
           <div style="padding:14px;color:var(--text-2);font-size:12px">页面内容（演示遮罩之下）</div>
-          <div class="station-picker-mask demo-mask picker-hidden" id="sheetMask">
-            <div class="station-picker-panel">
-              <div class="station-picker-head"><text class="station-picker-title">选择出发站</text><div class="station-picker-head-acts"><view class="station-picker-map" data-hover-class="press"><view class="station-picker-map-glyph"></view><text class="station-picker-map-label">地图找站</text></view><view class="station-picker-close" data-hover-class="station-picker-close-hover" onclick="closeSheet()"><text class="station-picker-close-x">×</text></view></div></div>
+          <div class="sheet-mask demo-mask is-hidden" id="sheetMask">
+            <div class="sheet-panel">
+              <div class="sheet-head"><text class="sheet-title">选择出发站</text><div class="station-picker-head-acts"><view class="station-picker-map" data-hover-class="press"><view class="station-picker-map-glyph"></view><text class="station-picker-map-label">地图找站</text></view><view class="sheet-close" data-hover-class="station-picker-close-hover" onclick="closeSheet()"><text class="station-picker-close-x">×</text></view></div></div>
               <div class="station-search-box"><input class="station-search-input" placeholder="搜索站名" placeholder-class="input-ph"><text class="station-search-clear">清除</text></div>
               <div class="station-picker-list">
                 <div class="station-picker-item" data-hover-class="press-flat"><div class="station-picker-title-row"><text class="station-picker-name">体育西路</text><text class="station-picker-mark mark-tone-blue">换乘枢纽 · APM</text></div><text class="station-picker-meta">3号线 · 1号线</text><text class="station-picker-translation">Tiyu Xilu</text></div>
@@ -972,6 +972,17 @@ button{cursor:pointer;pointer-events:auto}
         <div class="progress"><view style="width:40%"></view></div>
       </div>
     </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-19</span><span class="g-cls">.set-list .set-row .set-main .set-title .set-sub .set-chev</span><span class="g-src">origin=另一产品 mine.vue；行改居中、箭头改图形件</span></figcaption>
+      <div class="g-stage">
+        <div class="set-list">
+          <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">我的书架</div><div class="set-sub">12 本</div></div><view class="glyph glyph-chevron set-chev"></view></div>
+          <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">历史记录</div><div class="set-sub">36 条</div></div><view class="glyph glyph-chevron set-chev"></view></div>
+          <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">清除阅读记录</div><div class="set-sub">清空历史与进度，书架收藏保留</div></div><view class="glyph glyph-chevron set-chev"></view></div>
+          <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">关于</div></div><view class="glyph glyph-chevron set-chev"></view></div>
+        </div>
+        <p class="g-hint">第三行是两行副标、第四行只有标题 —— 行高不写死，靠 14px 内距撑；箭头用 <code>.glyph-chevron</code> 且行已 <code>align-items:center</code>，所以始终在垂直中线上。</p>
+      </div>
+    </figure>
   </div>
 </section>
 
@@ -1004,6 +1015,53 @@ button{cursor:pointer;pointer-events:auto}
 
 
 <!-- ================= G17/T19 票务指南弹层（母本 2026-10-31 新增页） ================= -->
+<section class="g-sec" id="s-t18">
+  <h2><span class="g-secid">T18</span> 图形件（origin=本仓，真值源=本仓代码）</h2>
+  <p class="g-note">这批件的几何不再从母本字符照抄，而是与 Flutter 侧 <code>foundation/glyphs.dart</code> 共用同一个 <b>24×24 viewBox、同一条 path</b>：两个宿主逐像素同源。理由是字符的墨迹位置随字体与像素密度浮动（同一份样式实测：无头 Chrome 居中、桌面 Chrome 的 <code>×</code> 高 1.9px），只能靠 <code>translateY</code> 打补丁；图形件没有基线问题。线宽按 Flutter 的 2px 屏幕像素换算成 viewBox 单位（<code>2×24/盒尺寸</code>），逐件写死。</p>
+  <div class="g-grid">
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-01</span><span class="g-cls">.glyph .glyph-back（返回 ‹）</span><span class="g-src">19 盒 · 描边 2px · 墨迹 13.1px</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:14px">
+          <view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view>
+          <view class="back" data-hover-class="press"><view class="glyph glyph-back" style="width:24px;height:24px"></view></view>
+          <view class="glyph glyph-back" style="width:19px;height:19px;color:var(--brand)"></view>
+        </div>
+        <p class="g-hint">底色来自 <code>.back</code>（42 圆 / <code>--card</code>），字形只负责墨迹；颜色走 <code>currentColor</code>，换品牌色不用改件。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-02</span><span class="g-cls">.glyph .glyph-close（关闭 ×）</span><span class="g-src">26 盒 · 描边 2px · 墨迹 12.8px</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:14px">
+          <view class="sheet-close"><view class="glyph glyph-close"></view></view>
+          <view class="sheet-close"><view class="glyph glyph-close" style="width:18px;height:18px"></view></view>
+        </div>
+        <p class="g-hint">26 盒是为把墨迹做到 12.8px 反算出来的（母本 30 号字符 × 实测 12.77px），不是随便给的尺寸 —— 盒小了叉会显瘦，盒大了会顶到圆边。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-03</span><span class="g-cls">.glyph .glyph-chevron（右箭头 ›）</span><span class="g-src">16 盒 · 描边 2px · 墨迹 11.3px</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:14px;color:var(--text-3)">
+          <view class="glyph glyph-chevron"></view>
+          <view class="glyph glyph-chevron" style="width:11px;height:11px"></view>
+          <view class="glyph glyph-chevron" style="width:20px;height:20px"></view>
+        </div>
+        <p class="g-hint">行尾箭头用它，别再拿 <code>.time</code>（时间戳）这类语义类名装字符箭头。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18 对照</span><span class="g-cls">字符版（历史）vs 图形版（现行）</span><span class="g-src">母本 1:1 复刻用字符，新宿主用图形</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:22px">
+          <div style="text-align:center"><view class="back"><text class="back-glyph">‹</text></view><p class="g-hint" style="margin-top:6px">字符 ‹</p></div>
+          <div style="text-align:center"><view class="back"><view class="glyph glyph-back"></view></view><p class="g-hint" style="margin-top:6px">图形</p></div>
+          <div style="text-align:center"><view class="sheet-close"><text class="station-picker-close-x">×</text></view><p class="g-hint" style="margin-top:6px">字符 ×</p></div>
+          <div style="text-align:center"><view class="sheet-close"><view class="glyph glyph-close"></view></view><p class="g-hint" style="margin-top:6px">图形</p></div>
+        </div>
+        <p class="g-hint">字符版保留只为「与微信小程序逐像素一致」这一种场合；<b>新页面一律用图形版</b>，它的墨迹不随字体档位变化。</p>
+      </div>
+    </figure>
+  </div>
+</section>
+
 <section class="g-sec" id="s-t19">
   <h2><span class="g-secid">T19</span> 票务指南弹层（origin=母本新增页 intercity-guide）</h2>
   <p class="g-note">壳形态新档：**面板高度内容自适应、上限 86vh**（内容短的弹层用，固定 78vh 会下半截空）；滚动区**通栏化**（margin -14px 抵消面板内边距 + padding 补位，滚动裁剪边界退到面板边缘——卡片阴影不再被裁出硬边，.sd-body 同款）。</p>
@@ -1109,8 +1167,8 @@ var FS=[['--fs-hero-30','主视觉大字 · k=.90'],['--fs-hero-27','页面主�
 })();
 
 /* T10 弹层开合（复刻母本计时：退场动画 200/300ms + JS 延迟 320ms 再隐藏） */
-function openSheet(){var m=document.getElementById('sheetMask');m.classList.remove('picker-hidden','picker-closing');void m.offsetWidth;}
-function closeSheet(){var m=document.getElementById('sheetMask');m.classList.add('picker-closing');setTimeout(function(){m.classList.add('picker-hidden');m.classList.remove('picker-closing');},320);}
+function openSheet(){var m=document.getElementById('sheetMask');m.classList.remove('is-hidden','is-closing');void m.offsetWidth;}
+function closeSheet(){var m=document.getElementById('sheetMask');m.classList.add('is-closing');setTimeout(function(){m.classList.add('is-hidden');m.classList.remove('is-closing');},320);}
 function openDtp(){var m=document.getElementById('dtpMask');m.classList.remove('is-hidden','is-closing');void m.offsetWidth;}
 function closeDtp(){var m=document.getElementById('dtpMask');m.classList.add('is-closing');setTimeout(function(){m.classList.add('is-hidden');m.classList.remove('is-closing');},320);}
 function openSnp(){var m=document.getElementById('snpMask');m.classList.remove('is-hidden','is-closing');void m.offsetWidth;}

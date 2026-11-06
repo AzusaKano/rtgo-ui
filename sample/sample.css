@@ -34,11 +34,6 @@ button{font-family:inherit}
 .dtp-col::before,.dtp-col::after{content:'';display:block;height:76px}
 .dtp-col .dtp-wheel-item{scroll-snap-align:center}
 
-/* 关闭钮的 × 是字符（Arial 30px / line-height:1），墨迹中心随字体与像素密度上下浮动：
-   这是实测的 —— 同一份样式，微信端与 2x 屏上基本居中，桌面 1x~1.6x 的 Chrome 上会高出 1~2px。
-   按本机实拍补 1px 下移（与母本给 .back-glyph 做 translateY 校准是同一类做法）。
-   ⚠ 换字体或换密度后要重新看图调这个值，它不是设计值。 */
-.station-picker-close-x{transform:translateY(1px)}
 /* 顶栏高度：资产里写的是 height:72 / padding-top:20 —— 那是样式表值，把 20 当成了状态栏。
    母本运行时改写成「高度 = 状态栏 + 62、内距 = 状态栏」，62 才是真正的内容区高度。
    Web 上状态栏对应 env(safe-area-inset-top)，照母本口径还原 —— 标题才会落在内容区的正中，

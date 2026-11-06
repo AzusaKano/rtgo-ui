@@ -345,17 +345,17 @@ function snpItemsHTML() {
 
 function snpHTML() {
   const s = OVER.snp;
-  const cls = ['station-picker-mask'];
-  if (s.closing) cls.push('picker-closing');
-  if (!s.open && !s.closing) cls.push('picker-hidden');
+  const cls = ['sheet-mask'];
+  if (s.closing) cls.push('is-closing');
+  if (!s.open && !s.closing) cls.push('is-hidden');
   const title = s.target === 'origin' ? '选择出发站' : '选择到达站';
   return `
   <div class="${cls.join(' ')}" id="snpMask">
-    <div class="station-picker-panel" id="snpPanel">
-      <div class="station-picker-head">
-        <div><div class="station-picker-title">${title}</div></div>
+    <div class="sheet-panel" id="snpPanel">
+      <div class="sheet-head">
+        <div><div class="sheet-title">${title}</div></div>
         <div class="station-picker-head-acts">
-          <view class="station-picker-close" data-hover-class="press" data-snp-close><text class="station-picker-close-x">×</text></view>
+          <view class="sheet-close" data-hover-class="press" data-snp-close><view class="glyph glyph-close"></view></view>
         </div>
       </div>
       <view class="station-search-box">
@@ -518,15 +518,28 @@ function scrollWheel(box) {
   if (cols[1]) cols[1].scrollTop = m * 38;
 }
 
+/* 关闭只给「还活着的那棵树」挂退场类，**不重建**。
+   重建会插入一组新节点：入场动画（picker-mask-in / dtp-mask-in）和退场动画同时起跑，
+   视觉上就是「关上的一瞬又弹了一下」。（2026-11-06 修） */
 function closeLater(key) {
   const st = OVER[key];
+  if (st.closing) return;
   st.closing = true;
-  renderOverlays();
+  /* 两种壳的状态类现已是同一套（.is-closing / .is-hidden）—— 站选器换成 .sheet-* 之后，
+     旧的 .picker-closing 只匹配旧类名，再挂它动画就不跑了（2026-11-06 修）。 */
+  const node = document.getElementById(key === 'snp' ? 'snpMask' : 'dtpMask');
+  const CLOSING = 'is-closing';
+  const HIDDEN = 'is-hidden';
+  if (node) node.classList.add(CLOSING);
   /* 退场期间若又打开（OVER[key] 会被换成新对象），这次收尾就不该再落到新的那个头上 */
   setTimeout(() => {
     if (OVER[key] !== st) return;
-    st.open = false; st.closing = false;
-    renderOverlays();
+    st.open = false;
+    st.closing = false;
+    if (node) {
+      node.classList.remove(CLOSING);
+      node.classList.add(HIDDEN);
+    }
   }, EXIT_MS);
 }
 
