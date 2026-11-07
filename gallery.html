@@ -114,7 +114,7 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G3/T03 顶栏 ================= -->
 <section class="g-sec" id="s-t03">
   <h2><span class="g-secid">T03</span> 顶栏与返回</h2>
-  <p class="g-note">顶栏两档：<code>.ios-fixed-topbar</code>（72px）为**默认档 = 微信小程序方案**——不透明底 <code>--bg</code> + 强边框 <code>--topbar-bd-strong</code>，那套是修苹果端小程序渲染 bug 的补丁；不做小程序的宿主（Flutter / Web / 原生）加 <code>.is-translucent</code> 用半透明档（T03-02b）。<code>.fixed-topbar</code> 为历史代际（O-01 保留备用，其底色/边框即半透明档的出处）。<code>.sticky-topbar</code> 经 M0 拍板已移除（O-02）。</p>
+  <p class="g-note">顶栏两档：<code>.ios-fixed-topbar</code>（72px）为**默认档 = 微信小程序方案**——不透明底 <code>--bg</code> + 强边框 <code>--topbar-bd-strong</code>，那套是修苹果端小程序渲染 bug 的补丁；不做小程序的宿主（Flutter / Web / 原生）加 <code>.is-translucent</code> 用半透明档（T03-02b）。<code>.fixed-topbar</code> 为历史代际（O-01 保留备用，其底色/边框即半透明档的出处）。<code>.sticky-topbar</code> 经 M0 审阅已移除（O-02）。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-01/02/04/05</span><span class="g-cls">.ios-fixed-topbar .back .back-glyph .title .sub</span><span class="g-src">index:473-521,228-258</span></figcaption>
       <div class="g-stage pad0"><div class="demo-viewport">
@@ -1096,6 +1096,129 @@ button{cursor:pointer;pointer-events:auto}
           </div>
         </div>
         <p class="g-hint">壳形态新档：max-height 86vh（内容自适应上限）；.ig-body 通栏化（margin -14px + padding 14px）——.sd-body 同款已改。</p>
+      </div>
+    </figure>
+  </div>
+</section>
+
+
+<section class="g-sec" id="g-t21">
+  <h2><span class="g-secid">T21</span> 确认对话框（组合件 · 不新增壳类）</h2>
+  <p class="g-note">壳/头/钮**全部复用既有件**：<code>.snp-mask/.snp-panel</code>（T10-03 悬浮对话框档，**不是** T10-01 半屏的 78vh）＋ <code>.snp-head/.snp-title</code>（T10-05）＋ <code>.dtp-actions/.dtp-btn</code>（T06-06）。本族只补两件缺的子件：<code>.snp-body</code>（正文）与 <code>.dtp-btn.is-danger</code>（危险档）。母本组件自有 <code>.confirm-*</code> 名，资产侧不复制。</p>
+  <div class="g-grid">
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T21-01</span><span class="g-cls">.snp-mask .snp-panel .snp-head .snp-title .snp-body .dtp-actions .dtp-btn .is-cancel .is-confirm .is-danger</span><span class="g-src">组合：T10-03 ＋ T10-05 ＋ T06-06（母本 components/confirm-dialog）</span></figcaption>
+      <div class="g-stage pad0">
+        <div class="snp-mask" style="position:relative;inset:auto;display:flex;align-items:flex-end;justify-content:center;padding:22px 0;animation:none">
+          <div class="snp-panel" style="max-height:none;animation:none">
+            <div class="snp-head"><div class="snp-title">删除保存的方案？</div></div>
+            <div class="snp-body">这条方案会从「已存路线」里移除，需要重新查询才能再看到。</div>
+            <div class="dtp-actions">
+              <div class="dtp-btn is-cancel">取消</div>
+              <div class="dtp-btn is-danger">删除</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0 22px 22px;background:var(--bg)">
+          <div class="snp-panel" style="max-height:none;animation:none">
+            <div class="snp-head"><div class="snp-title">保存这条路线？</div></div>
+            <div class="snp-body">保存后可在首页「已存路线」查看，出发时间超过 72 小时会自动清理。</div>
+            <div class="dtp-actions">
+              <div class="dtp-btn is-cancel">取消</div>
+              <div class="dtp-btn is-confirm">保存</div>
+            </div>
+          </div>
+        </div>
+        <p class="g-hint">上：<code>.is-danger</code>（删除/清空这类不可逆动作）。下：常规确认。两枚钮固定「否定在左、肯定在右」，取消钮永远是中性档。</p>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<section class="g-sec" id="g-t22">
+  <h2><span class="g-secid">T22</span> 列表管理（卡级选中 · 勾槽 · 管理底栏 · 顶栏动作）</h2>
+  <p class="g-note">母本类名是页面私有的 <code>.saved-*</code>，资产侧改通用名（2026-11-07 定稿：通用名更适合不面向单一产品的资产包）。<strong>卡内部版式不进件号</strong>：卡头/标题/时间行/时长全部由现有件拼（T04-01 卡壳 ＋ <code>.route-top</code> ＋ T08 <code>.duration</code> ＋ T08-08 轴 ＋ T08-11 facts），最后一张就是拼装示范。</p>
+  <div class="g-grid">
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-03</span><span class="g-cls">.route-card.is-selectable .route-card.is-selected .nb-row-chk.is-hollow .is-on .check-glyph .station-chip.is-strong .warning-badge.is-compact .duration .route-top</span><span class="g-src">母本 .saved-card / .saved-check / .saved-stale / .saved-warning</span></figcaption>
+      <div class="g-stage">
+        <div style="display:grid;gap:12px">
+          <div class="route-card is-selectable" style="padding-bottom:18px">
+            <div class="route-top"><div style="min-width:0;font-size:var(--fs-strong-16);font-weight:800;line-height:1.35">体育西路 → 广州塔</div><div class="nb-row-chk is-hollow"><div class="check-glyph"></div></div></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap">
+              <span style="font-size:var(--fs-small-12);color:var(--text-2)">今天 19:15 出发</span>
+              <span class="station-chip is-strong">已过出发</span>
+              <span class="warning-badge is-compact">可能错过末班车</span>
+            </div>
+            <div class="duration" style="margin-top:10px;line-height:1.1;letter-spacing:-.02em">42 分钟</div>
+          </div>
+          <div class="route-card is-selectable is-selected" style="padding-bottom:18px">
+            <div class="route-top"><div style="min-width:0;font-size:var(--fs-strong-16);font-weight:800;line-height:1.35">珠江新城 → 广州南</div><div class="nb-row-chk is-hollow is-on"><div class="check-glyph"></div></div></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap">
+              <span style="font-size:var(--fs-small-12);color:var(--text-2)">明天 08:20 出发</span>
+            </div>
+            <div class="duration" style="margin-top:10px;line-height:1.1;letter-spacing:-.02em">35 分钟</div>
+          </div>
+        </div>
+        <p class="g-hint">选中态＝<strong>品牌描边 ＋ 1px ring</strong>，<strong>不铺整卡 brand-tint</strong>：卡里有线路胶囊与方案标签，铺 tint 会跟它们抢色（行级选中仍用 T12-06 的 tint 档）。勾槽常显空环 18，选中换成 T12-06 那套 3x 防糊勾。</p>
+      </div>
+    </figure>
+
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-01 / T22-02</span><span class="g-cls">.select-bar .select-all .select-count .select-del .is-disabled</span><span class="g-src">母本 index.wxss .saved-select-bar 族</span></figcaption>
+      <div class="g-stage">
+        <div class="select-bar" style="position:relative;left:0;bottom:auto;transform:none;max-width:none;border-radius:14px 14px 0 0">
+          <div class="select-all">全选</div>
+          <div class="select-count">已选 2 项</div>
+          <div class="select-del">删除</div>
+        </div>
+        <div class="select-bar" style="position:relative;left:0;bottom:auto;transform:none;max-width:none;margin-top:10px;border-radius:14px">
+          <div class="select-all">取消全选</div>
+          <div class="select-count">已选 0 项</div>
+          <div class="select-del is-disabled">删除</div>
+        </div>
+        <div class="screen-body is-selecting" style="height:130px;border:1px dashed var(--border);border-radius:12px;margin-top:12px">
+          <div style="font-size:11px;color:var(--text-2);padding:10px 0">.screen-body.is-selecting：底部让位 <code>calc(96px + safe)</code>（虚线以下为让出区）</div>
+        </div>
+        <p class="g-hint">三段位：左 全选 / 中 计数 / 右 删除。三颗都是裸文字，<strong>不挂 press 三档</strong>，只做 <code>:active</code> 透明度 .6；禁用只降透明度并真禁用（pointer-events）。层级走 <code>--z-actionbar(40)</code>：高于内容、低于遮罩。</p>
+      </div>
+    </figure>
+
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-04</span><span class="g-cls">.ios-fixed-topbar .topbar-main .topbar-actions .topbar-action</span><span class="g-src">母本 index.wxss .topbar-action</span></figcaption>
+      <div class="g-stage pad0">
+        <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><div class="topbar-main"><div class="title">轨交速查</div></div><div class="topbar-actions"><div class="topbar-action">选择</div></div></div></div>
+        <p class="g-hint">顶栏文字动作：40 高（踩可用性红线、**不成档**，最近似档是 42 圆钮）、15·650 品牌色。放进 <code>.topbar-actions</code>，与 T03-02c 三子项配套用。</p>
+      </div>
+    </figure>
+
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-05b</span><span class="g-cls">.notice-strip.is-quiet .notice-dot .notice-text .notice-action</span><span class="g-src">母本 detail 页 .snapshot-note 族</span></figcaption>
+      <div class="g-stage">
+        <div class="notice-strip is-quiet"><div class="notice-dot"></div><div class="notice-text">已保存 · 11 月 5 日 19:15 查询</div><div class="notice-action">重新查询</div></div>
+        <div class="notice-strip"><div class="notice-head"><div class="notice-title">公告条原档（对照）：品牌浅底、13/700</div><div class="notice-close">×</div></div></div>
+        <p class="g-hint">静默档 = 结构与公告条同源、配色与字号改写：<code>--fill</code> 底 ＋ <code>--text-strong</code> 字 ＋ 12/400 ＋ 内距 6·14，行尾动作换成 40 高文字。</p>
+      </div>
+    </figure>
+
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-01b</span><span class="g-cls">.actions.is-compact .primary</span><span class="g-src">母本 .actions.is-compact（详情保存）</span></figcaption>
+      <div class="g-stage">
+        <div class="actions is-compact"><div class="primary">保存路线</div></div>
+        <p class="g-hint">非全宽主钮：单枚 50% 居中、min 156；几何仍走 T06-01/T06-12（48·radius14·15·750），本档只改布局。</p>
+      </div>
+    </figure>
+
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-组合</span><span class="g-cls">.route-card .route-top .duration .axis .axis-time .axis-clock .axis-dash .axis-route .mode-chip .mode-badge .facts .fact</span><span class="g-src">版式示范：已存卡 = 现有件拼装，不占件号</span></figcaption>
+      <div class="g-stage">
+        <div class="route-card is-selectable" style="padding-bottom:18px">
+          <div class="route-top"><div style="min-width:0;font-size:var(--fs-strong-16);font-weight:800;line-height:1.35">体育西路 → 广州塔</div><div class="nb-row-chk is-hollow"><div class="check-glyph"></div></div></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:5px"><span style="font-size:var(--fs-small-12);color:var(--text-2)">今天 19:15 出发</span></div>
+          <div class="duration" style="margin-top:10px;line-height:1.1;letter-spacing:-.02em">42 分钟</div>
+          <div class="axis">
+            <div class="axis-time"><text class="axis-clock">19:15</text></div>
+            <div class="axis-dash axis-dash-l"></div>
+            <div class="axis-route"><div class="mode-chip"><div class="mode-badge" style="background:#2f6bff">1 号线</div></div><div class="mode-chip"><div class="mode-gate"></div><div class="mode-badge" style="background:#8e44ad">3 号线</div></div></div>
+            <div class="axis-dash axis-dash-r"></div>
+            <div class="axis-time"><text class="axis-clock">19:57</text></div>
+          </div>
+          <div class="facts"><div class="fact"><div>地铁</div></div><div class="fact"><div>换乘1次</div></div><div class="fact"><div>¥4</div></div></div>
+        </div>
+        <p class="g-hint">整卡没有新类：壳（T04-01）＋ 卡头（<code>.route-top</code>）＋ 时长（T08 <code>.duration</code>）＋ 轴（T08-08）＋ 三格（T08-11 facts）。样式隔离的宿主（小程序组件）要按自己的作用域镜像这几个类。</p>
       </div>
     </figure>
   </div>

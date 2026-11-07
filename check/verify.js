@@ -36,6 +36,7 @@ const F = {
   snp: 'components/station-nav-picker/station-nav-picker.wxss',
   exs: 'pages/exit-survey/exit-survey.wxss',   // ex-* 与 exit-review 同值合并，仍入哨兵监视
   ig: 'components/intercity-guide/intercity-guide.wxss',   // T19 票务指南弹层（v1.6 新增页）
+  conf: 'components/confirm-dialog/confirm-dialog.wxss',   // T21 确认对话框（v1.14 新增组件）
 };
 /* ---------- 母本 / 另一产品：作者本地才有的仓库，对他人默认不存在 ----------
    本脚本有两类检查：
@@ -45,7 +46,13 @@ const F = {
    先给一行说明，再跳过 (a)，退出码按 (b) 的结果定。 */
 const HAVE_MASTER = !!MASTER && fs.existsSync(path.join(MASTER, 'app.wxss'));
 const masterText = {};
-for (const k in F) masterText[k] = HAVE_MASTER ? fs.readFileSync(path.join(MASTER, F[k]), 'utf8') : '';
+/* 逐文件容错读：新族登记的文件在旧母本里可能不存在（如 v1.14 的 confirm-dialog）。
+   缺文件 → 该族断言自动落到「未做」，而不是让整个脚本抛栈。 */
+for (const k in F) {
+  if (!HAVE_MASTER) { masterText[k] = ''; continue; }
+  try { masterText[k] = fs.readFileSync(path.join(MASTER, F[k]), 'utf8'); }
+  catch (e) { masterText[k] = ''; }
+}
 const rtgoText = fs.readFileSync(CSS, 'utf8');
 const tokensText = fs.readFileSync(TOKENS, 'utf8');
 const componentsText = fs.readFileSync(COMPONENTS, 'utf8');
@@ -148,12 +155,12 @@ function cmpContains(id, item, file, needle, rtgoNeedle) {
   row(id, item + ' · 母本含「' + (needle.length > 40 ? needle.slice(0, 40) + '…' : needle) + '」/ 资产含「' + (rNeedle.length > 40 ? rNeedle.slice(0, 40) + '…' : rNeedle) + '」', file, g ? '存在' : '缺失', verdict, m ? '' : 'needle 在母本中不存在（检查 needle 本身）');
   return verdict === '通过';
 }
-/* M0 裁决移除断言：母本有、资产必须没有（如 O-02 sticky-topbar，用户拍板"效果不佳，移除"） */
+/* M0 裁决移除断言：母本有、资产必须没有（如 O-02 sticky-topbar，定稿"效果不佳，移除"） */
 function cmpRemoved(id, item, file, needle) {
   const hay = t => stripComments(t).replace(/\s+/g, ' ');
   const m = hay(masterText[file]).includes(needle), g = hay(rtgoText).includes(needle);
   const verdict = m && !g ? '通过' : m ? '不通过' : '未做';
-  row(id, item + ' · 应无「' + needle + '」', m ? '母本存在' : '母本无', g ? '资产仍存在' : '资产已移除', verdict, 'M0 R-12（2026-10-31 用户拍板）');
+  row(id, item + ' · 应无「' + needle + '」', m ? '母本存在' : '母本无', g ? '资产仍存在' : '资产已移除', verdict, 'M0 R-12（2026-10-31 定稿）');
   return verdict === '通过';
 }
 function cmpConvert(id, item, file, sel, prop, occ, expect) {
@@ -454,6 +461,7 @@ cmpRemoved('T03-03', '旧代 sticky 顶栏（O-02 移除）', 'idx', '.sticky-to
     ['--page-pad', () => masterRegexVal('idx', /padding:0 (14px) calc\(50px/, 1)],
     ['--z-node', () => findDecl(master, 'idx', '.node', 'z-index', 'first')],
     ['--z-overlay', () => findDecl(master, 'sp', '.line-grid-overlay', 'z-index', 'first')],
+    ['--z-actionbar', () => findDecl(master, 'idx', '.saved-select-bar', 'z-index', 'first')],
     ['--z-fade', () => findDecl(master, 'idx', '.hscroll-fade', 'z-index', 'first')],
     ['--z-mask', () => findDecl(master, 'sp', '.station-picker-mask', 'z-index', 'first')],
     ['--z-topbar', () => findDecl(master, 'idx', '.ios-fixed-topbar', 'z-index', 'first')],
@@ -556,6 +564,52 @@ if (HAVE_HOST) (function t17Audit() {
     const ok = mv != null && gv != null && norm(mv) === norm(gv) && norm(mv) === norm(want);
     row(id, sel + '{' + prop + '} ≡ ' + want, mv, gv, ok ? '通过' : '不通过');
   }
+})();
+
+/* ========== 4a-quater) T21 / T22（v1.14）==========
+   母本实现用的是页面私有的 .saved-* / .confirm-* 名，资产侧已改名通用化（用户 2026-11-07 拍板）。
+   所以这里一律用 cmp 的第 4 参 rtgoSel 做「跨名对账」：值必须一致，名字可以不同。
+   ⚠ 这几族是**静态层**（件已定稿、不会随产品口径改），所以写死断言并做反向注入。 */
+(function t21t22() {
+  const D = [
+    // 对话框（母本 confirm-dialog.wxss）
+    ['T21-02', '对话框正文·内距', 'conf', '.confirm-body', 'padding', null, '.snp-body'],
+    ['T21-02', '对话框正文·字号', 'conf', '.confirm-body', 'font-size', null, '.snp-body'],
+    ['T06-06b', '对钮·危险档底', 'conf', '.confirm-btn.primary.danger', 'background', null, '.dtp-btn.is-danger'],
+    ['T06-06b', '对钮·危险档字色', 'conf', '.confirm-btn.primary.danger', 'color', null, '.dtp-btn.is-danger'],
+    // 列表管理底栏（母本 index.wxss 的 .saved-* 块）
+    ['T22-01', '底栏·宽度口径', 'idx', '.saved-select-bar', 'max-width', null, '.select-bar'],
+    ['T22-01', '底栏·内距（含安全区）', 'idx', '.saved-select-bar', 'padding', null, '.select-bar'],
+    ['T22-01', '底栏·层级', 'idx', '.saved-select-bar', 'z-index', null, '.select-bar'],
+    ['T22-02', '底栏·全选触控高', 'idx', '.saved-select-all', 'min-height', null, '.select-all'],
+    ['T22-02', '底栏·全选字色', 'idx', '.saved-select-all', 'color', null, '.select-all'],
+    ['T22-02', '底栏·计数字号', 'idx', '.saved-select-count', 'font-size', null, '.select-count'],
+    ['T22-02', '底栏·删除字色', 'idx', '.saved-select-del', 'color', null, '.select-del'],
+    ['T22-02', '底栏·删除禁用', 'idx', '.saved-select-del.is-disabled', 'opacity', null, '.select-del.is-disabled'],
+    ['T22-03', '卡级选中·描边色', 'idx', '.saved-card.is-selected', 'border-color', null, '.route-card.is-selected'],
+    ['T22-03', '卡级选中·ring', 'idx', '.saved-card.is-selected', 'box-shadow', null, '.route-card.is-selected'],
+    ['T22-04', '顶栏动作·触控高', 'idx', '.topbar-action', 'min-height', null, null],
+    ['T22-04', '顶栏动作·字号', 'idx', '.topbar-action', 'font-size', null, null],
+    ['T22-05', '选中模式页面让位', 'idx', '.screen-body.is-selecting', 'padding-bottom', null, null],
+    // 变体（挂回原族）
+    ['T06-01b', '主钮紧凑档·容器', 'idx', '.actions.is-compact', 'justify-content', null, null],
+    ['T06-01b', '主钮紧凑档·宽度', 'idx', '.actions.is-compact .primary', 'width', null, null],
+    ['T07-06b', '站名胶囊强调档·内距', 'idx', '.saved-stale', 'padding', null, '.station-chip.is-strong'],
+    ['T07-06b', '站名胶囊强调档·字色', 'idx', '.saved-stale', 'color', null, '.station-chip.is-strong'],
+    ['T07-12b', '警示徽标紧凑档·高', 'idx', '.saved-warning', 'min-height', null, '.warning-badge.is-compact'],
+    ['T12-06b', '勾槽空环·环径', 'idx', '.saved-check::before', 'width', null, '.nb-row-chk.is-hollow::before'],
+    ['T12-06b', '勾槽空环·环粗', 'idx', '.saved-check::before', 'border', null, '.nb-row-chk.is-hollow::before'],
+    ['T17-05b', '公告条静默档·内距', 'idx', '.snapshot-note', 'padding', null, '.notice-strip.is-quiet'],
+    ['T17-05b', '公告条静默档·底色', 'idx', '.snapshot-note', 'background', null, '.notice-strip.is-quiet'],
+  ];
+  D.forEach(([id, item, file, sel, prop, occ, rtgoSel]) => cmp(id, item, file, sel, prop, occ, rtgoSel || undefined));
+
+  /* T21-01 组合件：壳/头/正文/钮四件必须同时出现在 T21 样片里（组合纪律的可执行形式） */
+  const seg = (galleryText.match(/<section[^>]*id="g-t21"[\s\S]*?<\/section>/) || [''])[0];
+  const need = ['snp-mask', 'snp-panel', 'snp-head', 'snp-title', 'snp-body', 'dtp-actions', 'dtp-btn'];
+  const missing = need.filter(c => !seg.includes(c));
+  row('T21-01', '组合件：样片同时含壳/头/正文/钮（' + need.length + ' 类）', '0', missing.length ? missing.join(',') : '0',
+    seg && !missing.length ? '通过' : '不通过', 'T21 样片缺件或整段缺失');
 })();
 
 /* ========== 4b) U-5 哨兵（M0 定稿 2026-10-31）：母本漂移预警 ==========
@@ -768,7 +822,10 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
   // 展开简写：T06-01/02、T02-01~07、T03-01/02/06 → 全量 ID（与 gallery 索引同一口径）
   const expandIds = t => {
     const out = new Set();
-    const full = t.match(/\bT\d{2}-\d{2}\b/g) || [];
+    /* 带字母后缀的件号（T03-02b / T10-06b / T12-06b）必须一起认：
+       早先的正则 `\\bT\\d{2}-\\d{2}\\b` 在「T10-06b」里匹配不到（b 是词字符，没有词边界），
+       于是这些行从来没人检查覆盖 —— 2026-11-07 补上。 */
+    const full = t.match(/\bT\d{2}-\d{2}[a-z]?\b/g) || [];
     full.forEach(x => out.add(x));
     (t.match(/\bT(\d{2})-((?:\d{2}\/)+\d{2})\b/g) || []).forEach(seg => {
       const m = seg.match(/T(\d{2})-((?:\d{2}\/)+\d{2})/);
