@@ -256,22 +256,29 @@ body {
   --radius-ctrl: 14px;
   --radius-inner: 12px;
   --radius-chip: 10px;
+  /* T24 菜单（v1.20 自建）：20 是带 1px 描边的浮起块档，行 14 = 20 − 6 同心 */
+  --radius-menu: 20px;
 
   /* 阴影（浅色口径；深色模式投影天然被底吞掉，母本不另设） */
   --shadow-card: 0 10px 28px rgba(35,47,78,.08);      /* .panel,.route-card,.summary,.segment */
   --shadow-pop: 0 4px 12px rgba(35,47,78,.06);        /* .back / .station-picker-close */
   --shadow-topbar: 0 4px 14px rgba(35,47,78,.05);     /* .ios-fixed-topbar */
   --shadow-sheet: 0 -12px 36px rgba(23,27,40,.16);    /* .station-picker-panel */
+  /* T24 菜单（v1.20 自建）：主影取 snp-panel 同档，补一层近距让壳边更实 */
+  --shadow-menu: 0 10px 30px rgba(23,27,40,.16),0 2px 8px rgba(23,27,40,.06);
 
   /* 动效档（C 类参数与进出场时长的归纳） */
   --ease-press: cubic-bezier(.33,.33,.67,1);   /* .press 两向共用曲线 */
   --ease-sheet: cubic-bezier(0.32,0.72,0,1);   /* iOS sheet 标准曲线（与母本逐字） */
+  --ease-menu-close: cubic-bezier(.4,0,.2,1);  /* T24 关闭缩放：单段连续，不受透明度分段影响 */
   --dur-press: .25s;                           /* 按压下沉/浮起（两向同值） */
   --dur-fade: 180ms;                           /* 局部展开淡入（母本 160~180ms 区间的主体档） */
   --dur-screen: 220ms;                         /* 全屏切屏 */
   --dur-mask: 200ms;                           /* 遮罩淡入/淡出 */
   --dur-sheet-in: 380ms;                       /* 底部弹层滑入（含回弹） */
   --dur-sheet-out: 300ms;                      /* 底部弹层滑出（无回弹） */
+  --dur-menu-in: 200ms;                        /* T24 打开：58% 处 scale 1.012 后落回 */
+  --dur-menu-out: 180ms;                       /* T24 回收：scale 连续 1→.92，透明度延后 35% */
 
   /* 布局 */
   --page-max: 780px;                           /* .app 内容最大宽 */
@@ -1962,6 +1969,114 @@ button::after{display:none;width:0;height:0;border:0}
 .set-row.is-picked{background:var(--brand-tint)}
 
 
+/* ============================================================================
+   T24 菜单（v1.20 · 自建：origin=本仓，真值源=设计稿-菜单.html）
+   ----------------------------------------------------------------------------
+   定位：由现有按钮打开的短动作浮层；不是页面列表，也不是确认框。
+   组合：
+     触发器  .icon-btn（顶栏）/ .bnav .cell（底栏）/ .menu-dots（正文通用）
+              / .menu-text-trigger（正文筛选·排序，品牌字 + T18-05）
+     壳      .menu-layer（fixed 透明点击层）+ .menu（绝对定位面板）
+     内容    .menu-item / .menu-main / .menu-text / .menu-desc / .menu-meta
+              / .menu-check / .menu-group-label / .menu-sep
+   摆位：宿主显式给 --menu-top/right/bottom/left 与 --menu-origin；
+        不做自动翻转。锚点角必须钉在触发器那一侧。
+   动效：打开 menu-in-soft 200ms（58% scale 1.012，只缩放不位移）；
+        关闭 menu-out 180ms（scale 1→.92 一段连续）+ menu-fade-out（前 35% 保持不透明）。
+   ============================================================================ */
+
+/* ── T24-01 壳与点击层 ── */
+.menu-layer{position:fixed;inset:0;z-index:calc(var(--z-topbar) + 1);background:transparent}
+.menu-layer[hidden],.menu-layer.is-hidden{display:none;animation:none}
+.menu-layer.is-hidden .menu{animation:none}
+.menu{
+  position:absolute;
+  top:var(--menu-top,auto);
+  right:var(--menu-right,auto);
+  bottom:var(--menu-bottom,auto);
+  left:var(--menu-left,auto);
+  width:var(--menu-w,auto);
+  min-width:208px;
+  max-width:min(280px,calc(100vw - 28px));
+  max-height:min(70vh,420px);
+  box-sizing:border-box;
+  padding:6px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-menu);
+  box-shadow:var(--shadow-menu);
+  transform-origin:var(--menu-origin,top right);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  animation:menu-in-soft var(--dur-menu-in) ease-out both;
+}
+.menu:focus{outline:none}
+
+/* ── T24-07 动效：打开只缩放、锚点固定；关闭缩放一段连续，透明度单独延后 ── */
+@keyframes menu-in-soft{
+  0%{opacity:0;transform:scale(.96)}
+  58%{opacity:1;transform:scale(1.012)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes menu-out{from{transform:scale(1)}to{transform:scale(.92)}}
+@keyframes menu-fade-out{0%,35%{opacity:1}100%{opacity:0}}
+.menu-layer.is-closing .menu{
+  animation:menu-out var(--dur-menu-out) var(--ease-menu-close) both,
+            menu-fade-out var(--dur-menu-out) linear both;
+}
+
+/* ── T24-02 行与状态 ── */
+.menu-item{
+  display:flex;align-items:center;gap:10px;
+  width:100%;min-height:44px;padding:0 10px 0 12px;box-sizing:border-box;
+  border:0;border-radius:var(--radius-ctrl);background:transparent;
+  color:var(--text);font-size:var(--fs-body-15);font-weight:600;line-height:1.25;
+  text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.menu-item + .menu-item{margin-top:2px}
+.menu-item:active{background:var(--press)}
+.menu-text{flex:1;min-width:0;white-space:normal;overflow-wrap:anywhere}
+.menu-main{display:flex;flex:1;flex-direction:column;min-width:0}
+.menu-main .menu-text{flex:0 0 auto}
+.menu-desc{display:block;margin-top:3px;color:var(--text-2);font-size:var(--fs-small-12);font-weight:400;line-height:1.45;white-space:normal}
+.menu-item.has-desc{min-height:58px;padding-top:8px;padding-bottom:8px}
+.menu-item.has-desc .menu-text{display:block;white-space:normal}
+.menu-meta{margin-left:auto;flex:0 0 auto;color:var(--text-3);font-size:var(--fs-small-12);font-weight:400}
+.menu-check{position:relative;flex:0 0 20px;width:20px;height:20px;color:var(--brand)}
+.menu-item.is-checked{color:var(--brand-ink)}
+.menu-item.is-checked .menu-text{font-weight:700}
+.menu-item.is-danger{color:var(--danger)}
+.menu-item.is-danger:active,.menu-item.is-danger.press-flat{background:var(--error-bg)}
+.menu-item.is-disabled,.menu-item:disabled{opacity:.4;pointer-events:none}
+.menu-item:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+
+/* ── T24-03 分组标题与分隔线 ── */
+.menu-group-label{padding:8px 12px 4px;color:var(--text-2);font-size:var(--fs-small-12);font-weight:650;line-height:1.3}
+.menu-sep{height:1px;margin:6px 8px;background:var(--border-weak)}
+
+/* ── T24-04 触发器打开态（圆钮转品牌；底栏格子用中性底，品牌字已给当前 tab）── */
+.menu-trigger.is-open{color:var(--brand-ink)}
+.icon-btn.menu-trigger.is-open{background:var(--brand-tint);border-color:var(--brand-tint);color:var(--brand-ink)}
+.bnav .cell.menu-trigger.is-open{color:var(--text);font-weight:750;background:var(--press)}
+
+/* ── T24-05 正文·裸三点（视觉 20 / 热区 44；无圆底、无边框）──
+   .is-edge 用于卡片右缘：把 44 热区外扩 12，让 20 点的右缘与卡内文字对齐。 */
+.menu-dots{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;
+  padding:0;border:0;background:transparent;color:var(--text-2);border-radius:var(--radius-ctrl);cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.menu-dots.is-edge{margin:-11px -12px -11px 0}
+.menu-dots:active{opacity:.55}
+.menu-dots.menu-trigger.is-open{color:var(--brand-ink)}
+
+/* ── T24-06 正文·品牌文字 + T18-05 下箭头（无底、无边框；文字自带语义）──
+   资产目前没有筛选 / 排序图标，不临时画；等图标进资产再扩图标档。 */
+.menu-text-trigger{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;
+  border:0;background:none;color:var(--brand-ink);font-size:var(--fs-body-14);font-weight:650;line-height:1;white-space:nowrap;
+  cursor:pointer;-webkit-tap-highlight-color:transparent}
+.menu-text-trigger:active{opacity:.6}
+
+
 /* ===== T17 按压基态（这批件的自带 transition 已随件声明：cat-chip/cat-expand/.bnav .cell；
    其余可挂压件（stop-row/toc-row/adv-toggle/state-btn 等）挂压时走 .press 档——
    它们的底色在 T17 节（按压档之前），press 档在文件最末可正常压过换底，无需额外基态组）===== */
@@ -1978,13 +2093,15 @@ button::after{display:none;width:0;height:0;border:0}
    （= 2 × 24 / 盒尺寸），每个件写死，不依赖运行时变量。
    墨迹尺寸 = 路径跨度 × 盒/24 + 线宽，早期三件都对齐了母本对应字符的实测墨迹。
    ----------------
-   v1.16 起本族与 Flutter `SlateGlyphKind` 对齐（16 种），本仓出一一对应的类名：
+   v1.16 起本族与 Flutter `SlateGlyphKind` 对齐（16 种），本仓出一一对应的类名；
+   v1.20 增 .glyph-more（T18-09）——Flutter 侧暂无对应 kind，跨端待补：
      back / chevronLeft → .glyph-back（两 kind 共用一条 path，只出一枚）
        ⚠ 2026-11-08 起左右成对改用 T18-08（.glyph-switch-left / .glyph-switch-right，13 盒）：
          单枚左箭头才用 .glyph-back；成对场合不要缩它 —— 线宽按 19 盒反算，缩盒会变细（见该件注释）。
      close → .glyph-close · chevronRight → .glyph-chevron · chevronDown → .glyph-chevron-down
      caretDown → .glyph-caret-down（实心三角，与 chevron 不同件）· swap → .glyph-swap
      pick → .glyph-pick（照母本三横条，与 Flutter 的点线形状不同，见该件注释）
+     more → .glyph-more（v1.20 本仓自建；Flutter 侧暂无对应 kind，三枚实心点）
      home / search → .bn-ico.home / .bn-ico.search（在 T17-13 底栏族里，不重复造）
      mapPin / nearbyPin → .nb-pin · mapFind → .station-picker-map-glyph
      navArrow → .sd-nav-glyph · destFlag → .dest-glyph · check → .check-glyph
@@ -2072,6 +2189,13 @@ button::after{display:none;width:0;height:0;border:0}
 .glyph-switch-right{width:13px;height:13px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.69' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.69' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E")}
+
+/* T18-09 更多三点（v1.20 · 本仓自建；20 盒 · 三个实心点 · 每点约 2px · 墨迹≈12×2）
+   为什么自建：⋯ 是字符，基线随字体与像素密度漂。本件用三个实心圆，20 盒下点径恒 2px。
+   用在顶栏圆钮、正文裸三点、底栏「更多」格；正文不要再套 42 圆钮。 */
+.glyph-more{width:20px;height:20px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E")}
 
 /* ============================================================================
    T19 票务指南弹层（v1.6 · origin=母本 2026-10-31/11-01 新增：components/intercity-guide + index 入口件）

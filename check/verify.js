@@ -763,7 +763,8 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     ['T18-04', 'glyph-chevron-down', 'width:14px;height:14px', "stroke-width='3.43'"],
     ['T18-05', 'glyph-caret-down', 'width:7px;height:7px'],
     ['T18-06', 'glyph-swap', 'width:24px;height:24px'],
-    ['T18-07', 'glyph-pick', 'width:13px;height:10px']
+    ['T18-07', 'glyph-pick', 'width:13px;height:10px'],
+    ['T18-09', 'glyph-more', 'width:20px;height:20px']
   ];
   want.forEach(([id, cls, size, strokeNeed]) => {
     const blk = blockOf(cls);
@@ -860,6 +861,119 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
   const badRows = galleryText.split('\n').filter(l => l.includes('set-row is-danger') && l.includes('glyph-chevron'));
   row('T23-02', '就地动作行样片不带箭头（口径③）', '0 处', badRows.length ? badRows.length + ' 行带箭头' : '0 处',
     badRows.length ? '不通过' : '通过', '箭头承诺"还有内容"，确认框不是内容');
+})();
+
+/* ========== 4c-6) T24 菜单（v1.20 · 自建：查「件在 + 值合体系 + 锚点/动效不回退 + 样片」） ========== */
+(function menuFamily() {
+  const n = stripComments(componentsText).replace(/\s+/g, ' ');
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const ruleOf = (sel) => {
+    /* 必须从规则起点匹配：`ruleOf('.menu')` 不能抓到 `.menu-layer.is-hidden .menu{…}` 的尾巴 */
+    const m = n.match(new RegExp('(?:^|})\\s*' + esc(sel) + '\\s*(?:,[^{]+)?\\{([^}]*)\\}'));
+    return m ? m[1] : '';
+  };
+  const keyframesOf = (name) => {
+    const i = n.indexOf('@keyframes ' + name);
+    if (i < 0) return '';
+    let depth = 0, start = n.indexOf('{', i);
+    for (let j = start; j < n.length; j++) {
+      if (n[j] === '{') depth++;
+      else if (n[j] === '}') { depth--; if (!depth) return n.slice(start + 1, j); }
+    }
+    return '';
+  };
+  const has = (s, ...needles) => needles.every(x => s.includes(x));
+
+  const layer = ruleOf('.menu-layer');
+  row('T24-01', '壳与点击层（fixed / inset 0 / topbar+1 / 圆角 / 投影 / 内距 6）',
+    'fixed / 0 / calc / radius / shadow / 6px',
+    (has(layer, 'position:fixed') ? 'fixed' : '非fixed') + ' / ' +
+    (layer.includes('inset:0') ? '0' : '缺') + ' / ' +
+    (layer.includes('z-index:calc(var(--z-topbar) + 1)') ? 'calc' : '缺') + ' / ' +
+    (ruleOf('.menu').includes('border-radius:var(--radius-menu)') ? 'radius' : '缺') + ' / ' +
+    (ruleOf('.menu').includes('box-shadow:var(--shadow-menu)') ? 'shadow' : '缺') + ' / ' +
+    (ruleOf('.menu').includes('padding:6px') ? '6px' : '缺'),
+    has(layer, 'position:fixed', 'inset:0', 'z-index:calc(var(--z-topbar) + 1)') &&
+    has(ruleOf('.menu'), 'border-radius:var(--radius-menu)', 'box-shadow:var(--shadow-menu)', 'padding:6px') ? '通过' : '不通过',
+    '菜单的层级必须高于顶栏；壳值全部走令牌');
+
+  const item = ruleOf('.menu-item');
+  const checked = ruleOf('.menu-item.is-checked');
+  const danger = ruleOf('.menu-item.is-danger');
+  const disabled = ruleOf('.menu-item.is-disabled');
+  row('T24-02', '菜单行（44 / 15·600 / radius 14 / 勾槽 20 / 危险 / 禁用）',
+    '44 / 15 / 600 / 14 / 20',
+    (item.includes('min-height:44px') ? '44' : '缺') + ' / ' +
+    (item.includes('font-size:var(--fs-body-15)') ? '15' : '缺') + ' / ' +
+    (item.includes('font-weight:600') ? '600' : '缺') + ' / ' +
+    (item.includes('border-radius:var(--radius-ctrl)') ? '14' : '缺') + ' / ' +
+    (ruleOf('.menu-check').includes('width:20px') ? '20' : '缺'),
+    has(item, 'min-height:44px', 'font-size:var(--fs-body-15)', 'font-weight:600', 'border-radius:var(--radius-ctrl)') &&
+    has(ruleOf('.menu-check'), 'width:20px', 'flex:0 0 20px') &&
+    checked.includes('color:var(--brand-ink)') && danger.includes('color:var(--danger)') &&
+    disabled.includes('opacity:.4') ? '通过' : '不通过',
+    '行几何与状态色只从既有体系取；勾槽常驻防横跳');
+
+  const group = ruleOf('.menu-group-label');
+  const sep = ruleOf('.menu-sep');
+  row('T24-03', '分组标题 / 分隔线（12·650 / --border-weak）',
+    '12 / 650 / --border-weak',
+    (group.includes('font-size:var(--fs-small-12)') ? '12' : '缺') + ' / ' +
+    (group.includes('font-weight:650') ? '650' : '缺') + ' / ' +
+    (sep.includes('background:var(--border-weak)') ? '--border-weak' : '缺'),
+    has(group, 'font-size:var(--fs-small-12)', 'font-weight:650') &&
+    sep.includes('background:var(--border-weak)') ? '通过' : '不通过',
+    '只分隔动作组，不给每一行画边框');
+
+  const iconOpen = ruleOf('.icon-btn.menu-trigger.is-open');
+  const bnavOpen = ruleOf('.bnav .cell.menu-trigger.is-open');
+  row('T24-04', '触发器打开态（圆钮 brand-tint / 底栏中性 press）',
+    'brand-tint / --press',
+    (iconOpen.includes('background:var(--brand-tint)') ? 'brand-tint' : '缺') + ' / ' +
+    (bnavOpen.includes('background:var(--press)') ? '--press' : '缺'),
+    iconOpen.includes('background:var(--brand-tint)') && bnavOpen.includes('background:var(--press)') ? '通过' : '不通过',
+    '底栏品牌字已给当前 tab；打开态不能再蓝第二次');
+
+  const dots = ruleOf('.menu-dots');
+  const dotsOpen = ruleOf('.menu-dots.menu-trigger.is-open');
+  const inGallery = has(galleryText, 'menu-dots', 'menu-text-trigger', 'glyph-more', 'menu-item', 'menu-sep');
+  row('T24-05', '正文裸三点（44 热区 / 无圆底 / 打开转 brand / T18-09 样片）',
+    '44 / transparent / brand / 有',
+    (dots.includes('min-width:44px') && dots.includes('min-height:44px') ? '44' : '缺') + ' / ' +
+    (dots.includes('background:transparent') ? 'transparent' : '缺') + ' / ' +
+    (dotsOpen.includes('color:var(--brand-ink)') ? 'brand' : '缺') + ' / ' +
+    (inGallery ? '有' : '缺'),
+    has(dots, 'min-width:44px', 'min-height:44px', 'background:transparent') &&
+    dotsOpen.includes('color:var(--brand-ink)') && inGallery ? '通过' : '不通过',
+    '正文不再套 42 圆钮；裸三点必须保留 44 热区');
+
+  const textTrig = ruleOf('.menu-text-trigger');
+  row('T24-06', '正文文字触发器（14·650 / brand / 无底 / T18-05 样片）',
+    '14 / 650 / brand / none',
+    (textTrig.includes('font-size:var(--fs-body-14)') ? '14' : '缺') + ' / ' +
+    (textTrig.includes('font-weight:650') ? '650' : '缺') + ' / ' +
+    (textTrig.includes('color:var(--brand-ink)') ? 'brand' : '缺') + ' / ' +
+    (textTrig.includes('background:none') ? 'none' : '缺'),
+    has(textTrig, 'font-size:var(--fs-body-14)', 'font-weight:650', 'color:var(--brand-ink)', 'background:none') &&
+    galleryText.includes('menu-text-trigger') && galleryText.includes('glyph-caret-down') ? '通过' : '不通过',
+    '资产暂无筛选/排序图标；文字 + T18-05 替代，不临时画图标');
+
+  const inSoft = keyframesOf('menu-in-soft');
+  const out = keyframesOf('menu-out');
+  const fade = keyframesOf('menu-fade-out');
+  const closeRule = ruleOf('.menu-layer.is-closing .menu');
+  row('T24-07', '动效（只缩不位移 / 关闭一段连续 + 透明度延后 / 令牌在位）',
+    '200 / 180 / 1.012 / .92 / 35%',
+    (inSoft.includes('58%') && inSoft.includes('scale(1.012)') ? '1.012' : '缺') + ' / ' +
+    (out.includes('scale(.92)') ? '.92' : '缺') + ' / ' +
+    (fade.includes('35%') ? '35%' : '缺') + ' / ' +
+    (closeRule.includes('var(--dur-menu-out)') && closeRule.includes('var(--ease-menu-close)') ? 'vars' : '缺'),
+    has(inSoft, '58%', 'scale(1.012)') && !inSoft.includes('translateY') &&
+    out.includes('scale(.92)') && !out.includes('opacity') &&
+    has(fade, '35%', 'opacity:1', 'opacity:0') &&
+    has(closeRule, 'menu-fade-out', 'var(--dur-menu-out)', 'var(--ease-menu-close)') &&
+    has(tokensText, '--radius-menu: 20px', '--shadow-menu:', '--dur-menu-in: 200ms', '--dur-menu-out: 180ms', '--ease-menu-close:') ? '通过' : '不通过',
+    '缩放拆两段会在接缝顿挫；位移会让锚点那侧的边也动');
 })();
 
 /* ========== 4c-4) T10-01 壳别名（.sheet-* ≡ .station-picker-*） ========== */

@@ -71,6 +71,10 @@ button{cursor:pointer;pointer-events:auto}
 .g-index a{display:inline-block;font-family:Consolas,monospace;font-size:11px;color:var(--brand);text-decoration:none;padding:2px 6px;border-radius:6px}
 .g-index a:hover{background:var(--brand-tint);color:var(--brand)}
 .g-spec:target{outline:2px solid var(--brand);outline-offset:2px;border-radius:12px}
+/* T24 菜单样片：只在展示层给一个定位舞台；.menu 本身仍用资产值 */
+.g-menu-stage{position:relative;height:370px;border-radius:16px;background:var(--bg);border:1px solid var(--border-weak);overflow:hidden}
+.g-bn-demo .bnav{position:relative;left:0;transform:none;max-width:100%;border-radius:14px;overflow:hidden}
+.g-bn-more{display:flex;align-items:center;justify-content:center;width:24px;height:24px}
 </style>
 </head>
 <body class="app">
@@ -1037,6 +1041,68 @@ button{cursor:pointer;pointer-events:auto}
           <div class="set-row"><div class="set-main"><div class="set-title">注册于</div><div class="set-sub">2024-03-18</div></div></div>
         </div>
         <p class="g-hint">按口径①：这类信息**不放在设置页里**，单开一页。整页没有箭头、没有按压、没有控件 —— 一页之内自洽。</p>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= G16/T24 菜单 ================= -->
+<section class="g-sec" id="g-t24">
+  <h2><span class="g-secid">T24</span> 菜单（自建 · 由按钮打开）</h2>
+  <p class="g-note">短动作浮层：由现有按钮打开，只放当前上下文的 3~7 个动作。壳 <code>.menu-layer + .menu</code>，行 <code>.menu-item</code>；危险动作转 T21，不进菜单直接执行。正文入口有两种皮：通用「更多」用裸三点（T18-09），筛选 / 排序用品牌文字 + T18-05 —— <strong>资产目前没有筛选、排序图标，不临时画</strong>。</p>
+  <div class="g-grid">
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-01 / T24-02 / T24-03</span><span class="g-cls">.menu-layer .menu .menu-item .menu-main .menu-text .menu-desc .menu-meta .menu-check .is-checked .is-danger .is-disabled .has-desc .menu-group-label .menu-sep</span><span class="g-src">自建：设计稿-菜单.html</span></figcaption>
+      <div class="g-stage pad0">
+        <div class="g-menu-stage">
+          <div class="summary" style="position:absolute;left:14px;right:14px;top:14px;padding:14px">
+            <div class="summary-line" style="text-align:left;font-size:13px">竹料 → 广州南站</div>
+            <div class="summary-line" style="text-align:left;font-size:11px;font-weight:500;margin-top:4px">19:21 – 20:35 · 换乘 2 次 · 28 元</div>
+          </div>
+          <div class="menu-layer" style="position:absolute;inset:0;z-index:auto;pointer-events:none">
+          <div class="menu" role="menu" aria-label="示例菜单" style="--menu-top:14px;--menu-right:14px;--menu-w:260px;--menu-origin:top right">
+            <div class="menu-group-label">外观</div>
+            <button class="menu-item is-checked" role="menuitemradio" aria-checked="true"><span class="menu-text">跟随系统</span><span class="menu-check"><i class="check-glyph"></i></span></button>
+            <button class="menu-item" role="menuitemradio" aria-checked="false"><span class="menu-text">浅色</span><span class="menu-check"></span></button>
+            <button class="menu-item" role="menuitemradio" aria-checked="false"><span class="menu-text">深色</span><span class="menu-check"></span></button>
+            <div class="menu-sep"></div>
+            <button class="menu-item has-desc" role="menuitem"><span class="menu-main"><span class="menu-text">在时刻表中查看</span><span class="menu-desc">打开城际时刻表，定位到最近一班</span></span></button>
+            <button class="menu-item is-danger" role="menuitem">清空已存路线</button>
+            <button class="menu-item is-disabled" role="menuitem" aria-disabled="true"><span class="menu-text">时刻表</span><span class="menu-meta">暂无</span></button>
+          </div>
+          </div>
+        </div>
+      </div>
+      <p class="g-hint">壳 20 / 内距 6 / 行 44·15·600 / radius 14；勾选槽 20 常驻，危险行只换字色（按压换 <code>--error-bg</code>），禁用 <code>.4</code> + 行尾值。菜单只发起动作，清空这类要点下去转 T21。</p>
+    </figure>
+
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-04 / T24-05 / T24-06</span><span class="g-cls">.icon-btn.menu-trigger.is-open .menu-dots .is-edge .menu-text-trigger .glyph-more .glyph-caret-down .bnav .cell.menu-trigger.is-open</span><span class="g-src">自建：顶栏圆钮 / 正文裸三点 / 正文文字 + T18-05 / 底栏更多</span></figcaption>
+      <div class="g-stage" style="display:grid;gap:16px">
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+          <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="menu-dots" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="menu-dots menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="menu-text-trigger">筛选<i class="glyph glyph-caret-down"></i></button>
+          <button class="menu-text-trigger">排序<i class="glyph glyph-caret-down"></i></button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--card)">
+          <div style="flex:1;min-width:0"><div class="station" style="margin-bottom:4px">广州南站</div><div class="meta">高铁 · 城际 · 地铁 2 / 7 / 22 号线</div></div>
+          <button class="menu-dots is-edge" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+        </div>
+        <div class="g-bn-demo">
+          <nav class="bnav" aria-label="底部导航">
+            <button class="cell"><span class="bn-ico home"></span><span>查询</span></button>
+            <button class="cell on"><span class="bn-ico search"></span><span>结果</span></button>
+            <button class="cell menu-trigger is-open"><span class="g-bn-more"><i class="glyph glyph-more"></i></span><span>更多</span></button>
+          </nav>
+        </div>
+        <p class="g-hint">顶栏 42 圆钮 / 正文裸三点（无圆底、无边框，视觉 20 / 热区 44；卡片右缘加 <code>.is-edge</code>）/ 正文品牌文字 + T18-05 / 底栏更多格用中性 <code>--press</code> + 深字。筛选、排序图标不在资产里，不要临时画。</p>
+      </div>
+    </figure>
+
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-07</span><span class="g-cls">menu-in-soft · menu-out · menu-fade-out · --dur-menu-in / --dur-menu-out / --ease-menu-close</span><span class="g-src">自建：锚点固定；只缩放、不位移</span></figcaption>
+      <div class="g-stage">
+        <p class="g-hint" style="margin:0">打开 200ms：58% 处 <code>scale 1.012</code> 后落回；只做 scale，锚点角由 <code>--menu-origin</code> 钉死，只有离锚点最远的两条边在动。关闭 180ms：scale 从 1 连续收到 .92，透明度前 35% 保持 1、之后淡出 —— 缩放不拆两段，避免接缝顿挫。上方 T24-01 菜单在页面加载时会播一次；刷新可重看。</p>
       </div>
     </figure>
   </div>

@@ -217,22 +217,29 @@ body {
   --radius-ctrl: 14px;
   --radius-inner: 12px;
   --radius-chip: 10px;
+  /* T24 菜单（v1.20 自建）：20 是带 1px 描边的浮起块档，行 14 = 20 − 6 同心 */
+  --radius-menu: 20px;
 
   /* 阴影（浅色口径；深色模式投影天然被底吞掉，母本不另设） */
   --shadow-card: 0 10px 28px rgba(35,47,78,.08);      /* .panel,.route-card,.summary,.segment */
   --shadow-pop: 0 4px 12px rgba(35,47,78,.06);        /* .back / .station-picker-close */
   --shadow-topbar: 0 4px 14px rgba(35,47,78,.05);     /* .ios-fixed-topbar */
   --shadow-sheet: 0 -12px 36px rgba(23,27,40,.16);    /* .station-picker-panel */
+  /* T24 菜单（v1.20 自建）：主影取 snp-panel 同档，补一层近距让壳边更实 */
+  --shadow-menu: 0 10px 30px rgba(23,27,40,.16),0 2px 8px rgba(23,27,40,.06);
 
   /* 动效档（C 类参数与进出场时长的归纳） */
   --ease-press: cubic-bezier(.33,.33,.67,1);   /* .press 两向共用曲线 */
   --ease-sheet: cubic-bezier(0.32,0.72,0,1);   /* iOS sheet 标准曲线（与母本逐字） */
+  --ease-menu-close: cubic-bezier(.4,0,.2,1);  /* T24 关闭缩放：单段连续，不受透明度分段影响 */
   --dur-press: .25s;                           /* 按压下沉/浮起（两向同值） */
   --dur-fade: 180ms;                           /* 局部展开淡入（母本 160~180ms 区间的主体档） */
   --dur-screen: 220ms;                         /* 全屏切屏 */
   --dur-mask: 200ms;                           /* 遮罩淡入/淡出 */
   --dur-sheet-in: 380ms;                       /* 底部弹层滑入（含回弹） */
   --dur-sheet-out: 300ms;                      /* 底部弹层滑出（无回弹） */
+  --dur-menu-in: 200ms;                        /* T24 打开：58% 处 scale 1.012 后落回 */
+  --dur-menu-out: 180ms;                       /* T24 回收：scale 连续 1→.92，透明度延后 35% */
 
   /* 布局 */
   --page-max: 780px;                           /* .app 内容最大宽 */
