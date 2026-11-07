@@ -155,7 +155,7 @@ function cmpContains(id, item, file, needle, rtgoNeedle) {
   row(id, item + ' · 母本含「' + (needle.length > 40 ? needle.slice(0, 40) + '…' : needle) + '」/ 资产含「' + (rNeedle.length > 40 ? rNeedle.slice(0, 40) + '…' : rNeedle) + '」', file, g ? '存在' : '缺失', verdict, m ? '' : 'needle 在母本中不存在（检查 needle 本身）');
   return verdict === '通过';
 }
-/* M0 裁决移除断言：母本有、资产必须没有（如 O-02 sticky-topbar，定稿"效果不佳，移除"） */
+/* M0 裁决移除断言：母本有、资产必须没有（如 O-02 sticky-topbar，审阅判定"效果不佳，移除"） */
 function cmpRemoved(id, item, file, needle) {
   const hay = t => stripComments(t).replace(/\s+/g, ' ');
   const m = hay(masterText[file]).includes(needle), g = hay(rtgoText).includes(needle);
@@ -393,7 +393,7 @@ for (const [id, item, file, sel, prop, occ, rtgoSel] of A) if (!cmp(id, item, fi
    母本顶栏只有「返回 + 标题组」两个子项，所以 `:last-child{flex:1 1 auto}` 是对的。
    宿主加第三个子项（右侧动作钮）时，动作钮会变成被拉伸的那个 —— 这是 2026-11-02
    外部测试报告里 P2 的成因。修法是新增 `.topbar-main` / `.topbar-actions` 两个显式类（只加不改）。
-   这里**不钉 flex 的值**（那是复述实现常量），只钉那条真正会翻车的顺序不变量：
+   这里**不钉 flex 的值**（那是复述实现常量），只钉那条会随书写顺序失效的不变量：
    两条规则的特异性与 `:last-child` 同为 (0,2,0)，靠书写顺序取胜，谁挪到前面谁失效。 */
 (function topbarTripleGuard() {
   const src = stripComments(componentsText);
@@ -567,7 +567,7 @@ if (HAVE_HOST) (function t17Audit() {
 })();
 
 /* ========== 4a-quater) T21 / T22（v1.14）==========
-   母本实现用的是页面私有的 .saved-* / .confirm-* 名，资产侧已改名通用化（用户 2026-11-07 拍板）。
+   母本实现用的是页面私有的 .saved-* / .confirm-* 名，资产侧已改名通用化（2026-11-07 定稿）。
    所以这里一律用 cmp 的第 4 参 rtgoSel 做「跨名对账」：值必须一致，名字可以不同。
    ⚠ 这几族是**静态层**（件已定稿、不会随产品口径改），所以写死断言并做反向注入。 */
 (function t21t22() {

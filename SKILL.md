@@ -30,7 +30,7 @@ description: 用 RTGo_slate 设计系统构建或修改移动端 Web / 小程序
 4. **接线**——按压档按下面的判据选；可点元素必须挂对档位；深色模式**零分支**（一切颜色走令牌）。
 5. **自检**——`gallery.html` 里对照一遍你写的东西；深色/浅色各看一次。
 
-## 红线（每条都是踩过的坑，别重犯）
+## 红线（下列约束来自实机复现的问题）
 
 - `.chip` 的 `display:inline-block !important` **连内联 style 都压**——给它挂 flex 或内联布局无效。
 - 空态类名用 `is-empty`，**不要用 `empty`**——全局 `.empty` 带 30px padding，会按类名命中。

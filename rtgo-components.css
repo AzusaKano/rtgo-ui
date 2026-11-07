@@ -179,7 +179,7 @@ button::after{display:none;width:0;height:0;border:0}
 /* ===== T06-12 独立按钮原语（v1.3 资产归纳——另一产品 现场手搓过 .btn-primary 的词汇表缺口）=====
    与 .actions .primary 同值（48/radius14/brand 白字/15px·750），但不依赖 .actions 容器，
    供脱离容器布局的场景（弹层内、独立行、工具页）。值 1:1 镜像自母本 .actions .primary/.secondary；
-   另一产品 侧现为 46px 自有件——是否迁移由该宿主拍板（迁移=接受 48）。 */
+   另一产品 侧现为 46px 自有件——是否迁移由该宿主决定（迁移=接受 48）。 */
 .btn-primary,.btn-secondary{
   display:flex;align-items:center;justify-content:center;
   min-height:48px;padding:0 18px;box-sizing:border-box;line-height:1.2;
@@ -332,7 +332,7 @@ button::after{display:none;width:0;height:0;border:0}
 }
 
 /* ===== T03-03 旧代顶栏（M0 定稿 2026-10-31：O-01 .fixed-topbar 保留备用；
-   O-02 .sticky-topbar 经定稿「效果不佳」已移除——断言 cmpRemoved 看守）— index:376-395 ===== */
+   O-02 .sticky-topbar 经审阅判定「效果不佳」已移除——断言 cmpRemoved 看守）— index:376-395 ===== */
 .fixed-topbar{
   position:fixed;
   z-index:var(--z-topbar);
@@ -944,7 +944,7 @@ button::after{display:none;width:0;height:0;border:0}
 .line-expand-btn{flex:0 0 34px;width:34px;height:34px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:50%;background:var(--pills-bg)}
 /* 展开/收起箭头（T18-04，14 盒 / 线宽 2px / 墨迹≈9×5.5）：2026-11-07 由字符 ▾ 换成描边图形件。
    描边件在 34 圆里按盒心对中即可：path 竖向 9→15、描边圆头，墨迹带关于 y=12 对称，
-   **不需要** T18-05 那套实心三角「重心偏上 1px」的补偿。
+   不需要 T18-05 那套实心三角「重心偏上 1px」的补偿。
    ⚠ 旧版这里写的是 font-size:17px + 两条 translateY(±0.10em) —— 那是字符基线补丁，已随字符一起废弃。 */
 .line-expand-arrow{color:var(--text-strong)}
 /* 收起点整体转 180°：同一枚件翻转成朝上，形状与线宽都随之一致，不必另备一枚上箭头。
@@ -1690,7 +1690,7 @@ button::after{display:none;width:0;height:0;border:0}
    ----------------
    v1.16 起本族与 Flutter `SlateGlyphKind` 对齐（16 种），本仓出一一对应的类名：
      back / chevronLeft → .glyph-back（两 kind 共用一条 path，只出一枚）
-       ⚠ 2026-11-07 起另设 .glyph-chevron-left（T18-08）：**左右成对**的场合必须用它，
+       ⚠ 2026-11-07 起另设 .glyph-chevron-left（T18-08）：左右成对的场合必须用它，
          因为 .glyph-back 的线宽按 19 盒反算、缩到 16 盒会变细，与右向的 2px 对不齐（见该件注释）。
      close → .glyph-close · chevronRight → .glyph-chevron · chevronDown → .glyph-chevron-down
      caretDown → .glyph-caret-down（实心三角，与 chevron 不同件）· swap → .glyph-swap
@@ -1722,21 +1722,21 @@ button::after{display:none;width:0;height:0;border:0}
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E")}
 
 /* T18-04 下箭头 ▾（v1.18 定稿 · 对齐 Flutter 实机落地值）
-   **14 盒 · stroke-unit 3.43 · 实渲墨迹约 9×5.5px**。
+   14 盒 · stroke-unit 3.43 · 实渲墨迹约 9×5.5px。
    盒与线宽取 Flutter 侧同一处的落地值：station_picker_sheet.dart:238 与 controls/sheet.dart:647
    都是 SlateGlyph(chevronDown, size: 14)，strokeWidth 走默认 2.0/scale（线宽恒 2dp、不随盒缩放）。
    换算成 mask：14 盒 ⇒ scale 14/24 ⇒ 描边 2px ÷ (14/24) = 3.43 单位（写 3 会掉成 1.75px，一眼偏细）。
    v1.16 曾定 16 盒 / stroke 3，那也是 2px 屏幕线宽，但与 Flutter 实机的 14 对不上；
    2026-11-07 以母本站选器的最终版为准统一到 14。
    ⚠ 改盒必须同步改 stroke-unit（= 2×24/盒），否则屏幕线宽就不是 2px —— 见手册 T18 的 Don't。
-   描边件的墨迹带关于画布 y=12 对称，按盒心居中即可，**不需要**三角形那 1px 视觉重心补偿。 */
+   描边件的墨迹带关于画布 y=12 对称，按盒心居中即可，不需要三角形那 1px 视觉重心补偿。 */
 .glyph-chevron-down{width:14px;height:14px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.43' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.43' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
 
 /* T18-05 下拉小三角 ▾（实心，与 T18-04 不是同一件）
    7 盒 · 实心三角 17.14×16.08 单位 → 墨迹 5.0×4.7px，下缘留 7.78 单位（=2.3px）。
-   为什么单独一件：母本 `.dt-chev` 原是 **12px 文本字符 U+25BE**，实心、墨迹只有 5×4.7，
+   为什么单独一件：母本 `.dt-chev` 原是 12px 文本字符 U+25BE，实心、墨迹只有 5×4.7，
    而 chevron 是描边、墨迹 10px 高 —— 换过去会明显变大变轻，不是"同一个形状换个来源"。
    母本 2026-11-07 已把 `.dt-chev` 换成此件（实测：浏览器里字符墨迹 4×3、本件 5×5，垂直中心同在行顶 +9px）。
    7 盒 + 底部留白是为了让墨迹落在原来字符基线的位置（字符版悬在基线上方 2.3~7.0px）。 */
@@ -1756,7 +1756,7 @@ button::after{display:none;width:0;height:0;border:0}
 /* T18-07 列表三横条（「打开车站列表」/ 线路网格入口）
    13×10 盒（非方形，同 .nb-pin）· 三条 2px 实心、圆角 1 → 与母本 `.pick-icon` 的
    「13×10 / 三根 2px 条 / space-between」逐值一致。
-   ⚠ 与 Flutter 侧的 `SlateGlyphKind.pick` **形状不同**：那边画的是「圆点 + 线」的项目符号列表
+   ⚠ 与 Flutter 侧的 `SlateGlyphKind.pick` 形状不同：那边画的是「圆点 + 线」的项目符号列表
    （canvas 里三个 r=1.25 圆点在 x=6，线从 x=10 到 18）。本件照母本画，因为母本三处宿主
    （index 手动输入两块 + station-picker）用的都是三横条。两边要不要统一另议。 */
 .glyph-pick{width:13px;height:10px;
@@ -1764,12 +1764,12 @@ button::after{display:none;width:0;height:0;border:0}
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='13' height='2' rx='1'/%3E%3Crect x='0' y='4' width='13' height='2' rx='1'/%3E%3Crect x='0' y='8' width='13' height='2' rx='1'/%3E%3C/g%3E%3C/svg%3E")}
 
 /* T18-08 左向 chevron（v1.17 · 2026-11-07 真机反馈新增）
-   形状是 T18-03 的镜像（path x 15/8 与右向 9/16 关于画布中心 12 对称），**线宽也一样是 3**。
+   形状是 T18-03 的镜像（path x 15/8 与右向 9/16 关于画布中心 12 对称），线宽也一样是 3。
    为什么不直接用 T18-01（返回）：那枚的 stroke 2.53 是按 19 盒墨迹 13.1 反算的，屏幕线宽 2px；
    拿它缩到 16 盒用时，SVG 单位不变、屏幕线宽只剩 1.69px —— 与右边 16 盒的 2px 差 18%，
    一左一右摆在同一行里粗细一眼就能看出来（母本月份导航真机反馈）。
    ⚠ Flutter 侧没有独立 chevronLeft 件（back 与 chevronLeft 共用 path、线宽按屏幕像素固定 2px），
-     所以 Flutter 不需要这枚。CSS 的 mask 线宽是 SVG 单位、**不随屏幕恒定**，这就是两边分岔的原因。 */
+     所以 Flutter 不需要这枚。CSS 的 mask 线宽是 SVG 单位、不随屏幕恒定，这就是两边分岔的原因。 */
 .glyph-chevron-left{width:16px;height:16px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E")}
