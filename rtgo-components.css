@@ -502,12 +502,14 @@ button::after{display:none;width:0;height:0;border:0}
 .route-card.is-selectable{transition:transform var(--dur-press) var(--ease-press),border-color .16s ease,box-shadow .16s ease}
 .route-card.is-selected{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),var(--shadow-card)}
 
-/* ── 箭头族现状（2026-11-06 收敛）──────────────────────────────
-   现行：T18-03 `.glyph-chevron`（mask 图形，16 盒 / 2px 描边 / 墨迹 11.3px）。新页面只用它。
-   历史：下面这枚 `.action-glyph` 与散落各处的 6 枚（`.dt-chev` `.tt-chevron` `.line-expand-arrow`
+/* ── 箭头族现状（2026-11-06 收敛，2026-11-07 更新）──────────────────
+   现行：右向 T18-03 `.glyph-chevron`（16 盒 / 2px 描边 / 墨迹 11.3px）；
+        下向 T18-04 `.glyph-chevron-down`（14 盒 / 2px / 墨迹≈9×5.5）。新页面只用这两枚（加左右成对时的 T18-08）。
+   历史：下面这枚 `.action-glyph` 与散落各处的 5 枚（`.dt-chev` `.tt-chevron`
          `.stop-arrow` `.notice-chevron` `.adv-chev`）—— 它们各有宿主在用、值不改不删，
          但不再新增，也不要为新页面挑其中一枚「看着像」的。
-   为什么收敛：7 套实现里 3 套是字符（墨迹随字体漂）、3 套是 border 旋转（粗细吃设备像素比）、
+   `.line-expand-arrow` 已于 2026-11-07 归入 T18-04（字符 ▾ → 描边图形件），不再算历史件。
+   为什么收敛：原来 7 套实现里 3 套是字符（墨迹随字体漂）、3 套是 border 旋转（粗细吃设备像素比）、
    1 套是 mask；同一屏出现两种箭头时，粗细与端点形状对不上。
    ──────────────────────────────────────────────────────────── */
 /* ===== T12-01 chevron 基件 — index:583-595 ===== */
@@ -816,7 +818,9 @@ button::after{display:none;width:0;height:0;border:0}
 .dt-value .is-now{color:var(--brand)}
 .dt-sub{margin-left:6px;font-size:var(--fs-sub-13);font-weight:400;color:var(--text-3)}
 /* 历史箭头（勿新增）：字符 ▾，靠字体渲染，墨迹随字号档位漂。新页面用 T18-03。 */
-.dt-chev{margin-left:6px;font-size:var(--fs-small-12);font-weight:400;color:var(--text-3)}
+/* 下拉小三角：2026-11-07 由 12px 字符 ▾ 换成 T18-05 图形件（母本同步改）。
+   inline-block 必须带 .dt-value 前缀：.glyph 基类也给 display:block，同特异性只靠先后顺序分胜负。 */
+.dt-value .dt-chev{display:inline-block;margin-left:6px;color:var(--text-3)}
 .dt-grid.page-dt{margin-left:11px;margin-right:11px;margin-top:12px}
 
 /* ===== T07-11 第 x 程徽标 — index:1199-1204 ===== */
@@ -938,10 +942,14 @@ button::after{display:none;width:0;height:0;border:0}
 .station-line-bar{flex:0 0 auto;display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .station-line-scroll{width:100%;min-width:0;white-space:nowrap}
 .line-expand-btn{flex:0 0 34px;width:34px;height:34px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:50%;background:var(--pills-bg)}
-/* 历史箭头（勿新增）：字符箭头，站选器线路条的展开钮在用。新页面用 T18-03。 */
-.line-expand-arrow{font-size:17px;color:var(--text-strong);line-height:1}
-.station-line-bar .line-expand-arrow{transform:translateY(-0.10em)}
-.line-grid-expand-row .line-expand-arrow{transform:translateY(0.10em) rotate(180deg)}
+/* 展开/收起箭头（T18-04，14 盒 / 线宽 2px / 墨迹≈9×5.5）：2026-11-07 由字符 ▾ 换成描边图形件。
+   描边件在 34 圆里按盒心对中即可：path 竖向 9→15、描边圆头，墨迹带关于 y=12 对称，
+   **不需要** T18-05 那套实心三角「重心偏上 1px」的补偿。
+   ⚠ 旧版这里写的是 font-size:17px + 两条 translateY(±0.10em) —— 那是字符基线补丁，已随字符一起废弃。 */
+.line-expand-arrow{color:var(--text-strong)}
+/* 收起点整体转 180°：同一枚件翻转成朝上，形状与线宽都随之一致，不必另备一枚上箭头。
+   转的是图形件本身（默认以盒心为轴），不要给外壳 .line-expand-btn 转 —— 那是圆形按压底。 */
+.line-grid-expand-row .line-expand-arrow{transform:rotate(180deg)}
 .station-line-list{display:inline-flex;width:max-content;min-width:max-content;gap:7px;padding:3px;white-space:nowrap}
 .station-line-scroll-wrap{position:relative;flex:1 1 0;min-width:0}
 .sheet-panel .hscroll-fade,.station-picker-panel .hscroll-fade{background:linear-gradient(to left,var(--sheet),transparent)}
@@ -1648,6 +1656,21 @@ button::after{display:none;width:0;height:0;border:0}
 /* 行尾箭头：只给色，几何交给 .glyph-chevron */
 .set-chev{color:var(--text-3)}
 
+/* ===== T23 设置页族（v1.15 · 只补语义缺口，行几何一律回 T17-19）
+   三条口径（手册同步）：
+   ① 一页自洽：整页可点就整页可点；只读数据另开一页，不混进设置页；
+   ② 箭头＝有下一层（内页或选择弹层），不是「能点」；
+   ③ 点了只弹确认的动作（清缓存 / 退出登录）不放箭头 —— 箭头会承诺「还有内容」。
+   右侧因此只有两种合法件：箭头（有下一层）／控件（开关、勾）。当前值下沉副标。 */
+.set-group-title{margin:14px 0 8px;padding:0 2px;font-size:var(--fs-small-12);font-weight:650;
+  line-height:1.4;color:var(--text-2)}
+/* T17-19c 危险动作行：行几何不动，只把标题与副标转 --danger；右侧按口径③不放箭头。
+   「清除缓存」这类：占用写在副标里，标题保持动作陈述。 */
+.set-row.is-danger .set-title,.set-row.is-danger .set-sub{color:var(--danger)}
+/* T23-03 选择页·多选行：整行临时选中给 tint（T12-06 同源），勾走 .nb-row-chk。
+   单选行不加 tint —— 立即生效的「当前值」只打勾，铺底色会跟多选混为一谈。 */
+.set-row.is-picked{background:var(--brand-tint)}
+
 
 /* ===== T17 按压基态（这批件的自带 transition 已随件声明：cat-chip/cat-expand/.bnav .cell；
    其余可挂压件（stop-row/toc-row/adv-toggle/state-btn 等）挂压时走 .press 档——
@@ -1663,13 +1686,27 @@ button::after{display:none;width:0;height:0;border:0}
    两个宿主逐像素同源。
    线宽：Flutter 按屏幕像素给 2px，而 mask 的 SVG 会随盒子缩放 —— 故换算成 viewBox 单位
    （= 2 × 24 / 盒尺寸），每个件写死，不依赖运行时变量。
-   墨迹尺寸 = 路径跨度 × 盒/24 + 线宽，三个件都对齐了母本对应字符的实测墨迹。
+   墨迹尺寸 = 路径跨度 × 盒/24 + 线宽，早期三件都对齐了母本对应字符的实测墨迹。
+   ----------------
+   v1.16 起本族与 Flutter `SlateGlyphKind` 对齐（16 种），本仓出一一对应的类名：
+     back / chevronLeft → .glyph-back（两 kind 共用一条 path，只出一枚）
+       ⚠ 2026-11-07 起另设 .glyph-chevron-left（T18-08）：**左右成对**的场合必须用它，
+         因为 .glyph-back 的线宽按 19 盒反算、缩到 16 盒会变细，与右向的 2px 对不齐（见该件注释）。
+     close → .glyph-close · chevronRight → .glyph-chevron · chevronDown → .glyph-chevron-down
+     caretDown → .glyph-caret-down（实心三角，与 chevron 不同件）· swap → .glyph-swap
+     pick → .glyph-pick（照母本三横条，与 Flutter 的点线形状不同，见该件注释）
+     home / search → .bn-ico.home / .bn-ico.search（在 T17-13 底栏族里，不重复造）
+     mapPin / nearbyPin → .nb-pin · mapFind → .station-picker-map-glyph
+     navArrow → .sd-nav-glyph · destFlag → .dest-glyph · check → .check-glyph
+   另有 3 枚本仓独有、Flutter 侧没有：车站设施（直梯 / 闸机 / 洗手间，见 T17 车站信息族）。
    ============================================================================ */
 .glyph{display:block;flex:0 0 auto;background-color:currentColor;
   -webkit-mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;
   mask-position:center;mask-size:contain;mask-repeat:no-repeat}
 
-/* T18-01 返回 ‹：19 盒 · path 竖向 14/24 · 描边 2px → 墨迹 13.1px（母本 26 号 ‹ 实测 13.0） */
+/* T18-01 返回 ‹：19 盒 · path 竖向 14/24 · 描边 2px → 墨迹 13.1px（母本 26 号 ‹ 实测 13.0）
+   兼「左箭头」：Flutter 侧 `back` 与 `chevronLeft` 共用同一条 path（glyphs.dart 里两个 case 落同一分支），
+   本仓照此只出一枚。语义与「返回」不同的地方（上一页 / 上一项 / 日期后退）也用它，不要另造一个形状相同的件。 */
 .glyph-back{width:19px;height:19px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.53' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5 8 12l7 7'/%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.53' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5 8 12l7 7'/%3E%3C/svg%3E")}
@@ -1683,6 +1720,59 @@ button::after{display:none;width:0;height:0;border:0}
 .glyph-chevron{width:16px;height:16px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E")}
+
+/* T18-04 下箭头 ▾（v1.18 定稿 · 对齐 Flutter 实机落地值）
+   **14 盒 · stroke-unit 3.43 · 实渲墨迹约 9×5.5px**。
+   盒与线宽取 Flutter 侧同一处的落地值：station_picker_sheet.dart:238 与 controls/sheet.dart:647
+   都是 SlateGlyph(chevronDown, size: 14)，strokeWidth 走默认 2.0/scale（线宽恒 2dp、不随盒缩放）。
+   换算成 mask：14 盒 ⇒ scale 14/24 ⇒ 描边 2px ÷ (14/24) = 3.43 单位（写 3 会掉成 1.75px，一眼偏细）。
+   v1.16 曾定 16 盒 / stroke 3，那也是 2px 屏幕线宽，但与 Flutter 实机的 14 对不上；
+   2026-11-07 以母本站选器的最终版为准统一到 14。
+   ⚠ 改盒必须同步改 stroke-unit（= 2×24/盒），否则屏幕线宽就不是 2px —— 见手册 T18 的 Don't。
+   描边件的墨迹带关于画布 y=12 对称，按盒心居中即可，**不需要**三角形那 1px 视觉重心补偿。 */
+.glyph-chevron-down{width:14px;height:14px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.43' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.43' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+
+/* T18-05 下拉小三角 ▾（实心，与 T18-04 不是同一件）
+   7 盒 · 实心三角 17.14×16.08 单位 → 墨迹 5.0×4.7px，下缘留 7.78 单位（=2.3px）。
+   为什么单独一件：母本 `.dt-chev` 原是 **12px 文本字符 U+25BE**，实心、墨迹只有 5×4.7，
+   而 chevron 是描边、墨迹 10px 高 —— 换过去会明显变大变轻，不是"同一个形状换个来源"。
+   母本 2026-11-07 已把 `.dt-chev` 换成此件（实测：浏览器里字符墨迹 4×3、本件 5×5，垂直中心同在行顶 +9px）。
+   7 盒 + 底部留白是为了让墨迹落在原来字符基线的位置（字符版悬在基线上方 2.3~7.0px）。 */
+.glyph-caret-down{width:7px;height:7px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3.43 0.14 20.57 0.14 12 16.22Z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3.43 0.14 20.57 0.14 12 16.22Z'/%3E%3C/svg%3E")}
+
+/* T18-06 交换 ⇄（对齐 Flutter SlateGlyphKind.swap）
+   24 盒 · 路径墨迹 13.2×13.2 单位 + 1.6 描边 → 实渲 14.8×14.8px，与母本 16px 字符 ⇄ 的实机墨迹一致；
+   墨迹中心正好落在盒心 (12,12)，放进 34 圆（.swap-face）不会偏下。
+   为什么不自绘"两根弯箭头"：Flutter 侧量过 —— 16px 的 ⇄ 各家字体墨迹差很多
+   （母本实机 14.8×14.8，Flutter 直接落字只剩 10×8.6 且基线偏下 2.2dp）。这四条直线是全平台唯一稳定的画法。 */
+.glyph-swap{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.4 8.7H18.6M14.9 5.4 18.6 8.7 14.9 12M18.6 15.3H5.4M9.1 12 5.4 15.3 9.1 18.6'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.4 8.7H18.6M14.9 5.4 18.6 8.7 14.9 12M18.6 15.3H5.4M9.1 12 5.4 15.3 9.1 18.6'/%3E%3C/svg%3E")}
+
+/* T18-07 列表三横条（「打开车站列表」/ 线路网格入口）
+   13×10 盒（非方形，同 .nb-pin）· 三条 2px 实心、圆角 1 → 与母本 `.pick-icon` 的
+   「13×10 / 三根 2px 条 / space-between」逐值一致。
+   ⚠ 与 Flutter 侧的 `SlateGlyphKind.pick` **形状不同**：那边画的是「圆点 + 线」的项目符号列表
+   （canvas 里三个 r=1.25 圆点在 x=6，线从 x=10 到 18）。本件照母本画，因为母本三处宿主
+   （index 手动输入两块 + station-picker）用的都是三横条。两边要不要统一另议。 */
+.glyph-pick{width:13px;height:10px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='13' height='2' rx='1'/%3E%3Crect x='0' y='4' width='13' height='2' rx='1'/%3E%3Crect x='0' y='8' width='13' height='2' rx='1'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='13' height='2' rx='1'/%3E%3Crect x='0' y='4' width='13' height='2' rx='1'/%3E%3Crect x='0' y='8' width='13' height='2' rx='1'/%3E%3C/g%3E%3C/svg%3E")}
+
+/* T18-08 左向 chevron（v1.17 · 2026-11-07 真机反馈新增）
+   形状是 T18-03 的镜像（path x 15/8 与右向 9/16 关于画布中心 12 对称），**线宽也一样是 3**。
+   为什么不直接用 T18-01（返回）：那枚的 stroke 2.53 是按 19 盒墨迹 13.1 反算的，屏幕线宽 2px；
+   拿它缩到 16 盒用时，SVG 单位不变、屏幕线宽只剩 1.69px —— 与右边 16 盒的 2px 差 18%，
+   一左一右摆在同一行里粗细一眼就能看出来（母本月份导航真机反馈）。
+   ⚠ Flutter 侧没有独立 chevronLeft 件（back 与 chevronLeft 共用 path、线宽按屏幕像素固定 2px），
+     所以 Flutter 不需要这枚。CSS 的 mask 线宽是 SVG 单位、**不随屏幕恒定**，这就是两边分岔的原因。 */
+.glyph-chevron-left{width:16px;height:16px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E")}
 
 /* ============================================================================
    T19 票务指南弹层（v1.6 · origin=母本 2026-10-31/11-01 新增：components/intercity-guide + index 入口件）
@@ -1789,7 +1879,11 @@ button::after{display:none;width:0;height:0;border:0}
 .select-count{flex:1;text-align:center;font-size:var(--fs-small-12);color:var(--text-2)}
 .select-del{flex:0 0 auto;display:flex;align-items:center;min-height:40px;margin-right:-4px;padding:0 4px;
   font-size:var(--fs-body-14);font-weight:700;color:var(--danger)}
-.select-all:active,.select-del:active{opacity:.6}
+/* T22-02b 底栏右侧的普通行动作（如选择页的「完成」）：几何与 .select-del 同件，只换字色。
+   危险动作用 .select-del（--danger），普通动作用本件（--brand）—— 不给同一颗按钮做两套几何。 */
+.select-act{flex:0 0 auto;display:flex;align-items:center;min-height:40px;margin-right:-4px;padding:0 4px;
+  font-size:var(--fs-body-14);font-weight:700;color:var(--brand)}
+.select-all:active,.select-del:active,.select-act:active{opacity:.6}
 /* 禁用只降透明度、不换灰字（T13-07 口径）；pointer-events 保证它真的点不动，不是"看着灰" */
 .select-del.is-disabled{opacity:.5;pointer-events:none}
 /* 选中模式下页面让位：底栏 8+40+8=56，再留 40 呼吸位。宿主改底栏高时这里必须同步（见手册 Don't）。 */

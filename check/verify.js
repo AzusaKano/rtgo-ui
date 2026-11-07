@@ -746,7 +746,7 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
 
 /* ========== 4c-2) T18 自建图形件（origin=本仓：没有母本可对，查「件在 + mask + 样片」） ========== */
 /* 这一类件的真值源是本仓代码本身，所以不进母本对账；能查的是「件还在不在、尺寸还是不是那个、
-   样片有没有接上」。盒子尺寸是按墨迹反算的（19/26/16 ↔ 13.1/12.8/11.3px），改盒子等于改墨迹，
+   样片有没有接上」。盒子尺寸是按墨迹反算的（19/26/16/16/7/24/13×10），改盒子等于改墨迹，
    所以这里写死断言 —— 图形件是静态层，不会随产品设计漂。 */
 (function selfGlyphs() {
   const norm = stripComments(componentsText).replace(/\s+/g, ' ');
@@ -758,17 +758,29 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
   const want = [
     ['T18-01', 'glyph-back', 'width:19px;height:19px'],
     ['T18-02', 'glyph-close', 'width:26px;height:26px'],
-    ['T18-03', 'glyph-chevron', 'width:16px;height:16px']
+    ['T18-03', 'glyph-chevron', 'width:16px;height:16px'],
+    /* T18-04 的 14 盒与 stroke 3.43 是一组（= 2×24/14）：两值分开改就不再是 2px 屏幕线宽。 */
+    ['T18-04', 'glyph-chevron-down', 'width:14px;height:14px', "stroke-width='3.43'"],
+    ['T18-05', 'glyph-caret-down', 'width:7px;height:7px'],
+    ['T18-06', 'glyph-swap', 'width:24px;height:24px'],
+    ['T18-07', 'glyph-pick', 'width:13px;height:10px'],
+    /* T18-08 的存在理由就是「与 T18-03 线宽一致」——盒与右向件相同、区别全在方向与 stroke 3。
+       第 4 列是可选的额外语义断言：若去掉，断言无法区分它和「拿 back 缩盒凑数」的错误做法
+       （那正是它在防的事故，2026-11-07 真机反馈）。 */
+    ['T18-08', 'glyph-chevron-left', 'width:16px;height:16px', "stroke-width='3'"]
   ];
-  want.forEach(([id, cls, size]) => {
+  want.forEach(([id, cls, size, strokeNeed]) => {
     const blk = blockOf(cls);
-    const hasSize = blk.includes(size);
-    /* webkit 前缀 + 标准各一条：少一条就有浏览器画不出来 */
-    const masks = (blk.match(/mask-image:url\("data:image\/svg/g) || []).length;
+    const hasSize = blk.includes(size) && (!strokeNeed || blk.includes(strokeNeed));
+    /* 两条 mask 必须都在：带 -webkit- 前缀一条（老 WebView）、不带前缀一条（标准）。
+       ⚠ 数的时候要排除前缀那条 —— 2026-11-07 验证时发现，原来直接 match `mask-image:url`
+       会把 `-webkit-mask-image:url` 也算进去，于是「只留 webkit 一条」也能凑到 2，断言形同虚设。 */
+    const stdMasks = (blk.match(/(?:^|[^-])mask-image:url\("data:image\/svg/g) || []).length;
+    const webkitMasks = (blk.match(/-webkit-mask-image:url\("data:image\/svg/g) || []).length;
     const inGallery = galleryText.includes('.' + cls);
-    row(id, '自建图形件 .' + cls + '（尺寸 + 双前缀 mask + 样片）', size + ' / 2 条 / 有',
-      (hasSize ? size : '缺') + ' / ' + masks + ' 条 / ' + (inGallery ? '有' : '缺'),
-      hasSize && masks === 2 && inGallery ? '通过' : '不通过',
+    row(id, '自建图形件 .' + cls + '（尺寸 + 双前缀 mask + 样片）', size + ' / 各 1 条 / 有',
+      (hasSize ? size : '缺') + ' / ' + webkitMasks + ':' + stdMasks + ' / ' + (inGallery ? '有' : '缺'),
+      hasSize && webkitMasks === 1 && stdMasks === 1 && inGallery ? '通过' : '不通过',
       '自建件无母本可对，只查件本身与样片是否在位');
   });
   const hasCompare = galleryText.includes('字符版（历史）vs 图形版（现行）');
@@ -793,6 +805,47 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     (centered ? 'center' : '非 center') + ' / ' + (pad ? '14px' : '非 14') + ' / ' + (inGallery ? '有' : '缺'),
     centered && pad && inGallery ? '通过' : '不通过',
     '宿主原实现是 flex-start，行尾箭头会顶对齐 —— 这是本件存在的理由');
+})();
+
+/* ========== 4c-5) T23 设置页族（v1.15 · 自建件：无母本可对，查「件在 + 值合体系 + 样片形态」） ==========
+   自建件的四样：件号 / 样片 / 手册 / 断言。这里查后三样里的可执行部分。
+   三条口径里只有②③能被机器查（"这行有没有箭头"），①靠手册与评审。 */
+(function settingsFamily() {
+  const n = stripComments(componentsText).replace(/\s+/g, ' ');
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  /* 取值按正则找：一条规则常常是「A,B{…}」的合并写法，用 indexOf(sel+'{') 会取不到 */
+  const ruleOf = (sel) => {
+    const m = n.match(new RegExp(esc(sel) + '\\s*(?:,[^{]+)?\\{([^}]*)\\}'));
+    return m ? m[1] : '';
+  };
+  const gt = ruleOf('.set-group-title');
+  row('T23-01', '分组标题 .set-group-title（12 档 + --text-2）',
+    'font-size:var(--fs-small-12) / color:var(--text-2)',
+    (gt.includes('font-size:var(--fs-small-12)') ? '12 档' : '非 12 档') + ' / ' + (gt.includes('color:var(--text-2)') ? '--text-2' : '其它色'),
+    gt.includes('font-size:var(--fs-small-12)') && gt.includes('color:var(--text-2)') ? '通过' : '不通过',
+    '值只从既有体系取（造件规则 §3）');
+
+  const dg = ruleOf('.set-row.is-danger .set-title');
+  row('T17-19c', '危险动作行 .set-row.is-danger（标题转 --danger）', 'color:var(--danger)',
+    dg ? (dg.includes('color:var(--danger)') ? '--danger' : '其它色') : '缺规则',
+    dg.includes('color:var(--danger)') ? '通过' : '不通过', '几何不动，只换色');
+
+  /* 单选不铺底：.set-row 本身不能有 background（有就等于给单选行了底色） */
+  const sr = ruleOf('.set-row');
+  row('T23-03', '选择页单选行不铺底（.set-row 无 background）', '无 background',
+    /(^|;)background:/.test(sr) ? '有 background' : '无', /(^|;)background:/.test(sr) ? '不通过' : '通过',
+    '单选靠行尾勾表达当前值；铺 tint 是"临时选中待确认"的语义，留给多选');
+
+  /* 多选 tint 必须与 T12-06 行级选中同值（两处口径不许漂） */
+  const pk = ruleOf('.set-row.is-picked'), nb = ruleOf('.nb-row.is-picked');
+  const val = s => (s.match(/background:([^;}]+)/) || [])[1] || null;
+  row('T23-04', '多选行底色 ≡ T12-06 行级选中（同值）', val(nb), val(pk),
+    val(pk) && val(nb) && val(pk) === val(nb) ? '通过' : '不通过', '两处选中态共用同一个令牌，改一处必须改另一处');
+
+  /* 口径②③的机器可查部分：就地动作行（.is-danger）的样片里不许出现箭头 */
+  const badRows = galleryText.split('\n').filter(l => l.includes('set-row is-danger') && l.includes('glyph-chevron'));
+  row('T23-02', '就地动作行样片不带箭头（口径③）', '0 处', badRows.length ? badRows.length + ' 行带箭头' : '0 处',
+    badRows.length ? '不通过' : '通过', '箭头承诺"还有内容"，确认框不是内容');
 })();
 
 /* ========== 4c-4) T10-01 壳别名（.sheet-* ≡ .station-picker-*） ========== */
