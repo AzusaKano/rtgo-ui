@@ -1144,13 +1144,14 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">非方形盒（13×10，同 <code>.nb-pin</code>），mask 按 contain 等比缩放。三条 2px、间距 2px 与母本 <code>.pick-icon</code> 逐值一致；用一枚 mask 替掉原来的三个 <code>view</code>，是因为三个绘制盒在非整数像素比下会各自吸附、条间距不齐。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-08</span><span class="g-cls">.glyph .glyph-chevron-left（左向 chevron）</span><span class="g-src">16 盒 · 描边 2px · 与 T18-03 镜像同宽</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-08</span><span class="g-cls">.glyph .glyph-switch-left / .glyph-switch-right（选择器切换箭头对）</span><span class="g-src">13 盒 · 描边 2px · 墨迹≈5.8×9.6px · 对齐 Flutter size 13</span></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;justify-content:space-between;width:200px;color:var(--text-strong)">
-          <view class="glyph glyph-chevron-left"></view>
-          <view class="glyph glyph-chevron"></view>
+          <view class="glyph glyph-switch-left"></view>
+          <text style="font-size:16px;font-weight:700;color:var(--text)">2026年11月</text>
+          <view class="glyph glyph-switch-right"></view>
         </div>
-        <p class="g-hint">左右成对的场合用这枚配 T18-03 —— 线宽同为 2px。不要拿 19 盒的 <code>.glyph-back</code> 缩到 16 盒放左边：mask 线宽是 SVG 单位，缩盒后屏幕线宽掉到 1.69px，一左一右粗细差 18%（母本月份导航真机翻过车）。单枚出现的左箭头（顶栏返回）仍用 T18-01。</p>
+        <p class="g-hint">月份切换的左右成对件：13 盒 / stroke-unit 3.69（= 2×24/13）/ 屏幕线宽 2px，取 Flutter 侧 <code>date_time_picker_sheet.dart:411-414 / :436-439</code> 的 <code>size: 13</code>。两枚都要重画 mask —— 不要拿 16 盒的 T18-03 缩到 13 盒（线宽会掉到 1.63px）。单枚出现的左箭头（顶栏返回）仍用 T18-01，行尾通用右箭头仍用 T18-03。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18 对照</span><span class="g-cls">字符版（历史）vs 图形版（现行）</span><span class="g-src">母本已全部换用图形件，字符版只剩迁移对照价值</span></figcaption>

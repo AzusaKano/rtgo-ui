@@ -791,9 +791,10 @@ button::after{display:none;width:0;height:0;border:0}
 .route-card.is-selectable{transition:transform var(--dur-press) var(--ease-press),border-color .16s ease,box-shadow .16s ease}
 .route-card.is-selected{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),var(--shadow-card)}
 
-/* ── 箭头族现状（2026-11-06 收敛，2026-11-07 更新）──────────────────
+/* ── 箭头族现状（2026-11-06 收敛，2026-11-08 更新）──────────────────
    现行：右向 T18-03 `.glyph-chevron`（16 盒 / 2px 描边 / 墨迹 11.3px）；
-        下向 T18-04 `.glyph-chevron-down`（14 盒 / 2px / 墨迹≈9×5.5）。新页面只用这两枚（加左右成对时的 T18-08）。
+        下向 T18-04 `.glyph-chevron-down`（14 盒 / 2px / 墨迹≈9×5.5）。行尾只用这两枚；
+        日期 / 时间选择器的月份切换另用 T18-08 成对件（`.glyph-switch-left/right`，13 盒）。
    历史：下面这枚 `.action-glyph` 与散落各处的 5 枚（`.dt-chev` `.tt-chevron`
          `.stop-arrow` `.notice-chevron` `.adv-chev`）—— 它们各有宿主在用、值不改不删，
          但不再新增，也不要为新页面挑其中一枚「看着像」的。
@@ -1979,8 +1980,8 @@ button::after{display:none;width:0;height:0;border:0}
    ----------------
    v1.16 起本族与 Flutter `SlateGlyphKind` 对齐（16 种），本仓出一一对应的类名：
      back / chevronLeft → .glyph-back（两 kind 共用一条 path，只出一枚）
-       ⚠ 2026-11-07 起另设 .glyph-chevron-left（T18-08）：左右成对的场合必须用它，
-         因为 .glyph-back 的线宽按 19 盒反算、缩到 16 盒会变细，与右向的 2px 对不齐（见该件注释）。
+       ⚠ 2026-11-08 起左右成对改用 T18-08（.glyph-switch-left / .glyph-switch-right，13 盒）：
+         单枚左箭头才用 .glyph-back；成对场合不要缩它 —— 线宽按 19 盒反算，缩盒会变细（见该件注释）。
      close → .glyph-close · chevronRight → .glyph-chevron · chevronDown → .glyph-chevron-down
      caretDown → .glyph-caret-down（实心三角，与 chevron 不同件）· swap → .glyph-swap
      pick → .glyph-pick（照母本三横条，与 Flutter 的点线形状不同，见该件注释）
@@ -2052,16 +2053,25 @@ button::after{display:none;width:0;height:0;border:0}
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='13' height='2' rx='1'/%3E%3Crect x='0' y='4' width='13' height='2' rx='1'/%3E%3Crect x='0' y='8' width='13' height='2' rx='1'/%3E%3C/g%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='13' height='2' rx='1'/%3E%3Crect x='0' y='4' width='13' height='2' rx='1'/%3E%3Crect x='0' y='8' width='13' height='2' rx='1'/%3E%3C/g%3E%3C/svg%3E")}
 
-/* T18-08 左向 chevron（v1.17 · 2026-11-07 真机反馈新增）
-   形状是 T18-03 的镜像（path x 15/8 与右向 9/16 关于画布中心 12 对称），线宽也一样是 3。
-   为什么不直接用 T18-01（返回）：那枚的 stroke 2.53 是按 19 盒墨迹 13.1 反算的，屏幕线宽 2px；
-   拿它缩到 16 盒用时，SVG 单位不变、屏幕线宽只剩 1.69px —— 与右边 16 盒的 2px 差 18%，
-   一左一右摆在同一行里粗细一眼就能看出来（母本月份导航真机反馈）。
-   ⚠ Flutter 侧没有独立 chevronLeft 件（back 与 chevronLeft 共用 path、线宽按屏幕像素固定 2px），
-     所以 Flutter 不需要这枚。CSS 的 mask 线宽是 SVG 单位、不随屏幕恒定，这就是两边分岔的原因。 */
-.glyph-chevron-left{width:16px;height:16px;
-  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
-  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E")}
+/* T18-08 选择器切换箭头对（v1.19 改件 · 2026-11-08）
+   .glyph-switch-left / .glyph-switch-right：13 盒 · stroke-unit 3.69 · 屏幕线宽 2px · 墨迹≈5.8×9.6px。
+   只成对使用（日期 / 时间选择器的月份切换）；单枚左箭头（顶栏返回）仍用 T18-01。
+   几何取 Flutter 侧同一处的落地值：date_time_picker_sheet.dart:411-414 与 :436-439
+   都是 SlateGlyph(chevronLeft / chevronRight, size: 13)，strokeWidth 走默认 2.0/scale（恒 2dp）。
+   换算：13 盒 ⇒ scale 13/24 ⇒ 描边 2px ÷ (13/24) = 3.69 单位（照抄 3 会掉成 1.63px）。
+   ⚠ 两枚都必须重画 mask：stroke 写在 SVG 里，T18-03 的 16 盒 / stroke 3 缩到 13 盒会细一成半。
+
+   ---- 改件记录（ID 不复用，但含义变更要写清）----
+   v1.17 本件是 .glyph-chevron-left（16 盒 / stroke 3）单枚，成对时配 T18-03 使用；
+   v1.19 月份箭头改为对齐 Flutter 的 13，于是把本件从「单枚左向」改义为「左右成对」并换名。
+   一对箭头是一个逻辑控件，不再拆成「左 T18-08 + 右 T18-03」两个件。
+   T18-03 保持 16 盒，继续做行尾通用右箭头；选择器不再拿它配左向件。 */
+.glyph-switch-left{width:13px;height:13px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.69' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.69' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E")}
+.glyph-switch-right{width:13px;height:13px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.69' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.69' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E")}
 
 /* ============================================================================
    T19 票务指南弹层（v1.6 · origin=母本 2026-10-31/11-01 新增：components/intercity-guide + index 入口件）

@@ -763,11 +763,7 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     ['T18-04', 'glyph-chevron-down', 'width:14px;height:14px', "stroke-width='3.43'"],
     ['T18-05', 'glyph-caret-down', 'width:7px;height:7px'],
     ['T18-06', 'glyph-swap', 'width:24px;height:24px'],
-    ['T18-07', 'glyph-pick', 'width:13px;height:10px'],
-    /* T18-08 的存在理由就是「与 T18-03 线宽一致」——盒与右向件相同、区别全在方向与 stroke 3。
-       第 4 列是可选的额外语义断言：若去掉，断言无法区分它和「拿 back 缩盒凑数」的错误做法
-       （那正是它在防的事故，2026-11-07 真机反馈）。 */
-    ['T18-08', 'glyph-chevron-left', 'width:16px;height:16px', "stroke-width='3'"]
+    ['T18-07', 'glyph-pick', 'width:13px;height:10px']
   ];
   want.forEach(([id, cls, size, strokeNeed]) => {
     const blk = blockOf(cls);
@@ -783,6 +779,24 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
       hasSize && webkitMasks === 1 && stdMasks === 1 && inGallery ? '通过' : '不通过',
       '自建件无母本可对，只查件本身与样片是否在位');
   });
+  /* T18-08 是成对件（v1.19 改件）：两枚都要在、都要 13 盒 + stroke 3.69（= 2×24/13），
+     样片里两枚都要出现。只查左向等于没查「成对」—— 那正是本件存在的理由。 */
+  const switchPair = ['glyph-switch-left', 'glyph-switch-right'];
+  const pairBlocks = switchPair.map(blockOf);
+  const pairOk = pairBlocks.every(b =>
+    b.includes('width:13px;height:13px') && b.includes("stroke-width='3.69'"));
+  const pairMasks = pairBlocks.map(b => [
+    (b.match(/-webkit-mask-image:url\("data:image\/svg/g) || []).length,
+    (b.match(/(?:^|[^-])mask-image:url\("data:image\/svg/g) || []).length,
+  ]);
+  const pairMaskOk = pairMasks.every(([wk, std]) => wk === 1 && std === 1);
+  const pairInGallery = switchPair.every(c => galleryText.includes('.' + c));
+  row('T18-08', '选择器切换箭头对 .glyph-switch-left / .glyph-switch-right（13 盒 + stroke 3.69 + 双前缀 + 样片）',
+    '13px / 各 1 条 / 有',
+    (pairOk ? '13px' : '缺') + ' / ' + pairMasks.map(([w, s]) => w + ':' + s).join(' ') + ' / ' + (pairInGallery ? '有' : '缺'),
+    pairOk && pairMaskOk && pairInGallery ? '通过' : '不通过',
+    '成对件只查一个方向等于没查；两枚的盒与 stroke 必须同组');
+
   const hasCompare = galleryText.includes('字符版（历史）vs 图形版（现行）');
   row('T18-对照', '样片含字符版与图形版的对照（迁移依据）', '有', hasCompare ? '有' : '缺',
     hasCompare ? '通过' : '不通过', '两版并存时没有对照，宿主会不知道新页面该用哪个');
