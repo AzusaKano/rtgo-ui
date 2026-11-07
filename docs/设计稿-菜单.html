@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RTGo_slate · T24 菜单 · 基础设计 v0.2</title>
+<link rel="stylesheet" href="../rtgo-slate.css">
+<link rel="stylesheet" href="../theme-overrides.css">
+<style>
+/* =========================================================================
+   这是一份设计对照稿。页面里的 .menu-* 只是候选样式，
+   定稿后已搬进 rtgo-components.css；本页保留作对照。
+   ========================================================================= */
+:root{color-scheme:light dark}
+html.theme-dark{color-scheme:dark}
+html.theme-light{color-scheme:light}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;background:var(--bg);color:var(--text)}
+button{font-family:inherit}
+.d-wrap{max-width:1180px;margin:0 auto;padding:0 24px 96px}
+.d-top{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:16px;padding:12px 24px;background:var(--topbar-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--topbar-bd)}
+.d-top b{font-size:15px;color:var(--text);letter-spacing:.01em}
+.d-top .d-top-tag{font-family:Consolas,monospace;font-size:11px;color:var(--text-3)}
+.d-top .d-themes{margin-left:auto;display:flex;gap:6px}
+.d-themes button{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);font-size:12px;cursor:pointer}
+.d-themes button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.d-hero{padding:48px 0 8px}
+.d-kicker{display:flex;align-items:center;gap:10px;font-family:Consolas,monospace;font-size:11px;letter-spacing:.08em;color:var(--brand);text-transform:uppercase}
+.d-kicker .d-chip{padding:3px 8px;border-radius:999px;background:var(--brand-tint);color:var(--brand);font-family:inherit;font-size:10px;letter-spacing:.04em;text-transform:none}
+.d-hero h1{margin:12px 0 10px;font-size:34px;line-height:1.15;font-weight:850;letter-spacing:-.02em}
+.d-hero .d-lede{margin:0;max-width:780px;color:var(--text-2);font-size:14px;line-height:1.85}
+.d-hero .d-lede strong{color:var(--text);font-weight:750}
+.d-hero-note{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.d-hero-note span{padding:5px 10px;border-radius:999px;background:var(--fill);color:var(--text-2);font-size:11px;line-height:1.4}
+.d-index{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.d-index a{padding:5px 10px;border-radius:999px;background:var(--card);border:1px solid var(--border);color:var(--text-2);font-size:11.5px;line-height:1.4;text-decoration:none}
+.d-index a:hover{color:var(--brand);border-color:var(--brand)}
+.d-sec{margin-top:52px;scroll-margin-top:70px}
+.d-sec>h2{margin:0 0 6px;font-size:20px;font-weight:850;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px}
+.d-sec>h2 .d-no{font-family:Consolas,monospace;font-size:11px;font-weight:700;color:var(--brand);letter-spacing:.06em}
+.d-note{margin:0 0 18px;max-width:900px;color:var(--text-2);font-size:12.5px;line-height:1.8}
+.d-note strong{color:var(--text-strong);font-weight:700}
+.d-phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:24px;align-items:start}
+.d-phone-card{border:1px solid var(--border);border-radius:22px;background:var(--card);padding:16px 16px 14px}
+.d-phone-card .d-cap{display:flex;align-items:baseline;gap:8px;margin:0 2px 12px}
+.d-phone-card .d-cap b{font-size:14px;font-weight:800}
+.d-phone-card .d-cap span{margin-left:auto;font-family:Consolas,monospace;font-size:10px;color:var(--text-3)}
+.d-phone-card .d-desc{margin:12px 2px 0;color:var(--text-2);font-size:11.5px;line-height:1.7}
+.d-phone-card .d-desc code{font-family:Consolas,monospace;font-size:10.5px;color:var(--brand);background:var(--fill);border-radius:4px;padding:1px 4px}
+.phone{position:relative;width:100%;max-width:360px;aspect-ratio:360/720;margin:0 auto;border-radius:34px;overflow:hidden;background:var(--bg);border:1px solid var(--border);box-shadow:0 18px 42px rgba(23,27,40,.12)}
+.phone .ios-fixed-topbar{position:absolute;max-width:none;width:100%}
+.phone-body{position:absolute;left:0;right:0;top:72px;bottom:0;padding:14px;overflow:hidden;box-sizing:border-box}
+.phone-body.has-bnav{bottom:56px}
+.phone-body .summary,.phone-body .panel,.phone-body .route-card{box-shadow:var(--shadow-card)}
+.phone-body .panel{padding:16px}
+.phone-body .route-card{padding:14px;padding-bottom:14px}
+.phone-body .route-card + .route-card{margin-top:10px}
+.phone-body .h2{font-size:16px}
+.phone .bnav{position:absolute;left:0;right:0;bottom:0;max-width:none;transform:none}
+.phone .bnav .cell{background:transparent;border:0;padding:0}
+.cell-glyph{display:flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:22px;line-height:1;font-weight:500;color:currentColor}
+/* T18-09 更多三点（候选，20 盒；三个 2px 实心点，墨迹约 12×2） */
+.glyph-more{width:20px;height:20px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E")}
+/* T24-05 正文·裸三点：无圆圈、无边框；视觉 20，热区 44 */
+.menu-dots{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;
+  padding:0;border:0;background:transparent;color:var(--text-2);
+  border-radius:var(--radius-ctrl);-webkit-tap-highlight-color:transparent}
+.menu-dots.is-edge{margin:-11px -12px -11px 0}
+.menu-dots:active{opacity:.55}
+.menu-dots.menu-trigger.is-open{color:var(--brand-ink)}
+/* T24-06 正文·品牌文字 + T18-05 下箭头：无底、无边框；文字自带语义 */
+.menu-text-trigger{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;
+  border:0;background:none;color:var(--brand-ink);font-size:var(--fs-body-14);font-weight:650;line-height:1;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent}
+.menu-text-trigger:active{opacity:.6}
+.phone-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.phone-line .line-pill{min-height:26px;padding:0 10px;font-size:12px;font-weight:800}
+.phone-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.phone-facts .metric{padding:9px 4px;font-size:12px;font-weight:750}
+.phone-facts .metric span{font-size:10px;margin-bottom:3px}
+.d-phone-card .menu{position:absolute}
+
+/* ---- 候选件：菜单（仅本稿） ---- */
+.menu-layer{position:absolute;inset:0;z-index:1001;background:transparent}
+.menu-layer[hidden]{display:none}
+.menu{
+  position:absolute;
+  top:var(--menu-top,auto);
+  right:var(--menu-right,auto);
+  bottom:var(--menu-bottom,auto);
+  left:var(--menu-left,auto);
+  width:var(--menu-w,auto);
+  min-width:208px;
+  max-width:min(280px,calc(100vw - 28px));
+  max-height:min(70vh,420px);
+  box-sizing:border-box;
+  padding:6px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(23,27,40,.16),0 2px 8px rgba(23,27,40,.06);
+  transform-origin:var(--menu-origin,top right);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  animation:menu-in-soft 200ms ease-out both;
+}
+/* 打开：先越过终态约 1.2%，再落回。只做 scale、不做位移，
+   锚点角钉死，所以只有离锚点最远的两条边在动（上开：左+下；下开：左+上）。 */
+@keyframes menu-in-soft{
+  0%{opacity:0;transform:scale(.96)}
+  58%{opacity:1;transform:scale(1.012)}
+  100%{opacity:1;transform:scale(1)}
+}
+/* 对照档：同样 200ms 与起点，只去掉 58% 的峰值。 */
+@keyframes menu-in-plain{
+  0%{opacity:0;transform:scale(.96)}
+  100%{opacity:1;transform:scale(1)}
+}
+/* 回收：缩放一条连续曲线收到 .92，中间不插关键帧，避免速度在接缝处断一下；
+   透明度单独延后 35% 再淡出，视觉上仍是“先缩、后隐”。 */
+@keyframes menu-out{from{transform:scale(1)}to{transform:scale(.92)}}
+@keyframes menu-fade-out{0%,35%{opacity:1}100%{opacity:0}}
+.menu-layer.is-closing .menu{
+  animation:menu-out 180ms cubic-bezier(.4,0,.2,1) both,
+            menu-fade-out 180ms linear both;
+}
+.menu-layer.is-closing .menu.is-slow{animation-duration:720ms}
+.menu.is-plain{animation-name:menu-in-plain}
+.menu.is-slow{animation-duration:800ms}
+.menu-item{
+  display:flex;align-items:center;gap:10px;
+  width:100%;min-height:44px;padding:0 10px 0 12px;box-sizing:border-box;
+  border:0;border-radius:14px;background:transparent;
+  color:var(--text);font-size:var(--fs-body-15);font-weight:600;line-height:1.25;
+  text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.menu-item + .menu-item{margin-top:2px}
+.menu-item:active,.menu-item.is-pressed{background:var(--press)}
+.menu-text{flex:1;min-width:0;white-space:normal;overflow-wrap:anywhere}
+.menu-desc{display:block;margin-top:3px;color:var(--text-2);font-size:var(--fs-small-12);font-weight:400;line-height:1.45;white-space:normal}
+.menu-item.has-desc{min-height:58px;padding-top:8px;padding-bottom:8px}
+.menu-item.has-desc .menu-text{display:block;white-space:normal}
+.menu-main{display:flex;flex:1;flex-direction:column;min-width:0}
+.menu-main .menu-text{flex:0 0 auto}
+.menu-meta{margin-left:auto;flex:0 0 auto;color:var(--text-3);font-size:var(--fs-small-12);font-weight:400}
+.menu-check{position:relative;flex:0 0 20px;width:20px;height:20px;color:var(--brand)}
+.menu-item.is-checked{color:var(--brand-ink)}
+.menu-item.is-checked .menu-text{font-weight:700}
+.menu-item.is-danger{color:var(--danger)}
+.menu-item.is-danger:active,.menu-item.is-danger.press-flat{background:var(--error-bg)}
+.menu-item.is-disabled,.menu-item:disabled{opacity:.4;pointer-events:none}
+.menu-group-label{padding:8px 12px 4px;color:var(--text-2);font-size:var(--fs-small-12);font-weight:650;line-height:1.3}
+.menu-sep{height:1px;margin:6px 8px;background:var(--border-weak)}
+.menu-trigger.is-open{color:var(--brand-ink)}
+.icon-btn.menu-trigger.is-open{background:var(--brand-tint);border-color:var(--brand-tint);color:var(--brand-ink)}
+.bnav .cell.menu-trigger.is-open{color:var(--text);font-weight:750;background:var(--press)}
+.menu:focus{outline:none}
+.menu-item:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+
+/* ---- 规格板 ---- */
+.d-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.d-spec{border:1px solid var(--border);border-radius:16px;background:var(--card);overflow:hidden}
+.d-spec-h{padding:9px 12px;border-bottom:1px solid var(--border-weak);background:var(--bg);display:flex;align-items:baseline;gap:8px}
+.d-spec-h b{font-size:12px;font-weight:800}
+.d-spec-h span{font-family:Consolas,monospace;font-size:10px;color:var(--text-3)}
+.d-spec-b{padding:16px;min-height:74px;display:flex;align-items:center;justify-content:center}
+.d-spec-b .menu{position:relative;top:auto;right:auto;bottom:auto;left:auto;animation:none;box-shadow:0 8px 22px rgba(23,27,40,.10)}
+.d-anatomy{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:34px;align-items:start}
+.d-anatomy-preview{display:flex;justify-content:center;padding:26px 12px 34px;background:var(--bg);border:1px dashed var(--border);border-radius:18px}
+.d-anatomy-preview .menu{position:relative;top:auto;right:auto;bottom:auto;left:auto;width:250px;animation:none}
+.d-spec-list{display:grid;gap:2px}
+.d-spec-row{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--border-weak)}
+.d-spec-row:last-child{border-bottom:0}
+.d-spec-row .d-num{display:flex;align-items:flex-start;justify-content:center;padding-top:1px;font-family:Consolas,monospace;font-size:10px;font-weight:800;color:var(--brand)}
+.d-spec-row b{display:block;font-size:13px;font-weight:750;line-height:1.45}
+.d-spec-row p{margin:3px 0 0;color:var(--text-2);font-size:11.5px;line-height:1.65}
+.d-spec-row p code{font-family:Consolas,monospace;font-size:10.5px;color:var(--brand);background:var(--fill);border-radius:4px;padding:1px 4px}
+
+.d-motion-wrap{display:grid;grid-template-columns:minmax(300px,360px) 1fr;gap:24px;align-items:start}
+.d-motion-stage{position:relative;height:330px;box-sizing:border-box;border:1px solid var(--border);border-radius:22px;background:var(--bg);overflow:hidden}
+.d-motion-topbar{position:absolute;left:0;right:0;top:0;height:58px;display:flex;align-items:center;padding:0 14px;box-sizing:border-box;background:var(--topbar-bg);border-bottom:1px solid var(--topbar-bd)}
+.d-motion-topbar b{font-size:16px;font-weight:800;color:var(--text)}
+.d-motion-stage>.icon-btn{position:absolute;top:8px;right:14px;z-index:2}
+.d-motion-card{position:absolute;left:14px;right:14px;top:74px;padding:16px;box-sizing:border-box;border-radius:16px;background:var(--card);box-shadow:var(--shadow-card)}
+.d-motion-card b{display:block;font-size:16px;font-weight:800;line-height:1.35}
+.d-motion-card span{display:block;margin-top:5px;font-size:11px;color:var(--text-2)}
+.d-motion-panel{padding-top:2px}
+.d-motion-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.d-motion-controls button{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);font-size:12px;cursor:pointer}
+.d-motion-controls button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.d-motion-track{position:relative;height:8px;border-radius:4px;background:var(--fill);margin:10px 0 8px}
+.d-motion-track>i{position:absolute;left:0;top:0;bottom:0;width:58%;border-radius:4px;background:var(--brand);opacity:.32}
+.d-motion-track>b{position:absolute;left:58%;top:-4px;width:2px;height:16px;border-radius:1px;background:var(--brand)}
+.d-motion-track.is-out>i{width:35%;opacity:.22}
+.d-motion-track.is-out>b{left:35%}
+.d-motion-label{display:flex;align-items:baseline;gap:8px;margin-top:14px;font-size:11px;font-weight:750;color:var(--text-strong)}
+.d-motion-label span{font-family:Consolas,monospace;font-size:10px;font-weight:400;color:var(--text-3)}
+.d-motion-marks{display:flex;justify-content:space-between;font-family:Consolas,monospace;font-size:10px;color:var(--text-3);line-height:1.6}
+.d-motion-marks span:nth-child(2){text-align:center}
+.d-motion-marks span:last-child{text-align:right}
+.d-motion-kv{display:grid;gap:7px;margin-top:14px}
+.d-motion-kv>div{display:grid;grid-template-columns:74px 1fr;gap:10px;font-size:11.5px;line-height:1.6}
+.d-motion-kv b{font-family:Consolas,monospace;font-size:10.5px;color:var(--brand);font-weight:700}
+.d-motion-kv span{color:var(--text-2)}
+.d-motion-kv span code{font-family:Consolas,monospace;font-size:10.5px;color:var(--text-strong);background:var(--fill);border-radius:4px;padding:1px 4px}
+
+.d-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card)}
+.d-table th,.d-table td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border-weak);font-size:12px;line-height:1.6}
+.d-table th{background:var(--bg);color:var(--text-2);font-size:11px;font-weight:750;white-space:nowrap}
+.d-table td:first-child{font-weight:700;color:var(--text);white-space:nowrap}
+.d-table td:nth-child(2){color:var(--text-2)}
+.d-table.d-vals td:nth-child(2){font-family:Consolas,monospace;font-size:11px;color:var(--brand)}
+.d-table td:nth-child(3){color:var(--text-2)}
+.d-table tr:last-child td{border-bottom:0}
+.d-table .d-alt{color:var(--text-3)}
+
+.d-pending{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.d-pending-card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:16px}
+.d-pending-card .d-pn{font-family:Consolas,monospace;font-size:11px;font-weight:800;color:var(--brand)}
+.d-pending-card h3{margin:8px 0 6px;font-size:14px;font-weight:800;line-height:1.45}
+.d-pending-card p{margin:0;color:var(--text-2);font-size:11.5px;line-height:1.7}
+.d-pending-card .d-rec{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--brand-tint);color:var(--brand);font-size:11px;line-height:1.6}
+.d-pending-card .d-rec b{font-weight:800}
+
+.d-two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.d-rule{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:16px 18px}
+.d-rule h3{margin:0 0 10px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:8px}
+.d-rule h3 i{width:7px;height:7px;border-radius:50%;background:var(--green);display:block}
+.d-rule.dont h3 i{background:var(--danger)}
+.d-rule ul{margin:0;padding:0 0 0 16px;color:var(--text-2);font-size:12px;line-height:1.8}
+.d-rule li{margin:0 0 6px}
+.d-rule li:last-child{margin-bottom:0}
+.d-rule li b{color:var(--text-strong);font-weight:700}
+.d-code{margin:0;padding:18px;border-radius:16px;background:#171b28;color:#dfe6f5;font-family:Consolas,"SFMono-Regular",monospace;font-size:11.5px;line-height:1.75;overflow:auto;tab-size:2}
+.d-code .d-c{color:#8b96ad}
+.d-code .d-a{color:#9fc3ff}
+.d-code .d-s{color:#b9e6a8}
+.d-code .d-t{color:#ffd28a}
+.d-foot{margin-top:54px;padding-top:18px;border-top:1px solid var(--border);color:var(--text-3);font-size:11px;line-height:1.7}
+.d-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);z-index:500;padding:10px 16px;border-radius:12px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow-card);color:var(--text);font-size:12px;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}
+.d-toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:760px){
+  .d-wrap{padding:0 16px 72px}
+  .d-top{padding:10px 16px;gap:10px}
+  .d-top b{font-size:13px}
+  .d-top .d-top-tag{display:none}
+  .d-themes button{padding:4px 8px;font-size:11px}
+  .d-hero{padding-top:34px}
+  .d-hero h1{font-size:28px}
+  .d-anatomy{grid-template-columns:1fr}
+  .d-motion-wrap{grid-template-columns:1fr}
+  .d-two{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="d-top">
+  <b>RTGo_slate · T24 菜单</b>
+  <span class="d-top-tag">基础设计 v0.2 · 已落码</span>
+  <span class="d-themes" id="themes">
+    <button data-t="auto" class="on">跟随系统</button>
+    <button data-t="light">浅色</button>
+    <button data-t="dark">深色</button>
+  </span>
+</header>
+
+<div class="d-wrap">
+
+  <div class="d-hero">
+    <div class="d-kicker">New piece <span class="d-chip">自建 · 无母本出处</span></div>
+    <h1>菜单：一个由按钮打开的短动作浮层</h1>
+    <p class="d-lede">
+      它不是页面列表，也不是确认框。它只解决一件事：<strong>按钮被点开之后，在同一上下文里给出 3 到 7 个次级动作</strong>。
+      触发器仍然是现有的 <code>.icon-btn</code>、<code>.bnav .cell</code>、<code>.chip</code> 或行内动作钮，菜单只负责「浮出来的那一层」。
+      下面三个落点分别是：顶栏圆形钮、底栏入口、正文卡片入口。正文入口分两种皮：通用动作是裸三点，筛选 / 排序是品牌文字 + T18-05 下箭头。
+    </p>
+    <div class="d-hero-note">
+      <span>外壳 20 · 内距 6 · 行 44</span>
+      <span>打开 200ms · 只缩放 · 锚点固定</span>
+      <span>无变暗遮罩 · 透明点击层</span>
+      <span>深色零分支 · 一切颜色走令牌</span>
+      <span>不自动翻转，落点由宿主显式给</span>
+    </div>
+    <nav class="d-index" aria-label="设计稿目录">
+      <a href="#s-places">01 三个落点</a>
+      <a href="#s-anatomy">02 解剖</a>
+      <a href="#s-states">03 状态</a>
+      <a href="#s-motion">04 动效</a>
+      <a href="#s-values">05 取值</a>
+      <a href="#s-pending">06 待定</a>
+      <a href="#s-rules">07 Do / Don't 与边界</a>
+      <a href="#s-wire">08 接线</a>
+    </nav>
+  </div>
+
+  <!-- ================= 1. 三个落点 ================= -->
+  <section class="d-sec" id="s-places">
+    <h2><span class="d-no">01</span> 三个落点</h2>
+    <p class="d-note">
+      三张图都是默认展开状态，方便横向对照。<strong>点菜单外的空白处可关闭，再点触发器可重开。</strong>
+      对照稿同时展开三张；实际使用同一时间只开一个。
+      正文入口不再用 42 圆钮：通用「更多」用裸三点（T18-09）；筛选 / 排序用品牌文字 + T18-05 下箭头（资产暂无筛选、排序图标，不新造）。
+      菜单的落点用 CSS 自定义属性显式给：<code>--menu-top / --menu-right / --menu-bottom / --menu-left</code>，
+      不做「空间不够自动翻转」——那会把摆位变成猜的。
+    </p>
+
+    <div class="d-phones">
+
+      <!-- A 顶栏 -->
+      <div class="d-phone-card">
+        <div class="d-cap"><b>A · 顶栏圆形钮</b><span>topbar</span></div>
+        <div class="phone" id="phone-a">
+          <div class="ios-fixed-topbar is-translucent">
+            <div class="back" aria-hidden="true"><span class="glyph glyph-back"></span></div>
+            <div class="topbar-main">
+              <div class="title">竹料 → 广州南站</div>
+              <div class="sub">2026-11-03 19:21 出发</div>
+            </div>
+            <div class="topbar-actions">
+              <button class="icon-btn menu-trigger is-open" data-menu="menu-a" aria-haspopup="menu" aria-expanded="true" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+            </div>
+          </div>
+
+          <div class="phone-body">
+            <div class="summary">
+              <div class="summary-line"><span class="summary-num">1</span>小时<span class="summary-num">14</span>分 · <span class="summary-num">28</span>元 · 换乘<span class="summary-num">2</span>次</div>
+              <div class="summary-line" style="margin-top:6px;font-size:13px;font-weight:500">竹料 → 广州南站</div>
+              <div class="metrics" style="margin-top:14px">
+                <div class="metric"><span>出发</span>19:21</div>
+                <div class="metric"><span>到达</span>20:35</div>
+                <div class="metric"><span>耗时</span>1h14</div>
+              </div>
+            </div>
+            <div class="panel" style="margin-top:12px">
+              <div class="h2" style="margin-bottom:8px">行程</div>
+              <div class="meta"><span class="line-pill" style="background:#414f8d">S4739</span><span>竹料 → 番禺</span></div>
+              <div class="meta" style="margin-top:10px"><span class="line-pill" style="background:#2C659B">2</span><span>嘉禾望岗 → 广州南站</span></div>
+              <div class="meta-line">19:21 出发 · 20:35 到达 · 途经 6 站</div>
+            </div>
+          </div>
+
+          <div class="menu-layer" data-layer="menu-a">
+            <div class="menu" role="menu" aria-label="路线更多操作" style="--menu-top:80px;--menu-right:14px;--menu-w:232px;--menu-origin:top right">
+              <button class="menu-item" role="menuitem">分享这条路线</button>
+              <button class="menu-item" role="menuitem">收藏到「已存路线」</button>
+              <button class="menu-item" role="menuitem">复制路线摘要</button>
+              <button class="menu-item" role="menuitem">在时刻表中查看</button>
+              <div class="menu-sep"></div>
+              <button class="menu-item" role="menuitem">反馈路线问题</button>
+            </div>
+          </div>
+        </div>
+        <p class="d-desc">右对齐、下开。触发器 42 圆钮里挂 <strong>T18-09 更多三点</strong>（不再用字符 <code>⋯</code>）；菜单右缘与钮右缘同一条线，菜单顶 = 顶栏 72 + 8。触发器保持打开态（<code>--brand-tint</code> 底 + 品牌字），让用户知道这层是从哪颗钮长出来的。</p>
+      </div>
+
+      <!-- B 底栏 -->
+      <div class="d-phone-card">
+        <div class="d-cap"><b>B · 底栏入口</b><span>bottom bar</span></div>
+        <div class="phone" id="phone-b">
+          <div class="ios-fixed-topbar is-translucent">
+            <div class="back" aria-hidden="true"><span class="glyph glyph-back"></span></div>
+            <div class="topbar-main">
+              <div class="title">查询结果</div>
+              <div class="sub">2026-11-03 19:15 出发 · 共 15 个方案</div>
+            </div>
+          </div>
+
+          <div class="phone-body has-bnav">
+            <div class="route-card">
+              <div class="route-top">
+                <div style="min-width:0">
+                  <div style="font-size:16px;font-weight:800;line-height:1.35">竹料 → 广州南站</div>
+                  <div class="sub" style="margin-top:4px;font-size:11px">19:15 – 20:35 · 换乘 1 次</div>
+                </div>
+                <div class="duration" style="font-size:24px">1h20</div>
+              </div>
+              <div class="phone-line"><span class="line-pill" style="background:#6F2D25">14</span><span class="line-pill" style="background:#2C659B">2</span></div>
+            </div>
+            <div class="route-card">
+              <div class="route-top">
+                <div style="min-width:0">
+                  <div style="font-size:16px;font-weight:800;line-height:1.35">竹料 → 番禺</div>
+                  <div class="sub" style="margin-top:4px;font-size:11px">22:49 – 23:23 · 直达</div>
+                </div>
+                <div class="duration" style="font-size:24px">34<span style="font-size:12px;font-weight:700">分</span></div>
+              </div>
+              <div class="phone-line"><span class="line-pill" style="background:#414f8d">S4741</span></div>
+            </div>
+            <div class="route-card">
+              <div class="route-top">
+                <div style="min-width:0">
+                  <div style="font-size:16px;font-weight:800;line-height:1.35">竹料 → 广州南站</div>
+                  <div class="sub" style="margin-top:4px;font-size:11px">19:21 – 20:35 · 换乘 2 次</div>
+                </div>
+                <div class="duration" style="font-size:24px">1h14</div>
+              </div>
+              <div class="phone-line"><span class="line-pill" style="background:#414f8d">S4739</span><span class="line-pill" style="background:#A8D24E;color:#171b28">7</span><span class="line-pill" style="background:#2C659B">2</span></div>
+            </div>
+          </div>
+
+          <nav class="bnav" aria-label="底部导航">
+            <button class="cell"><span class="bn-ico home"></span><span>查询</span></button>
+            <button class="cell on"><span class="bn-ico search"></span><span>结果</span></button>
+            <button class="cell menu-trigger is-open" data-menu="menu-b" aria-haspopup="menu" aria-expanded="true"><span class="cell-glyph"><i class="glyph glyph-more"></i></span><span>更多</span></button>
+          </nav>
+
+          <div class="menu-layer" data-layer="menu-b">
+            <div class="menu" role="menu" aria-label="更多" style="--menu-bottom:calc(56px + env(safe-area-inset-bottom) + 8px);--menu-right:14px;--menu-w:224px;--menu-origin:bottom right">
+              <div class="menu-group-label">外观</div>
+              <button class="menu-item is-checked" role="menuitemradio" aria-checked="true" data-theme="auto">
+                <span class="menu-text">跟随系统</span><span class="menu-check"><i class="check-glyph"></i></span>
+              </button>
+              <button class="menu-item" role="menuitemradio" aria-checked="false" data-theme="light">
+                <span class="menu-text">浅色</span><span class="menu-check"></span>
+              </button>
+              <button class="menu-item" role="menuitemradio" aria-checked="false" data-theme="dark">
+                <span class="menu-text">深色</span><span class="menu-check"></span>
+              </button>
+              <div class="menu-sep"></div>
+              <button class="menu-item" role="menuitem">使用帮助</button>
+              <button class="menu-item" role="menuitem">意见反馈</button>
+              <button class="menu-item" role="menuitem">关于 RTGo</button>
+            </div>
+          </div>
+        </div>
+        <p class="d-desc">上开、右对齐，底边 = 底栏 56 + 安全区 + 8；「更多」格子用 <strong>T18-09</strong>（20 盒放进 24 槽）。这里顺带演示勾选槽与分组标题：选中的当前值用勾，不铺整行 tint；「跟随系统 / 浅色 / 深色」三行都预留 20px 勾槽，换选项时文字不横跳。</p>
+      </div>
+
+      <!-- C 正文 -->
+      <div class="d-phone-card">
+        <div class="d-cap"><b>C · 正文卡片入口</b><span>in-page</span></div>
+        <div class="phone" id="phone-c">
+          <div class="ios-fixed-topbar is-translucent">
+            <div class="back" aria-hidden="true"><span class="glyph glyph-back"></span></div>
+            <div class="topbar-main">
+              <div class="title">车站信息</div>
+              <div class="sub">广州 · 番禺</div>
+            </div>
+          </div>
+
+          <div class="phone-body">
+            <div class="panel">
+              <div style="display:flex;align-items:flex-start;gap:12px">
+                <div style="flex:1;min-width:0">
+                  <div class="station" style="margin-bottom:4px">广州南站</div>
+                  <div class="meta">高铁 · 城际 · 地铁 2 / 7 / 22 号线</div>
+                </div>
+                <button class="menu-dots is-edge menu-trigger is-open" data-menu="menu-c" aria-haspopup="menu" aria-expanded="true" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+              </div>
+              <div class="phone-line">
+                <span class="line-pill" style="background:#2C659B">2</span>
+                <span class="line-pill" style="background:#A8D24E;color:#171b28">7</span>
+                <span class="line-pill" style="background:#C0392B">22</span>
+              </div>
+              <div class="phone-facts">
+                <div class="metric"><span>出入口</span>12 个</div>
+                <div class="metric"><span>首班</span>06:00</div>
+                <div class="metric"><span>末班</span>23:45</div>
+              </div>
+            </div>
+            <div class="panel" style="margin-top:12px">
+              <div class="h2" style="margin-bottom:8px">换乘</div>
+              <div class="meta-line" style="margin-top:0">站内换乘约 6 分钟；城际与地铁换乘需出闸后重新安检。</div>
+            </div>
+          </div>
+
+          <div class="menu-layer" data-layer="menu-c">
+            <div class="menu" role="menu" aria-label="车站更多操作" style="--menu-top:154px;--menu-right:30px;--menu-w:208px;--menu-origin:top right">
+              <button class="menu-item" role="menuitem">复制站名</button>
+              <button class="menu-item" role="menuitem">查看车站详情</button>
+              <button class="menu-item" role="menuitem">查看出入口</button>
+              <button class="menu-item is-disabled" role="menuitem" aria-disabled="true">
+                <span class="menu-text">时刻表</span><span class="menu-meta">暂无</span>
+              </button>
+              <div class="menu-sep"></div>
+              <button class="menu-item" role="menuitem">反馈问题</button>
+            </div>
+          </div>
+        </div>
+        <p class="d-desc">卡片头右侧的<strong>裸三点</strong>（T18-09），无圆圈、无边框，视觉 20 / 热区 44；菜单下开、右对齐到三点的右缘。资产目前没有筛选/排序图标，所以正文的筛选/排序入口走「品牌文字 + T18-05」，不另造图标。这里多给一个禁用行（<code>opacity .4</code> + 行尾「暂无」），说明菜单不只放「能做的事」，也能明确地收起一件做不了的事。</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 2. 解剖 ================= -->
+  <section class="d-sec" id="s-anatomy">
+    <h2><span class="d-no">02</span> 解剖</h2>
+    <p class="d-note">
+      一个壳、一行文字、一条分隔线。默认没有图标列，也没有箭头——菜单项点下去就执行，不承诺下一层。
+      图标列如果将来要有，必须整组都有，不能一行有、一行没有。
+    </p>
+    <div class="d-anatomy">
+      <div class="d-anatomy-preview">
+        <div class="menu" role="presentation" style="width:250px">
+          <button class="menu-item" role="menuitem">分享这条路线</button>
+          <button class="menu-item" role="menuitem">收藏到「已存路线」</button>
+          <button class="menu-item is-checked" role="menuitemradio" aria-checked="true">
+            <span class="menu-text">复制路线摘要</span><span class="menu-check"><i class="check-glyph"></i></span>
+          </button>
+          <div class="menu-sep"></div>
+          <button class="menu-item has-desc" role="menuitem">
+            <span class="menu-main"><span class="menu-text">在时刻表中查看</span><span class="menu-desc">打开城际时刻表，定位到最近一班</span></span>
+          </button>
+          <button class="menu-item is-danger" role="menuitem">清空已存路线</button>
+        </div>
+      </div>
+      <div class="d-spec-list">
+        <div class="d-spec-row"><span class="d-num">01</span><div><b>外壳</b><p><code>--card</code> 底 + 1px <code>--border</code> 描边 + 20 圆角；投影取弹层那档 <code>0 10px 30px rgba(23,27,40,.16)</code>。深色下投影被底吞掉，靠描边立住。</p></div></div>
+        <div class="d-spec-row"><span class="d-num">02</span><div><b>内距 6</b><p>行不贴壳边；行圆角 14 = 20 − 6，壳与行同心。6 是这一层唯一的内距，不随行数变。</p></div></div>
+        <div class="d-spec-row"><span class="d-num">03</span><div><b>行高 44 / 行距 2</b><p>整行可点，44 是胶囊与搜索框同档的触控高。行与行之间只留 2，菜单才不会散成一张列表。</p></div></div>
+        <div class="d-spec-row"><span class="d-num">04</span><div><b>行内距 12 / 10</b><p>左 12 是文字起点，右 10 给勾槽或行尾值。15px / 600 的正文，不用按钮的 15 / 750。</p></div></div>
+        <div class="d-spec-row"><span class="d-num">05</span><div><b>行尾槽 20</b><p>勾选菜单里每行都留 20 的槽；未选中是空槽，选中才出现 T12-06 那枚勾。这样切换选项时行尾不横跳。</p></div></div>
+        <div class="d-spec-row"><span class="d-num">06</span><div><b>分组线</b><p>1px <code>--border-weak</code>，左右各缩 8、上下 6。只分隔「动作组」，不给每一行画边框。</p></div></div>
+        <div class="d-spec-row"><span class="d-num">07</span><div><b>触发器打开态</b><p><code>.menu-trigger.is-open</code>：圆钮转 <code>--brand-tint</code> 底 + 品牌字；底栏格子用中性 <code>--press</code> 底 + 深字——品牌字已经被「当前 tab」占用，再蓝一次会分不清哪个是当前页。不是按压态，按住松手不会消失。</p></div></div>
+        <div class="d-spec-row"><span class="d-num">08</span><div><b>与触发器的 8</b><p>菜单边到触发器所在边缘留 8；顶栏取「栏底 + 8」，底栏取「栏顶 − 8」，正文取「触发器底 + 8」。三个落点都只差这一个值。</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. 状态 ================= -->
+  <section class="d-sec" id="s-states">
+    <h2><span class="d-no">03</span> 状态与变体</h2>
+    <p class="d-note">
+      菜单的「状态」只有四种：默认、按下、选中、禁用；危险动作是语义色，不是第五种状态。
+      按下走整宽行的 <code>.press-flat</code>（只换底、不缩放），因为菜单行缩放会把壳撑出边。
+    </p>
+    <div class="d-grid">
+      <div class="d-spec">
+        <div class="d-spec-h"><b>默认 / 按下</b><span>default · pressed</span></div>
+        <div class="d-spec-b" style="flex-direction:column;gap:6px;align-items:stretch">
+          <div class="menu" style="position:relative;top:auto;right:auto;bottom:auto;left:auto;width:100%;min-width:0;animation:none;box-shadow:none;border-radius:14px;padding:4px">
+            <button class="menu-item">分享这条路线</button>
+            <button class="menu-item is-pressed">收藏到「已存路线」</button>
+          </div>
+          <span style="font-size:10px;color:var(--text-3);text-align:center">按下 = --press 底，不加 transform</span>
+        </div>
+      </div>
+      <div class="d-spec">
+        <div class="d-spec-h"><b>选中</b><span>checked</span></div>
+        <div class="d-spec-b">
+          <div class="menu" style="position:relative;top:auto;right:auto;bottom:auto;left:auto;width:100%;min-width:0;animation:none;box-shadow:none;border-radius:14px;padding:4px">
+            <button class="menu-item is-checked"><span class="menu-text">跟随系统</span><span class="menu-check"><i class="check-glyph"></i></span></button>
+            <button class="menu-item"><span class="menu-text">浅色</span><span class="menu-check"></span></button>
+            <button class="menu-item"><span class="menu-text">深色</span><span class="menu-check"></span></button>
+          </div>
+        </div>
+      </div>
+      <div class="d-spec">
+        <div class="d-spec-h"><b>危险</b><span>danger</span></div>
+        <div class="d-spec-b">
+          <div class="menu" style="position:relative;top:auto;right:auto;bottom:auto;left:auto;width:100%;min-width:0;animation:none;box-shadow:none;border-radius:14px;padding:4px">
+            <button class="menu-item">导出为图片</button>
+            <div class="menu-sep"></div>
+            <button class="menu-item is-danger">清空已存路线</button>
+          </div>
+        </div>
+      </div>
+      <div class="d-spec">
+        <div class="d-spec-h"><b>禁用</b><span>disabled</span></div>
+        <div class="d-spec-b">
+          <div class="menu" style="position:relative;top:auto;right:auto;bottom:auto;left:auto;width:100%;min-width:0;animation:none;box-shadow:none;border-radius:14px;padding:4px">
+            <button class="menu-item">查看车站详情</button>
+            <button class="menu-item is-disabled"><span class="menu-text">时刻表</span><span class="menu-meta">暂无</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="d-spec">
+        <div class="d-spec-h"><b>双行</b><span>has-desc</span></div>
+        <div class="d-spec-b">
+          <div class="menu" style="position:relative;top:auto;right:auto;bottom:auto;left:auto;width:100%;min-width:0;animation:none;box-shadow:none;border-radius:14px;padding:4px">
+            <button class="menu-item has-desc">
+              <span class="menu-main"><span class="menu-text">在时刻表中查看</span><span class="menu-desc">打开城际时刻表，定位到最近一班</span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="d-spec">
+        <div class="d-spec-h"><b>触发器·顶栏</b><span>icon-btn · closed / open</span></div>
+        <div class="d-spec-b" style="gap:14px">
+          <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+        </div>
+      </div>
+      <div class="d-spec">
+        <div class="d-spec-h"><b>正文·裸三点</b><span>menu-dots · T18-09</span></div>
+        <div class="d-spec-b" style="flex-direction:column;gap:6px;align-items:center">
+          <div style="display:flex;gap:18px;align-items:center">
+            <button class="menu-dots" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+            <button class="menu-dots menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          </div>
+          <div style="font-size:10px;color:var(--text-3);text-align:center">默认 --text-2 / 打开 --brand；无圆圈、无边框，视觉 20 / 热区 44</div>
+        </div>
+      </div>
+      <div class="d-spec">
+        <div class="d-spec-h"><b>正文·文字 + 下箭头</b><span>menu-text-trigger · T18-05</span></div>
+        <div class="d-spec-b" style="flex-direction:column;gap:6px;align-items:center">
+          <div style="display:flex;gap:18px;align-items:center">
+            <button class="menu-text-trigger menu-trigger">筛选<i class="glyph glyph-caret-down"></i></button>
+            <button class="menu-text-trigger menu-trigger">排序<i class="glyph glyph-caret-down"></i></button>
+          </div>
+          <div style="font-size:10px;color:var(--text-3);text-align:center">品牌字 14·650 + T18-05；资产暂无筛选 / 排序图标，不新造</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. 动效 ================= -->
+  <section class="d-sec" id="s-motion">
+    <h2><span class="d-no">04</span> 动效：锚点固定，轻微超出</h2>
+    <p class="d-note">
+      打开时让面板先越过终态约 1.2%，再落回。只做 <strong>scale</strong>、不做位移：锚点角钉死（<code>transform-origin</code> 钉在触发器那一角），
+      所以只有离锚点最远的两条边在动——顶栏 / 正文下开是「左 + 下」，底栏上开是「左 + 上」。不再有上下滑动，上边和右缘保持不动，不会像向三边扩大。
+      关闭不再 120ms 直接消失：缩放用<strong>一条连续曲线</strong>从 1 收到 .92（180ms，中间不插关键帧），透明度前 35% 保持 1、之后才淡出；视觉上仍是先缩后隐，但移动不会被切成两段。
+    </p>
+    <div class="d-motion-wrap">
+      <div class="d-motion-stage" id="motionStage">
+        <div class="d-motion-topbar"><b>查询结果</b></div>
+        <button class="icon-btn menu-trigger is-open" id="motionTrigger" data-menu="menu-motion" aria-haspopup="menu" aria-expanded="true" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+        <div class="d-motion-card"><b>竹料 → 广州南站</b><span>19:21 – 20:35 · 换乘 2 次 · 28 元</span></div>
+        <div class="menu-layer" data-layer="menu-motion">
+          <div class="menu" id="motionMenu" role="menu" aria-label="路线更多操作" style="--menu-top:66px;--menu-right:14px;--menu-w:224px;--menu-origin:top right">
+            <button class="menu-item" role="menuitem">分享这条路线</button>
+            <button class="menu-item" role="menuitem">复制路线摘要</button>
+            <button class="menu-item" role="menuitem">收藏到「已存路线」</button>
+            <div class="menu-sep"></div>
+            <button class="menu-item" role="menuitem">反馈路线问题</button>
+          </div>
+        </div>
+      </div>
+      <div class="d-motion-panel">
+        <div class="d-motion-controls">
+          <button type="button" id="motionReplay">重播打开</button>
+          <button type="button" id="motionClose">收一次</button>
+          <button type="button" id="motionPlain">对比：无超出</button>
+          <button type="button" id="motionSlow">慢放 4×</button>
+        </div>
+        <div class="d-motion-label">打开 <span>200ms</span></div>
+        <div class="d-motion-track"><i></i><b></b></div>
+        <div class="d-motion-marks">
+          <span>0ms<br>scale .96</span>
+          <span>116ms · 峰值<br>scale 1.012</span>
+          <span>200ms<br>scale 1</span>
+        </div>
+        <div class="d-motion-label">回收 <span>180ms</span></div>
+        <div class="d-motion-track is-out"><i></i><b></b></div>
+        <div class="d-motion-marks">
+          <span>0ms<br>scale 1 · 100%</span>
+          <span>63ms · 35%<br>scale ≈.96 · 100%</span>
+          <span>180ms<br>scale .92 · 0%</span>
+        </div>
+        <div class="d-motion-kv">
+          <div><b>0ms</b><span>透明度 0；<code>scale .96</code>，锚点角固定在触发器那一侧，只有对边的两条边向内收。</span></div>
+          <div><b>58%</b><span>约 <code>116ms</code>，越过终态到 <code>scale 1.012</code>；透明度已到 1，锚点角仍不动。</span></div>
+          <div><b>200ms</b><span>落回 <code>scale 1</code>，动画结束，不残留 transform。</span></div>
+          <div><b>关闭</b><span><code>180ms</code>：scale 用一条连续曲线 <code>1 → .92</code>，中间不插关键帧；opacity 前 35% 保持 1，之后淡出。35% 时 scale 约 <code>.96</code>。锚点角固定，仍然只动对边两条边。</span></div>
+        </div>
+        <p class="d-note" style="margin:14px 0 0">
+          超出量按 232px 宽算：横向多约 <strong>2.8px</strong>，全部长在离锚点最远的两条边上；锚点那一侧不动，所以不会像中心缩放那样四面长。
+          <strong>慢放</strong>只用于看曲线，打开和回收都放慢 4×，不进资产值；<strong>对比</strong>档与正常档同为 200ms，只去掉峰值。
+          动画只动 <code>opacity</code> 与 <code>transform: scale()</code>，不动 <code>top/left/height</code>，也不做 translate——位移会让上边跟着动，才会看起来像向三边扩大。
+          卸载比动画晚 20ms（正常 200ms；慢放 740ms），避免最后一帧被提前裁掉。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 5. 取值 ================= -->
+  <section class="d-sec" id="s-values">
+    <h2><span class="d-no">05</span> 取值建议</h2>
+    <p class="d-note">所有值都从既有体系里取，不新造档。标「备选」的是需要在定稿时确认的分歧点，不是随手留的余地。</p>
+    <table class="d-table d-vals">
+      <thead><tr><th>项</th><th>建议值</th><th>依据 / 备选</th></tr></thead>
+      <tbody>
+        <tr><td>外壳圆角</td><td>20px</td><td>带 1px 描边的浮起块，取 20 档；<span class="d-alt">备选 24（浮起卡档）或 16（列表档）</span></td></tr>
+        <tr><td>外壳内距</td><td>6px</td><td>行 14 = 20 − 6，壳与行同心；行不贴边</td></tr>
+        <tr><td>行高</td><td>44px</td><td>胶囊 / 搜索框同档；低于 40 必须补热区，菜单不破例</td></tr>
+        <tr><td>行内距</td><td>12 / 10</td><td>左 12 文字起点，右 10 给勾槽 / 行尾值</td></tr>
+        <tr><td>行圆角</td><td>14px</td><td>控件档；菜单行是控件，不是卡</td></tr>
+        <tr><td>字号 / 字重</td><td>15 / 600</td><td>正文 15 档；不用按钮的 750，菜单不是主操作</td></tr>
+        <tr><td>双行说明</td><td>12 / 400</td><td>元信息档；说明放第二行，行高 58</td></tr>
+        <tr><td>面板宽度</td><td>min 208 / max 280</td><td>内容自适应；可用 <code>--menu-w</code> 显式定宽</td></tr>
+        <tr><td>最大高度</td><td>min(70vh, 420)</td><td>超出内滚；菜单不把整屏顶掉</td></tr>
+        <tr><td>描边</td><td>1px --border</td><td>深色下投影失效，描边是壳的边界</td></tr>
+        <tr><td>投影</td><td>0 10px 30px rgba(23,27,40,.16)</td><td>弹层档；<span class="d-alt">备选 --shadow-card（更轻，但会像普通卡）</span></td></tr>
+        <tr><td>与触发器间距</td><td>8px</td><td>顶栏 / 底栏 / 正文三处同一值，只换参照边</td></tr>
+        <tr><td>打开动效</td><td>200ms · 峰值 58%</td><td>0→<code>scale .96</code>；58%→<code>scale 1.012</code>；100%→<code>scale 1</code>。只缩放、不位移，锚点角固定；不是弹层的 380ms 滑入</td></tr>
+        <tr><td>超出量</td><td>scale 1.012</td><td>232 宽多约 2.8px，全部长在离锚点最远的两条边上；<span class="d-alt">0.6% 太弱、2% 开始像气泡</span></td></tr>
+        <tr><td>锚点</td><td>transform-origin 钉在触发器那一角</td><td>顶栏 top right / 底栏 bottom right / 正文按对齐边取 top left 或 top right；放中心会四面长</td></tr>
+        <tr><td>正文·裸三点</td><td>视觉 20 / 热区 44</td><td>T18-09；无圆底、无边框；默认 <code>--text-2</code>，打开 <code>--brand</code></td></tr>
+        <tr><td>正文·文字入口</td><td>14·650 + T18-05</td><td>品牌字自带语义；资产暂无筛选 / 排序图标，不新造</td></tr>
+        <tr><td>关闭动效</td><td>180ms · 先缩后隐</td><td>scale <code>1→.92</code> 连续一段（中间不插关键帧）；opacity 前 35% 保持 1，之后淡出。锚点角固定，不回弹</td></tr>
+        <tr><td>层级</td><td>--z-topbar + 1</td><td>必须高于顶栏；低于确认框遮罩</td></tr>
+        <tr><td>遮罩</td><td>无</td><td>透明点击层；菜单是轻量动作，不做变暗</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ================= 6. 待定 ================= -->
+  <section class="d-sec" id="s-pending">
+    <h2><span class="d-no">06</span> 待定项</h2>
+    <p class="d-note">下面八条是这版设计里真正需要你确认的，不是实现细节。每条都给了推荐值，你只挑不同意的。</p>
+    <div class="d-pending">
+      <div class="d-pending-card"><span class="d-pn">01</span><h3>外壳圆角取 20、24 还是 16？</h3><p>20 是「带描边的浮起块」，行 14 与壳同心；24 更接近浮起卡，但菜单会显得像一张小卡；16 更像设置列表。</p><div class="d-rec"><b>推荐 20。</b>壳是控件层，不是卡层。</div></div>
+      <div class="d-pending-card"><span class="d-pn">02</span><h3>行高 44 还是 46？字号 15 还是 14？</h3><p>44/15 与胶囊、搜索框同档，读起来像动作；46/14 更像设置行，但会跟 T17-19 撞脸。</p><div class="d-rec"><b>推荐 44 / 15·600。</b>菜单要短、要快。</div></div>
+      <div class="d-pending-card"><span class="d-pn">03</span><h3>继续做「无遮罩轻浮层」，还是改成底部动作菜单？</h3><p>轻浮层贴触发器，上下文强；底部动作菜单更重、更适合危险动作，但会遮住半屏。</p><div class="d-rec"><b>推荐轻浮层。</b>危险动作一律转 T21 确认框，不靠菜单本身承担。</div></div>
+      <div class="d-pending-card"><span class="d-pn">04</span><h3>勾选槽要常驻，还是只在选中时出现？</h3><p>常驻 20 槽，切换选项不横跳；只在选中时出现，未选中行更干净。</p><div class="d-rec"><b>推荐常驻。</b>「当前值」类菜单优先稳定，优先于省那 20px。</div></div>
+      <div class="d-pending-card"><span class="d-pn">05</span><h3>触发器打开态要不要转品牌色？</h3><p>圆钮转 <code>--brand-tint</code> + 品牌字，能清楚指出菜单来源；底栏格子里品牌字已经是「当前 tab」的信号，所以那一处改用中性 <code>--press</code> 底 + 深字，避免两颗同时发蓝。只保留按压态则更安静，但菜单开着时触发器看不出。</p><div class="d-rec"><b>推荐分触发器处理。</b>圆钮转品牌；底栏用中性底。</div></div>
+      <div class="d-pending-card"><span class="d-pn">06</span><h3>双行说明进不进基础档？</h3><p>进：菜单能承载「动作 + 一句解释」，适合时刻表、导出这类；不进：基础档只有单行，双行以后再说。</p><div class="d-rec"><b>推荐进。</b>只多一个 <code>has-desc</code>，不增加第二种壳。</div></div>
+      <div class="d-pending-card"><span class="d-pn">07</span><h3>宽度固定，还是内容自适应？</h3><p>固定 232 最稳，但短菜单会空；自适应最贴内容，但不同菜单右缘会参差。</p><div class="d-rec"><b>推荐 min 208 + 内容自适应</b>，需要固定时由宿主给 <code>--menu-w</code>。</div></div>
+      <div class="d-pending-card"><span class="d-pn">08</span><h3>轻微超出的幅度：1.2% 的 scale，够不够？</h3><p>现在峰值是 <code>scale 1.012</code>，232 宽约多 2.8px，全部长在离锚点最远的两条边上。再轻（0.6%）几乎看不出来；再重（2%）会开始像气泡弹出，和系统的克制感不搭。</p><div class="d-rec"><b>推荐 scale 1.012。</b>只缩不放位移；锚点角固定。</div></div>
+    </div>
+  </section>
+
+  <!-- ================= 7. Do / Don't ================= -->
+  <section class="d-sec" id="s-rules">
+    <h2><span class="d-no">07</span> Do / Don't 与边界</h2>
+    <p class="d-note">先把「什么时候不该用它」说清，再谈用法。菜单只承担短动作；内容多、要滚动、要填表、要确认的，都有各自的件。</p>
+    <table class="d-table" style="margin-bottom:18px">
+      <thead><tr><th>相邻件</th><th>它负责</th><th>菜单不接的原因</th></tr></thead>
+      <tbody>
+        <tr><td>T17-19 设置列表</td><td>常驻的设置行，每行一个长期入口</td><td>菜单是瞬态；把设置搬进菜单，用户每次都要先找触发器</td></tr>
+        <tr><td>T21 确认对话框</td><td>不可逆动作的二次确认</td><td>菜单项只负责「发起」，删除 / 清空这类动作点下去要转 T21</td></tr>
+        <tr><td>T10 半屏 / 悬浮弹层</td><td>内容多、需要滚动、要填表</td><td>菜单只放 3 到 7 个短动作；超过 7 个改用 T10</td></tr>
+        <tr><td>T17-13 底部导航</td><td>切换页面</td><td>菜单不承担导航；底栏 tab 是常驻结构，不塞进瞬态层</td></tr>
+      </tbody>
+    </table>
+    <div class="d-two">
+      <div class="d-rule">
+        <h3><i></i>Do</h3>
+        <ul>
+          <li><b>一个菜单只放当前上下文。</b>3 到 7 个动作；超过 7 个改用半屏列表或独立页面。</li>
+          <li><b>危险动作放最后，前面加分组线。</b>点下去转 T21 确认框，菜单不直接执行不可逆动作。</li>
+          <li><b>选中态只打勾，不铺整行 tint。</b>菜单是瞬态；tint 是「临时选中待确认」的语义，留给多选和站选器。</li>
+          <li><b>正文入口分两种皮。</b>通用「更多」用裸三点（T18-09）；筛选 / 排序用品牌文字 + T18-05 下箭头。资产暂无筛选、排序图标，不新造。</li>
+          <li><b>触发器保持可见并进入 <code>.is-open</code>。</b>关闭后焦点回到触发器。</li>
+          <li><b>行是整宽行，挂 <code>.press-flat</code>。</b>只换底、不缩放，壳不会被撑出边。</li>
+          <li><b>超出只做 scale，只留一个峰值。</b>58% 处越过终态约 1.2%，200ms 内落回；不做第二次回弹。</li>
+          <li><b>回收先缩后隐，但缩放只走一段连续曲线。</b>透明度单独延后 35%；不要用第二个缩放关键帧去分段，速度会在接缝处断一下。</li>
+          <li><b>位置由宿主显式给。</b>上开还是下开，按可用空间选，再写 <code>--menu-top</code> 或 <code>--menu-bottom</code>。</li>
+          <li><b>深色零分支。</b>壳、字、描边、投影全走令牌；深色只由令牌层重定义。</li>
+        </ul>
+      </div>
+      <div class="d-rule dont">
+        <h3><i></i>Don't</h3>
+        <ul>
+          <li><b>不要拿菜单当导航。</b>底栏 tab、顶栏标题、设置页入口是常驻结构，不塞进瞬态菜单。</li>
+          <li><b>不要用品牌实心做菜单项。</b>菜单不是主按钮；主操作留在页面里的 <code>.primary</code> / <code>.btn-primary</code>。</li>
+          <li><b>不要给菜单加变暗遮罩。</b>除非它已经变成确认框（T21）或半屏列表（T10）。</li>
+          <li><b>不要用箭头表示「可点」。</b>菜单项点击即执行；箭头承诺下一层，那是子菜单的事，本期不做。</li>
+          <li><b>不要一行有图标、一行没有。</b>要么整组都带 18px 图标列，要么整组都不带。</li>
+          <li><b>不要在正文入口再套 42 圆钮。</b>正文用裸三点或文字 + 下箭头；圆钮留给顶栏动作位。</li>
+          <li><b>不要临时画筛选 / 排序图标。</b>资产目前没有这两枚；先用文字 + T18-05，等图标进资产再扩图标档。</li>
+          <li><b>不要把菜单放在会被 <code>overflow:hidden</code> 裁掉的卡片里。</b>用固定层 + 显式坐标，避免被卡壳裁边。</li>
+          <li><b>不要自动翻转 / 自动测量。</b>摆位歧义处给显式属性，不做「空间不够就猜」。</li>
+          <li><b>不要把回收的缩放拆成两段关键帧。</b>接缝处速度会断，看起来会顿；缩放走一段，透明度单独延后。</li>
+          <li><b>不要从第一帧就开始掉透明度。</b>菜单还没缩回锚点就淡没了，还是会显得突兀；先缩后隐。</li>
+          <li><b>不要做二次回弹或振荡。</b>菜单是轻量动作；超出后一次落回就结束，不学气泡。</li>
+          <li><b>不要加 <code>translateY</code> 做「滑入」。</b>位移会让锚点那一侧的边也动，看起来就像向三边扩大；只缩放，锚点角才会钉死。</li>
+          <li><b>不要把 <code>transform-origin</code> 放到中心。</b>中心缩放会四面长，菜单会离开触发器、压到内容；锚点角必须钉在触发器那一侧。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 8. 接线 ================= -->
+  <section class="d-sec" id="s-wire">
+    <h2><span class="d-no">08</span> 接线草图</h2>
+    <p class="d-note">
+      下面是落码时计划新增的类名与结构，不是最终代码。菜单层是全屏透明点击层；菜单本身仍然是一个绝对定位的面板，坐标由宿主给。
+      本稿为了塞进手机框，<code>.menu-layer</code> 在演示里是 <code>absolute</code>；落码时改为 <code>fixed; inset:0</code>。
+    </p>
+    <p class="d-note">
+      <strong>件号暂记：</strong>T24-01 <code>.menu-layer / .menu</code>（点击层与壳）；T24-02 <code>.menu-item</code> 及 <code>.is-checked / .is-danger / .is-disabled</code>；
+      T24-03 <code>.menu-group-label / .menu-sep</code>；T24-04 <code>.menu-trigger.is-open</code>；T24-05 <code>.menu-dots</code>；T24-06 <code>.menu-text-trigger</code>；
+      T24-07 动效；T18-09 <code>.glyph-more</code>。定稿后再按件号表落号，不先写死。
+    </p>
+    <pre class="d-code"><span class="d-c">&lt;!-- 触发器：任何现有按钮都可以，只多一个 .menu-trigger 与打开态；
+     顶栏圆钮用 .icon-btn + T18-09；正文通用动作用 .menu-dots + T18-09；
+     筛选 / 排序用 .menu-text-trigger + T18-05（资产无筛选、排序图标，不新造） --&gt;</span>
+<span class="d-a">&lt;button</span> <span class="d-t">class</span>=<span class="d-s">"icon-btn menu-trigger"</span>
+        <span class="d-t">data-menu</span>=<span class="d-s">"menu-more"</span>
+        <span class="d-t">aria-haspopup</span>=<span class="d-s">"menu"</span> <span class="d-t">aria-expanded</span>=<span class="d-s">"false"</span><span class="d-a">&gt;</span><span class="d-a">&lt;i</span> <span class="d-t">class</span>=<span class="d-s">"glyph glyph-more"</span><span class="d-a">&gt;&lt;/i&gt;&lt;/button&gt;</span>
+
+<span class="d-c">&lt;!-- 菜单层：透明点击层 + 面板 --&gt;</span>
+<span class="d-a">&lt;div</span> <span class="d-t">class</span>=<span class="d-s">"menu-layer"</span> <span class="d-t">id</span>=<span class="d-s">"menu-more"</span> <span class="d-t">hidden</span><span class="d-a">&gt;</span>
+  <span class="d-a">&lt;div</span> <span class="d-t">class</span>=<span class="d-s">"menu"</span> <span class="d-t">role</span>=<span class="d-s">"menu"</span>
+       <span class="d-t">style</span>=<span class="d-s">"--menu-top:80px; --menu-right:14px; --menu-w:232px"</span><span class="d-a">&gt;</span>
+    <span class="d-a">&lt;button</span> <span class="d-t">class</span>=<span class="d-s">"menu-item"</span> <span class="d-t">role</span>=<span class="d-s">"menuitem"</span><span class="d-a">&gt;</span>分享这条路线<span class="d-a">&lt;/button&gt;</span>
+    <span class="d-a">&lt;button</span> <span class="d-t">class</span>=<span class="d-s">"menu-item"</span> <span class="d-t">role</span>=<span class="d-s">"menuitem"</span><span class="d-a">&gt;</span>复制路线摘要<span class="d-a">&lt;/button&gt;</span>
+    <span class="d-a">&lt;div</span> <span class="d-t">class</span>=<span class="d-s">"menu-sep"</span><span class="d-a">&gt;&lt;/div&gt;</span>
+    <span class="d-a">&lt;button</span> <span class="d-t">class</span>=<span class="d-s">"menu-item is-danger"</span> <span class="d-t">role</span>=<span class="d-s">"menuitem"</span><span class="d-a">&gt;</span>清空已存路线<span class="d-a">&lt;/button&gt;</span>
+  <span class="d-a">&lt;/div&gt;</span>
+<span class="d-a">&lt;/div&gt;</span>
+
+<span class="d-c">/* 落码时新增：.menu-layer / .menu / .menu-item / .menu-text / .menu-desc
+   .menu-meta / .menu-check / .menu-group-label / .menu-sep / .menu-trigger.is-open
+   状态：.is-checked / .is-danger / .is-disabled
+   动效：打开 menu-in-soft 200ms ease-out（58% 峰值 scale 1.012，只缩放、不位移）；
+         关闭 menu-out 180ms（scale 1→.92 一段连续；opacity 前 35% 保持 1，之后淡出）
+   复用：T12-06 .check-glyph、T13-01 .press-flat、T18 图形件 */</span></pre>
+    <p class="d-note" style="margin-top:14px">
+      交互口径：点击触发器切换；点菜单外或 <kbd>Esc</kbd> 关闭；选择一项后关闭（打开确认框的除外）；
+      同一时间只开一个；打开期间页面不滚动，若宿主允许滚动则滚动即关闭；键盘 <kbd>↑</kbd><kbd>↓</kbd> 移动、<kbd>Home</kbd><kbd>End</kbd> 首尾、<kbd>Enter</kbd>/<kbd>Space</kbd> 执行；
+      关闭后焦点回触发器。菜单打开时触发器保留 <code>.is-open</code>。
+    </p>
+  </section>
+
+  <div class="d-foot">
+    RTGo_slate · T24 菜单基础设计 v0.2 · 2026-11-08 · 已落码到 v1.20.0；本页保留为设计对照。
+  </div>
+</div>
+
+<div class="d-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var currentLayer = null;
+  var currentTrigger = null;
+
+  function toast(text){
+    var el = document.getElementById('toast');
+    el.textContent = text;
+    el.classList.add('on');
+    clearTimeout(el._t);
+    el._t = setTimeout(function(){ el.classList.remove('on'); }, 1800);
+  }
+
+  function itemsOf(layer){
+    return Array.prototype.slice.call(layer.querySelectorAll('.menu-item:not(.is-disabled):not(:disabled)'));
+  }
+
+  function triggerOf(layer){
+    return document.querySelector('.menu-trigger[data-menu="' + layer.dataset.layer + '"]');
+  }
+
+  function openMenu(trigger, layer){
+    if (currentLayer && currentLayer !== layer) closeLayer(currentLayer, true, false);
+    currentLayer = layer;
+    currentTrigger = trigger;
+    layer.hidden = false;
+    layer.classList.remove('is-closing');
+    trigger.classList.add('is-open');
+    trigger.setAttribute('aria-expanded','true');
+    var panel = layer.querySelector('.menu');
+    if (panel) {
+      panel.tabIndex = -1;
+      panel.focus({preventScroll:true});
+    }
+  }
+
+  function closeLayer(layer, immediate, returnFocus){
+    if (!layer) return;
+    var trigger = triggerOf(layer);
+    if (currentLayer === layer) {
+      currentLayer = null;
+      currentTrigger = null;
+    }
+    if (trigger) {
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded','false');
+    }
+    if (immediate) {
+      layer.hidden = true;
+      layer.classList.remove('is-closing');
+    } else {
+      layer.classList.add('is-closing');
+      var menu = layer.querySelector('.menu');
+      var outMs = (menu && menu.classList.contains('is-slow')) ? 720 : 180;
+      setTimeout(function(){
+        layer.hidden = true;
+        layer.classList.remove('is-closing');
+      }, outMs + 20);
+    }
+    if (returnFocus && trigger) trigger.focus({preventScroll:true});
+  }
+
+  document.querySelectorAll('.menu-trigger').forEach(function(trigger){
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      var layer = document.querySelector('.menu-layer[data-layer="' + trigger.dataset.menu + '"]');
+      if (!layer) return;
+      if (!layer.hidden) closeLayer(layer, false, true);
+      else openMenu(trigger, layer);
+    });
+  });
+
+  document.querySelectorAll('.menu-layer').forEach(function(layer){
+    layer.addEventListener('click', function(e){
+      if (e.target === layer) closeLayer(layer, false, true);
+    });
+    layer.querySelectorAll('.menu-item').forEach(function(item){
+      item.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (item.classList.contains('is-disabled') || item.disabled) return;
+
+        if (item.dataset.theme) {
+          setTheme(item.dataset.theme);
+          toast('外观已切换为「' + item.querySelector('.menu-text').textContent + '」（示例）');
+          closeLayer(layer, false, true);
+          return;
+        }
+
+        toast('已选择「' + (item.querySelector('.menu-text') || item).textContent.trim() + '」（示例）');
+        closeLayer(layer, false, true);
+      });
+    });
+  });
+
+  document.addEventListener('keydown', function(e){
+    var layer = currentLayer;
+    if (!layer) {
+      layer = Array.prototype.find.call(document.querySelectorAll('.menu-layer'), function(l){ return !l.hidden; });
+    }
+    if (!layer) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLayer(layer, false, true);
+      return;
+    }
+    if (['ArrowDown','ArrowUp','Home','End'].indexOf(e.key) < 0) return;
+    var items = itemsOf(layer);
+    if (!items.length) return;
+    e.preventDefault();
+    var i = items.indexOf(document.activeElement);
+    if (i < 0) i = 0;
+    if (e.key === 'ArrowDown') i = (i + 1) % items.length;
+    if (e.key === 'ArrowUp') i = (i - 1 + items.length) % items.length;
+    if (e.key === 'Home') i = 0;
+    if (e.key === 'End') i = items.length - 1;
+    items[i].focus({preventScroll:true});
+  });
+
+  document.addEventListener('pointerdown', function(e){
+    if (!currentLayer) return;
+    if (!currentLayer.contains(e.target)) closeLayer(currentLayer, false, false);
+  });
+
+  /* ---- 动效实验室（只在本稿） ---- */
+  var motionLayer = document.querySelector('.menu-layer[data-layer="menu-motion"]');
+  var motionTrigger = document.getElementById('motionTrigger');
+  var motionMenu = document.getElementById('motionMenu');
+  var motionReplay = document.getElementById('motionReplay');
+  var motionClose = document.getElementById('motionClose');
+  var motionPlain = document.getElementById('motionPlain');
+  var motionSlow = document.getElementById('motionSlow');
+
+  function replayMotion(){
+    if (!motionLayer || !motionTrigger) return;
+    closeLayer(motionLayer, true, false);
+    setTimeout(function(){
+      openMenu(motionTrigger, motionLayer);
+    }, 160);
+  }
+
+  motionReplay.addEventListener('click', replayMotion);
+  motionClose.addEventListener('click', function(){
+    if (motionLayer && !motionLayer.hidden) closeLayer(motionLayer, false, true);
+  });
+
+  motionPlain.addEventListener('click', function(){
+    motionMenu.classList.toggle('is-plain');
+    var plain = motionMenu.classList.contains('is-plain');
+    motionPlain.classList.toggle('on', plain);
+    motionPlain.textContent = plain ? '恢复：轻微超出' : '对比：无超出';
+    replayMotion();
+  });
+
+  motionSlow.addEventListener('click', function(){
+    motionMenu.classList.toggle('is-slow');
+    var slow = motionMenu.classList.contains('is-slow');
+    motionSlow.classList.toggle('on', slow);
+    motionSlow.textContent = slow ? '正常速度' : '慢放 4×';
+    replayMotion();
+  });
+
+  function setTheme(t){
+    document.body.classList.remove('theme-light','theme-dark');
+    if (t !== 'auto') document.body.classList.add('theme-' + t);
+    document.querySelectorAll('#themes button').forEach(function(b){
+      b.classList.toggle('on', b.dataset.t === t);
+    });
+    document.querySelectorAll('.menu-item[data-theme]').forEach(function(row){
+      var on = row.dataset.theme === t;
+      row.classList.toggle('is-checked', on);
+      row.setAttribute('aria-checked', on ? 'true' : 'false');
+      var box = row.querySelector('.menu-check');
+      if (box) box.innerHTML = on ? '<i class="check-glyph"></i>' : '';
+    });
+  }
+
+  document.getElementById('themes').addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if (!b) return;
+    setTheme(b.dataset.t);
+  });
+})();
+</script>
+</body>
+</html>
