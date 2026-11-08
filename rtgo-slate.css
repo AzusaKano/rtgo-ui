@@ -600,6 +600,15 @@ button::after{display:none;width:0;height:0;border:0}
   font-size: var(--fs-sub-13);
 }
 
+/* ===== T07-03/04 浅底深字档（v1.21.1，资产自建）：黄系线等浅数据色上白字对比不足 =====
+   加 .is-on-light 只把墨色换成 #171b28（浅档 --text 现值），底、几何、字重一律不动；
+   不加仍是白字，既有样片与宿主行为零变化。
+   墨色写死不跟主题：这层底是数据色（线路色/方式色），深浅两档都是同一块色，
+   若跟着 --text 走，暗档会回到浅底白字 —— 与 #fff 白字同属「实心上的墨，不是令牌」。
+   覆盖三处线路标识：.line-pill（含 .sd-pill / .snp-pill 组合）、方案卡轴 .mode-badge、实验轴 .tl-badge。 */
+.line-pill.is-on-light,.tl-badge.is-on-light{color:#171b28}
+.route-card .axis-route .mode-badge.is-on-light{color:#171b28}
+
 /* ===== T06-04 交换钮定稿 — index:342-360 ===== */
 .swap-btn{
   width:100%;
@@ -1251,8 +1260,14 @@ button::after{display:none;width:0;height:0;border:0}
 .station-line-scroll-wrap{position:relative;flex:1 1 0;min-width:0}
 .sheet-panel .hscroll-fade,.station-picker-panel .hscroll-fade{background:linear-gradient(to left,var(--sheet),transparent)}
 .station-line-chip{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none;width:auto;min-width:0;max-width:none;margin:0;padding:0 11px;height:34px;line-height:34px;box-sizing:border-box;border:1px solid var(--border);border-radius:var(--radius-pill);background:var(--card-lift);color:var(--text-strong);font-size:var(--fs-small-12);font-weight:650;white-space:nowrap}
-.station-line-chip.active{color:#fff}
-.station-line-chip.active .station-line-dot{background:#fff!important}
+/* T07-02 选中态 = 实心档（v1.21）：底 / 字点两个自由度走注入位，不绑线路色，缺注入即品牌蓝。
+   · --chip-fill：实心底 + 同色描边 —— 线路数据色、语义色（--green/--warn/--danger）、功能色都行；
+   · --chip-ink ：实心上的字与圆点色 —— 浅色线路给深字用 --chip-ink:var(--text)；
+   · 圆点可选：不写 <i class="station-line-dot"> 就只出文字，flex 居中不塌。
+   宿主三种给法都成立：① 变量写在 chip 自身 ② 写在容器上继承下来 ③ 旧写法内联
+   background/border-color（内联优先，仍盖过本条，母本 wxml 无需迁移）。 */
+.station-line-chip.active{background:var(--chip-fill,var(--brand));border-color:var(--chip-fill,var(--brand));color:var(--chip-ink,#fff)}
+.station-line-chip.active .station-line-dot{background:var(--chip-ink,#fff)!important}
 .station-line-dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
 .line-grid-overlay{position:absolute;top:0;left:0;right:0;bottom:0;z-index:var(--z-overlay);box-sizing:border-box;background:var(--sheet);border-radius:var(--radius-card) var(--radius-card) 0 0;padding:18px 14px max(18px,env(safe-area-inset-bottom));display:flex;flex-direction:column;animation:rail-fade-in 160ms ease-out}
 .line-grid-expand-row{flex:0 0 auto;display:flex;justify-content:flex-end;align-items:center;padding:0 4px 13px}

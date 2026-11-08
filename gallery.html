@@ -346,15 +346,16 @@ button{cursor:pointer;pointer-events:auto}
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-02 · T10-06</span><span class="g-cls">.station-line-bar .station-line-chip .station-line-dot .line-expand-btn .line-expand-arrow .station-line-list .station-line-scroll-wrap .sheet-panel .hscroll-fade</span><span class="g-src">station-picker:58-80</span></figcaption>
       <div class="g-stage">
-        <div class="station-line-bar"><div class="station-line-scroll-wrap"><div class="station-line-scroll"><div class="station-line-list"><button class="station-line-chip active" data-hover-class="press-scale"><i class="station-line-dot" style="background:#3970e5"></i>3号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#D98A5B"></i>14号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#4F8064"></i>21号线</button></div></div><div class="hscroll-fade"></div></div><view class="line-expand-btn" data-hover-class="press"><view class="glyph glyph-chevron-down line-expand-arrow"></view></view></div>
+        <div class="station-line-bar"><div class="station-line-scroll-wrap"><div class="station-line-scroll"><div class="station-line-list"><button class="station-line-chip active" data-hover-class="press-scale" style="--chip-fill:#3970e5"><i class="station-line-dot" style="background:#3970e5"></i>3号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#D98A5B"></i>14号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#4F8064"></i>21号线</button></div></div><div class="hscroll-fade"></div></div><view class="line-expand-btn" data-hover-class="press"><view class="glyph glyph-chevron-down line-expand-arrow"></view></view></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-03/04/05/06</span><span class="g-cls">.line-pill .sd-pill .snp-pill .mode-badge .mode-chip .seg-type .station-chip-wrap .station-chip .station-chips</span><span class="g-src">index:81,176,316-338,102-103</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-03/04/05/06</span><span class="g-cls">.line-pill .sd-pill .snp-pill .mode-badge .mode-chip .seg-type .station-chip-wrap .station-chip .station-chips .is-on-light</span><span class="g-src">index:81,176,316-338,102-103</span></figcaption>
       <div class="g-stage">
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
           <text class="line-pill" style="background:#3970e5">3号线</text>
           <text class="line-pill sd-pill" style="background:#414f8d">城际</text>
           <text class="line-pill snp-pill" style="background:#35a85a">APM</text>
+          <text class="line-pill is-on-light" style="background:#F3D03E">6号线</text>
           <div class="mode-inner"><span class="mode-chip"><text class="mode-badge" style="background:#3970e5">3号线</text></span><span class="mode-chip"><text class="mode-badge" style="background:#414f8d">城际</text></span></div>
           <text class="seg-type" style="background:var(--brand-tint);color:var(--brand)">地铁</text>
         </div>
@@ -615,7 +616,7 @@ button{cursor:pointer;pointer-events:auto}
           <div class="line-grid-overlay" style="position:absolute">
             <div class="line-grid-expand-row"><view class="line-expand-btn" data-hover-class="press"><view class="glyph glyph-chevron-down line-expand-arrow"></view></view></div>
             <div class="line-grid-scroll"><div class="line-grid-body">
-              <button class="station-line-chip active" data-hover-class="press-scale"><i class="station-line-dot" style="background:#3970e5"></i>3号线</button>
+              <button class="station-line-chip active" data-hover-class="press-scale">3号线</button>
               <button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#35a85a"></i>1号线</button>
               <button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#D98A5B"></i>14号线</button>
               <button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#4F8064"></i>21号线</button>
@@ -623,7 +624,7 @@ button{cursor:pointer;pointer-events:auto}
             </div></div>
           </div>
         </div>
-        <p class="g-hint">覆盖层 rail-fade-in 160ms；收回钮与展开钮是同一枚 T18-04 描边下箭头，靠 <code>rotate(180deg)</code> 翻成朝上，不加光学补偿（描边件墨迹带对称，按盒心居中即可）。</p>
+        <p class="g-hint">覆盖层 rail-fade-in 160ms；收回钮与展开钮是同一枚 T18-04 描边下箭头，靠 <code>rotate(180deg)</code> 翻成朝上，不加光学补偿（描边件墨迹带对称，按盒心居中即可）。选中那枚<b>既没注入底色也没给圆点</b>：实心底缺省落 <code>--brand</code>、圆点整个省略也不塌，不传线路色时同样成立。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-04 · T11-04</span><span class="g-cls">.er-sheet-mask .er-sheet .er-sheet-title .er-opts .er-opt .er-input .er-sheet-acts .er-sheet-ok · .ex-empty</span><span class="g-src">exit-review.wxss</span></figcaption>
