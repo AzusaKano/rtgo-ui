@@ -2163,9 +2163,7 @@ button::after{display:none;width:0;height:0;border:0}
 /* T18-07 列表三横条（「打开车站列表」/ 线路网格入口）
    13×10 盒（非方形，同 .nb-pin）· 三条 2px 实心、圆角 1 → 与母本 `.pick-icon` 的
    「13×10 / 三根 2px 条 / space-between」逐值一致。
-   ⚠ 与 Flutter 侧的 `SlateGlyphKind.pick` 形状不同：那边画的是「圆点 + 线」的项目符号列表
-   （canvas 里三个 r=1.25 圆点在 x=6，线从 x=10 到 18）。本件照母本画，因为母本三处宿主
-   （index 手动输入两块 + station-picker）用的都是三横条。两边要不要统一另议。 */
+   Flutter 侧 2026-11-08 已统一为同一 13×10 三横条（`SlateGlyph.pick()`）。 */
 .glyph-pick{width:13px;height:10px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='13' height='2' rx='1'/%3E%3Crect x='0' y='4' width='13' height='2' rx='1'/%3E%3Crect x='0' y='8' width='13' height='2' rx='1'/%3E%3C/g%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='13' height='2' rx='1'/%3E%3Crect x='0' y='4' width='13' height='2' rx='1'/%3E%3Crect x='0' y='8' width='13' height='2' rx='1'/%3E%3C/g%3E%3C/svg%3E")}
