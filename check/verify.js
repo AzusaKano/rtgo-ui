@@ -281,8 +281,18 @@ const A = [
   ['T07-01', '胶囊行高(内容盒)', 'idx', '.chip', 'line-height', 'last'],
   ['T07-01', '胶囊底(基态)', 'idx', '.chip', 'background', 'first'],
   ['T07-01', 'active 底', 'idx', '.chip.active', 'background'],
-  ['T07-02', '线路胶囊高', 'sp', '.station-line-chip', 'height'],
-  ['T07-02', '线路胶囊描边', 'sp', '.station-line-chip', 'border'],
+  // ⚠ 这 7 条必须带 'first'：本组件的基态规则后面还跟一条按压组的纯 transition 规则
+  //（`.station-picker-close,.station-picker-map,.line-expand-btn,.station-line-chip,…{transition}`，
+  // 解析时按逗号拆成单条），取 'last' 会命中那条只有 transition 的规则 ⇒ 属性不存在 ⇒ 静默落「未做」。
+  ['T07-02', '线路胶囊高', 'sp', '.station-line-chip', 'height', 'first'],
+  ['T07-02', '线路胶囊描边', 'sp', '.station-line-chip', 'border', 'first'],
+  // 右侧展开钮（2026-11-09）：本行此前只被 T13-03 基态组按按压过渡顺带核过，
+  // 34 圆 / 浅底 / 透明描边三个外观值没有看守 —— 改小一圈不会有人报。
+  ['T07-02', '展开钮宽', 'sp', '.line-expand-btn', 'width', 'first'],
+  ['T07-02', '展开钮高', 'sp', '.line-expand-btn', 'height', 'first'],
+  ['T07-02', '展开钮正圆', 'sp', '.line-expand-btn', 'border-radius', 'first'],
+  ['T07-02', '展开钮底', 'sp', '.line-expand-btn', 'background', 'first'],
+  ['T07-02', '展开钮描边(占位)', 'sp', '.line-expand-btn', 'border', 'first'],
   ['T07-03', '线路色胶囊高', 'idx', '.line-pill', 'min-height', 'last'],
   ['T07-03', 'snp 内胶囊高(作用域件)', 'snp', '.line-pill', 'min-height', null, '.snp-panel .line-pill'],
   ['T07-04', '方案卡胶囊', 'idx', '.route-card .axis-route .mode-badge', 'min-height'],

@@ -1,7 +1,6 @@
 # RTGo_slate — 移动端设计系统（通用 CSS 资产包）
 
-一套**拿来就能用的界面词汇表**：令牌 + 组件 + 展示页。每个件都经过逐值对账，
-不是凭感觉画的设计稿；改观感只需要动令牌，不用碰组件。
+一套拿来就能用的界面词汇表：令牌 + 组件 + 展示页。每个件都与母本逐值对账；改观感只动令牌，不碰组件。
 
 > **同源另一范式**：同一套设计语言的 Flutter 表达在 `rtgo-flutter-ui` 仓。
 > 两边共用同一套组件词表（T-ID），令牌值互相一致。
@@ -44,16 +43,16 @@
 </div>
 ```
 
-**跟随系统**是不加类；要**手动切**就再引 `theme-overrides.css`，然后给 `<body>` 挂 `theme-light` / `theme-dark`（都不挂 = 跟随系统）。
+不加类即跟随系统；要手动切就再引 `theme-overrides.css`，然后给 `<body>` 挂 `theme-light` / `theme-dark`（都不挂 = 跟随系统）。
 
-改主题只覆盖令牌。**要注意写在哪一层**：令牌声明在 `body` 上，而主题档用的是 `body.theme-light` / `body.theme-dark`，比 `body` 多一个类、权重更高。所以分两种情况：
+改主题只覆盖令牌。写在哪一层会影响生效：令牌声明在 `body` 上，而主题档用的是 `body.theme-light` / `body.theme-dark`，比 `body` 多一个类、权重更高。所以分两种情况：
 
 ```css
 /* ① 跟随系统（不挂主题类）：写 body 就够 */
 body { --brand: #1f6feb; --card: #ffffff; }
 
 /* ② 手动切主题的页面：两档各写一份，并且放在 theme-overrides.css 之后。
-      只写 ① 会被主题档盖掉——它权重更高，跟书写顺序无关。 */
+      只写 ① 会被主题档盖掉：它权重更高，与书写顺序无关。 */
 body.theme-light { --brand: #1f6feb; }
 body.theme-dark  { --brand: #7aa2ff; }   /* 深色下品牌色要提亮，否则对比度不够 */
 ```
