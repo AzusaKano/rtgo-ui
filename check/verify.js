@@ -125,12 +125,40 @@ const resolveMaster = makeResolver(masterTokenMap);
 const resolveVars = makeResolver(rtgoTokenMap);
 
 function rulesOf(srcObj, file) { return srcObj[file].rules; }
-function findDecl(srcObj, file, sel, prop, occ) {
+/* 同名规则合并后取一条声明。
+   同名规则可能有多条：逗号列表在 parseRules 里被拆成「每选择器一条」，同一个类还可能被
+   后面的状态/媒体/按压组再次声明。这里按源码顺序合并声明，再取属性：
+     - occ='last'（默认）：最后一个「声明了该属性」的值 —— 即浏览器级联后的现值；
+     - occ='first'：第一个「声明了该属性」的值 —— 基态值（对比派生档/基础档时用）。
+   关键：只带 transition 的按压组不会声明目标属性，因此不再把它前面的基态值盖成 null。
+   2026-11-09 那批 29 条静默「未做」正是 last 命中一条没有该属性的同名规则造成的。
+   断言本身是逗号列表时（如 .panel,.route-card,.summary,.segment），逐成员取合并值；
+   要求每个成员都存在且值一致，否则视为取不到（不能拿半个组冒充整组）。 */
+function mergedDecls(srcObj, file, sel, occ) {
   const nsel = norm(sel);
-  const hits = rulesOf(srcObj, file).filter(r => norm(r.sel) === nsel);
-  if (!hits.length) return null;
-  const r = occ === 'first' ? hits[0] : hits[hits.length - 1];
-  return r.decls.has(prop) ? r.decls.get(prop) : null;
+  const out = new Map();
+  rulesOf(srcObj, file).forEach(r => {
+    if (norm(r.sel) !== nsel) return;
+    r.decls.forEach((v, k) => {
+      if (occ !== 'first' || !out.has(k)) out.set(k, v);
+    });
+  });
+  return out;
+}
+function findDecl(srcObj, file, sel, prop, occ) {
+  const parts = splitSel(String(sel));
+  if (parts.length > 1) {
+    let v = null;
+    for (const p of parts) {
+      const x = findDecl(srcObj, file, p, prop, occ);
+      if (x == null) return null;
+      if (v == null) v = x;
+      else if (norm(v) !== norm(x)) return null;
+    }
+    return v;
+  }
+  const map = mergedDecls(srcObj, file, sel, occ);
+  return map.has(prop) ? map.get(prop) : null;
 }
 
 /* ---------- 结果容器 ---------- */
@@ -170,11 +198,27 @@ function cmpConvert(id, item, file, sel, prop, occ, expect) {
   row(id, item + ' · ' + sel + '{' + prop + '}', m + ' → ' + expect, g, ok ? '换件' : '不通过', 'B 换件记录：T15 口径换算，值零漂移由 expect 钉住');
   return ok;
 }
+/* 基态组断言：断言的选择器本身就是一组逗号列表，逐个成员比对 transition。
+   以前拿整串组名去精确匹配规则，parseRules 拆条后永远取不到 ⇒ T13 七组全红。
+   这里要求每个成员都真的有 transition，且与母本同名成员解析后相等。 */
 function cmpGroup(id, item, file, sel) {
-  const pick = (o, key) => { const nsel = norm(sel); const hits = rulesOf(o, key).filter(r => norm(r.sel) === nsel); return hits.length ? hits[hits.length - 1] : null; };
-  const m = pick(master, file), g = pick(rtgo, 'css');
-  const ok = !!m && !!g && norm(m.sel) === norm(g.sel) && norm(resolveMaster(m.decls.get('transition') || '')) === norm(resolveVars(g.decls.get('transition') || ''));
-  row(id, item, m ? (m.decls.get('transition') || '') + ' ← ' + m.sel.slice(0, 60) + '…' : null, g ? (g.decls.get('transition') || '') + ' ← ' + g.sel.slice(0, 60) + '…' : null, ok ? '通过' : '不通过');
+  const parts = splitSel(sel);
+  const pick = (o, key, p) => {
+    const nsel = norm(p);
+    const hits = rulesOf(o, key).filter(r => norm(r.sel) === nsel && r.decls.has('transition'));
+    return hits.length ? hits[hits.length - 1].decls.get('transition') : null;
+  };
+  const m = new Map(), g = new Map();
+  parts.forEach(p => {
+    const mv = pick(master, file, p); if (mv != null) m.set(norm(p), mv);
+    const gv = pick(rtgo, 'css', p); if (gv != null) g.set(norm(p), gv);
+  });
+  let ok = m.size === parts.length && g.size === parts.length;
+  if (ok) for (const [k, mv] of m) {
+    if (!g.has(k) || norm(resolveMaster(mv)) !== norm(resolveVars(g.get(k)))) { ok = false; break; }
+  }
+  const fmt = x => [...x.values()][0] + '（' + x.size + '/' + parts.length + ' 成员）';
+  row(id, item, m.size ? fmt(m) : null, g.size ? fmt(g) : null, ok ? '通过' : '不通过');
   return ok;
 }
 
@@ -233,12 +277,13 @@ const A = [
   ['T03-02', '顶栏下边', 'idx', '.ios-fixed-topbar', 'border-bottom'],
   ['T03-02', '顶栏投影', 'idx', '.ios-fixed-topbar', 'box-shadow'],
   // T03-02b 半透明档：配色出处是旧代 .fixed-topbar（母本 index:376-395），
-  // 故两侧选择器不同名——第 7 参数 rtgoSel 指资产变体档；occ=first 取基础规则（media 覆盖在后面）。
+  // 故两侧选择器不同名——第 7 参数 rtgoSel 指资产变体档；occ=first 取基础档（不是半透明变体）。
   ['T03-02b', '半透明档底色', 'idx', '.fixed-topbar', 'background', 'first', '.ios-fixed-topbar.is-translucent'],
   ['T03-02b', '半透明档下边框', 'idx', '.fixed-topbar', 'border-bottom', 'first', '.ios-fixed-topbar.is-translucent'],
   ['T03-04', '返回钮圆', 'idx', '.back', 'border-radius'],
-  ['T03-05', '返回字形', 'idx', '.back-glyph', 'font-size'],
-  ['T03-05', 'home 字形加粗', 'idx', '.home-glyph', 'font-weight'],
+  // T03-05：母本已把返回钮字形换成 T18-01/T18-02 图形件（.glyph-back / .glyph-home），
+  // 旧的字符字形 .back-glyph / .home-glyph 在母本中已不存在。
+  // 2026-11-10 删除两条过期断言；图形件的尺寸/线宽由 T18-01 单独看守。
   ['T03-01', '标题字号', 'idx', '.title', 'font-size'],
   ['T03-01', '副标字号', 'idx', '.sub', 'font-size'],
   ['T04-01', '卡壳圆角', 'idx', '.panel,.route-card,.summary,.segment', 'border-radius'],
@@ -281,9 +326,9 @@ const A = [
   ['T07-01', '胶囊行高(内容盒)', 'idx', '.chip', 'line-height', 'last'],
   ['T07-01', '胶囊底(基态)', 'idx', '.chip', 'background', 'first'],
   ['T07-01', 'active 底', 'idx', '.chip.active', 'background'],
-  // ⚠ 这 7 条必须带 'first'：本组件的基态规则后面还跟一条按压组的纯 transition 规则
-  //（`.station-picker-close,.station-picker-map,.line-expand-btn,.station-line-chip,…{transition}`，
-  // 解析时按逗号拆成单条），取 'last' 会命中那条只有 transition 的规则 ⇒ 属性不存在 ⇒ 静默落「未做」。
+  // 这 7 条显式带 'first' 是保留「基态值」语义：本组件后面还有按压组只声明 transition，
+  // 新版 findDecl 已会跳过不声明目标属性的同名规则；这里带 first 是为了钉住基态，
+  // 不随后面新增的状态规则漂（2026-11-10 匹配模型统一后，first/last 都不再会被按压组抢走）。
   ['T07-02', '线路胶囊高', 'sp', '.station-line-chip', 'height', 'first'],
   ['T07-02', '线路胶囊描边', 'sp', '.station-line-chip', 'border', 'first'],
   // 右侧展开钮（2026-11-09）：本行此前只被 T13-03 基态组按按压过渡顺带核过，
@@ -351,7 +396,8 @@ const A = [
   ['T10-03', 'snp 宽', 'snp', '.snp-panel', 'width'],
   ['T10-03', 'snp 投影', 'snp', '.snp-panel', 'box-shadow'],
   ['T10-05', '关闭钮', 'sp', '.station-picker-close', 'width'],
-  ['T10-05', '关闭叉', 'sp', '.station-picker-close-x', 'font-size'],
+  // T10-05：母本关闭叉已换成 .glyph-close（T18-02），旧的字符 × 规则 .station-picker-close-x
+  // 在母本中已不存在；2026-11-10 删除该过期断言，图形件由 T18-02 看守。
   ['T11-01', '错误条', 'idx', '.error', 'background'],
   ['T11-02', '警示卡', 'idx', '.service-warning-card', 'background'],
   ['T11-02', '警示卡投影', 'idx', '.service-warning-card', 'box-shadow'],
@@ -559,7 +605,7 @@ if (HAVE_HOST) (function t17Audit() {
     ['T19-01', '壳形态自适应档', 'ig', '.ig-panel', 'max-height', null, '86vh'],
     ['T19-01', '壳底', 'ig', '.ig-panel', 'background', null, 'var(--sheet)'],
     ['T19-02', '头部标题', 'ig', '.ig-head-title', 'font-size', null, 'var(--fs-title-21)'],
-    ['T19-02', '关闭钮', 'ig', '.ig-close', 'width', 'first', '42px'],   // last 出现是 transition 规则
+    ['T19-02', '关闭钮', 'ig', '.ig-close', 'width', 'first', '42px'],   // 基态值（后面的按压组只带 transition，不参与取值）
     ['T19-03', '通栏滚动区（margin 补偿）', 'ig', '.ig-body', 'margin', null, '0 -14px'],
     ['T19-03', '通栏滚动区（padding 补位）', 'ig', '.ig-body', 'padding', null, '0 14px'],
     ['T19-04', '要点列表缩进', 'ig', '.ig-p2', 'padding', null, '7px 0 0 15px'],
