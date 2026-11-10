@@ -319,15 +319,15 @@ button{cursor:pointer;pointer-events:auto}
         <div class="route-actions" style="margin-top:12px;padding:0"><button class="expand-btn" data-hover-class="expand-hover"><view class="action-glyph"></view>路线预览</button></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-13</span><span class="g-cls">.icon-btn（对照 .back .back-glyph）</span><span class="g-src">宿主新增件：几何沿用 .back，字形自选</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-13</span><span class="g-cls">.icon-btn .glyph-more-disc（对照 .back .back-glyph）</span><span class="g-src">宿主新增件：几何沿用 .back，字形自选</span></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:12px">
           <view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view>
           <view class="icon-btn" data-hover-class="press">☾</view>
           <view class="icon-btn" data-hover-class="press">☀</view>
-          <view class="icon-btn" data-hover-class="press">⋯</view>
+          <view class="icon-btn" data-hover-class="press"><i class="glyph glyph-more-disc"></i></view>
         </div>
-        <p class="g-hint">左边是返回钮 <code>.back</code>（字形按 ‹ 调过）；右边三颗是 <code>.icon-btn</code>，换任何字符都居中对齐，不会被字形带偏。</p>
+        <p class="g-hint">左边是返回钮 <code>.back</code>（字形按 ‹ 调过）；右边三颗是 <code>.icon-btn</code>，放字符都居中对齐，不会被字形带偏。<br>第三颗放的是三点图形件：42 圆里必须用 T18-10 <code>.glyph-more-disc</code>（24 盒，点径 3.5）；用 T18-09 的 20 盒会显得又小又细（跨度只剩直径的 28.6%、点径 2.0）。「里面显得小」是字形档位的事，不是这个壳的事。</p>
       </div>
     </figure>
   </div>
@@ -1076,11 +1076,11 @@ button{cursor:pointer;pointer-events:auto}
       <p class="g-hint">壳 20 / 内距 6 / 行 44·15·600 / radius 14；勾选槽 20 常驻，危险行只换字色（按压换 <code>--error-bg</code>），禁用 <code>.4</code> + 行尾值。菜单只发起动作，清空这类要点下去转 T21。</p>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-04 / T24-05 / T24-06</span><span class="g-cls">.icon-btn.menu-trigger.is-open .menu-dots .is-edge .menu-text-trigger .glyph-more .glyph-caret-down .bnav .cell.menu-trigger.is-open</span><span class="g-src">自建：顶栏圆钮 / 正文裸三点 / 正文文字 + T18-05 / 底栏更多</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-04 / T24-05 / T24-06</span><span class="g-cls">.icon-btn.menu-trigger.is-open .menu-dots .is-edge .menu-text-trigger .glyph-more-disc .glyph-more .glyph-caret-down .bnav .cell.menu-trigger.is-open</span><span class="g-src">自建：顶栏圆钮 / 正文裸三点 / 正文文字 + T18-05 / 底栏更多</span></figcaption>
       <div class="g-stage" style="display:grid;gap:16px">
         <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
-          <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
-          <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
+          <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
           <button class="menu-dots" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
           <button class="menu-dots menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
           <button class="menu-text-trigger">筛选<i class="glyph glyph-caret-down"></i></button>
@@ -1097,7 +1097,7 @@ button{cursor:pointer;pointer-events:auto}
             <button class="cell menu-trigger is-open"><span class="g-bn-more"><i class="glyph glyph-more"></i></span><span>更多</span></button>
           </nav>
         </div>
-        <p class="g-hint">顶栏 42 圆钮 / 正文裸三点（无圆底、无边框，视觉 20 / 热区 44；卡片右缘加 <code>.is-edge</code>）/ 正文品牌文字 + T18-05 / 底栏更多格用中性 <code>--press</code> + 深字。筛选、排序图标不在资产里，不要临时画。</p>
+        <p class="g-hint">顶栏 42 圆钮用 <code>.glyph-more-disc</code>（T18-10，24 盒）/ 正文裸三点（无圆底、无边框，视觉 20 / 热区 44；卡片右缘加 <code>.is-edge</code>）/ 正文品牌文字 + T18-05 / 底栏更多格用中性 <code>--press</code> + 深字。筛选、排序图标不在资产里，不要临时画。<br>三点在两个宿主里的档位不同是故意的：圆钮 42 用 T18-10（点 3.5），正文与底栏用 T18-09（20 盒、点 2.0），同一套「点径 : 空隙 ≈ 1.17:1」比例，按容器各自反算。不要拿一档去套另一处。</p>
       </div>
     </figure>
 

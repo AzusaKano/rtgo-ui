@@ -756,7 +756,7 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
 
 /* ========== 4c-2) T18 自建图形件（origin=本仓：没有母本可对，查「件在 + mask + 样片」） ========== */
 /* 这一类件的真值源是本仓代码本身，所以不进母本对账；能查的是「件还在不在、尺寸还是不是那个、
-   样片有没有接上」。盒子尺寸是按墨迹反算的（19/26/16/16/7/24/13×10），改盒子等于改墨迹，
+   样片有没有接上」。盒子尺寸是按墨迹反算的（19/26/16/14/7/24/13×10/20/24），改盒子等于改墨迹，
    所以这里写死断言 —— 图形件是静态层，不会随产品设计漂。 */
 (function selfGlyphs() {
   const norm = stripComments(componentsText).replace(/\s+/g, ' ');
@@ -774,7 +774,10 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     ['T18-05', 'glyph-caret-down', 'width:7px;height:7px'],
     ['T18-06', 'glyph-swap', 'width:24px;height:24px'],
     ['T18-07', 'glyph-pick', 'width:13px;height:10px'],
-    ['T18-09', 'glyph-more', 'width:20px;height:20px']
+    ['T18-09', 'glyph-more', 'width:20px;height:20px'],
+    /* T18-10 的尺寸只是壳；真正的口径是「三枚点径都是 r=1.75」，由下面那条计数断言单独看守。
+       塞进本行只查「文件里有 r='1.75'」，改掉其中一枚照样过。 */
+    ['T18-10', 'glyph-more-disc', 'width:24px;height:24px']
   ];
   want.forEach(([id, cls, size, strokeNeed]) => {
     const blk = blockOf(cls);
@@ -790,6 +793,14 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
       hasSize && webkitMasks === 1 && stdMasks === 1 && inGallery ? '通过' : '不通过',
       '自建件无母本可对，只查件本身与样片是否在位');
   });
+  /* T18-10 的点径必须三枚都对：泛型那条只查「文件里出现过 r='1.75'」，
+     改掉其中一枚（或只改左右两枚）照样能过，反向注入实测过，那样断言是虚设的。
+     两条 mask（webkit + 标准）× 三枚点 = 6 次，少一次就是有人动过点径。 */
+  const discBlk = blockOf('glyph-more-disc');
+  const discDots = (discBlk.match(/r='1\.75'/g) || []).length;
+  row('T18-10', '圆钮三点点径（三枚 × 双前缀 mask = 6 次 r=1.75）', '6',
+    String(discDots), discDots === 6 ? '通过' : '不通过',
+    '点径是这一档真正的口径：盒子对了、点径退回 1.2 就会静默变回「圆里三个小点」');
   /* T18-08 是成对件（v1.19 改件）：两枚都要在、都要 13 盒 + stroke 3.69（= 2×24/13），
      样片里两枚都要出现。只查左向等于没查「成对」—— 那正是本件存在的理由。 */
   const switchPair = ['glyph-switch-left', 'glyph-switch-right'];

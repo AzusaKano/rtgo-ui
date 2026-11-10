@@ -520,7 +520,10 @@ button::after{display:none;width:0;height:0;border:0}
 /* ===== T06-13 中性圆钮（.icon-btn）— Web / 原生宿主新增，母本无此件 =====
    顶栏右动作位、页面内的小圆钮用它；字形自选，几何与 .back 同（42 / 圆 / 描边 / 投影）。
    ⚠ .back 的 .back-glyph 是按 ‹ 的光学位置调的（height 30 / line-height 27 / translateY -1），
-     换别的字符会偏上。要放非箭头图标用本件，不要让 .back 兼职。 */
+     换别的字符会偏上。要放非箭头图标用本件，不要让 .back 兼职。
+   ⚠ 壳（42 / 描边 / 投影 / font-size 19）本身没问题：放字符时墨迹占直径 36~40%，
+     与 .back 箭头同级。「里面显得小」一律是所选字形档位的问题，不是本件的参数问题。
+     三点用 T18-10 `.glyph-more-disc`（24 盒，按 42 圆反算），不要沿用 T18-09 的 20 盒。 */
 .icon-btn{
   flex:0 0 42px;
   width:42px;
@@ -2209,6 +2212,26 @@ button::after{display:none;width:0;height:0;border:0}
 .glyph-more{width:20px;height:20px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E")}
+
+/* T18-10 更多三点·圆钮档（v1.22 · 本仓自建；24 盒 · 点径 3.5 · 空隙 3.0 · 墨迹≈16.5×3.5）
+   ── 为什么 T18-09 不能直接用在 42 圆钮里 ──────────────────────────────
+   T18-09 的 20 盒是按「正文裸三点」反算的（44 热区里放 20 视觉）。搬进 42 圆钮后：
+     点径 2.0 / 跨度 12.0（占直径 28.6%）/ 墨迹面积 9.4px²，只有同框 .back 箭头（13.1 高、
+     31.3px²）的 30%；三方比下来「细」的观感就来自这里，不是圆钮壳的问题（壳与 .back 同几何，
+     放字符时墨迹 36~40%，本来就合适，所以 .icon-btn 不动）。
+   纯放大 width/height 也救不了：点与空隙等比长，点:隙恒为 2:3，放大后只是「三个点飘得更开」。
+   要让三点读成一条完整的省略号，必须同时把点径加粗、把间距收窄，也就是按容器重新反算。
+   ── 本件的反算口径（同族通用规则，后续宿主照此推） ────────────────────
+     点径 : 空隙 ≈ 1.17 : 1；墨迹跨度 ≈ 容器直径 × 39%。
+     24 盒下 viewBox 单位即屏幕 px，故取 cx 5.5/12/18.5（pitch 6.5）、r 1.75 ⇒
+     点 3.5 / 隙 3.0 / 墨迹 16.5（占 42 圆 39.3%）/ 面积 28.8px² ≈ .back 箭头的 92%。
+   ⚠ 只给 42 圆钮（.icon-btn）用。正文裸三点与底栏「更多」仍是 T18-09。那两处的容器尺度
+     不同、且需要各自评估（正文有单行/卡内之分，底栏那格旁边并排的是 20~24 的图标），
+     不要拿本件缩了尺寸去顶。要变，按上面那条比例规则各自反算，判据是「同一套比例、不同点径」，
+     不是「换个样子」。 */
+.glyph-more-disc{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='5.5' cy='12' r='1.75'/%3E%3Ccircle cx='12' cy='12' r='1.75'/%3E%3Ccircle cx='18.5' cy='12' r='1.75'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='5.5' cy='12' r='1.75'/%3E%3Ccircle cx='12' cy='12' r='1.75'/%3E%3Ccircle cx='18.5' cy='12' r='1.75'/%3E%3C/g%3E%3C/svg%3E")}
 
 /* ============================================================================
    T19 票务指南弹层（v1.6 · origin=母本 2026-10-31/11-01 新增：components/intercity-guide + index 入口件）

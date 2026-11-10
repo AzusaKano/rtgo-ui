@@ -58,10 +58,14 @@ button{font-family:inherit}
 .phone .bnav{position:absolute;left:0;right:0;bottom:0;max-width:none;transform:none}
 .phone .bnav .cell{background:transparent;border:0;padding:0}
 .cell-glyph{display:flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:22px;line-height:1;font-weight:500;color:currentColor}
-/* T18-09 更多三点（候选，20 盒；三个 2px 实心点，墨迹约 12×2） */
+/* T18-09 更多三点（正文 / 底栏档，20 盒；三个 2px 实心点，墨迹约 12×2） */
 .glyph-more{width:20px;height:20px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='6' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='18' cy='12' r='1.2'/%3E%3C/g%3E%3C/svg%3E")}
+/* T18-10 更多三点·圆钮档（42 圆 .icon-btn 专用，24 盒；点径 3.5 / 空隙 3.0 / 墨迹 16.5） */
+.glyph-more-disc{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='5.5' cy='12' r='1.75'/%3E%3Ccircle cx='12' cy='12' r='1.75'/%3E%3Ccircle cx='18.5' cy='12' r='1.75'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='5.5' cy='12' r='1.75'/%3E%3Ccircle cx='12' cy='12' r='1.75'/%3E%3Ccircle cx='18.5' cy='12' r='1.75'/%3E%3C/g%3E%3C/svg%3E")}
 /* T24-05 正文·裸三点：无圆圈、无边框；视觉 20，热区 44 */
 .menu-dots{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;
   padding:0;border:0;background:transparent;color:var(--text-2);
@@ -320,7 +324,7 @@ button{font-family:inherit}
               <div class="sub">2026-11-03 19:21 出发</div>
             </div>
             <div class="topbar-actions">
-              <button class="icon-btn menu-trigger is-open" data-menu="menu-a" aria-haspopup="menu" aria-expanded="true" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+              <button class="icon-btn menu-trigger is-open" data-menu="menu-a" aria-haspopup="menu" aria-expanded="true" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
             </div>
           </div>
 
@@ -581,8 +585,8 @@ button{font-family:inherit}
       <div class="d-spec">
         <div class="d-spec-h"><b>触发器·顶栏</b><span>icon-btn · closed / open</span></div>
         <div class="d-spec-b" style="gap:14px">
-          <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
-          <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
+          <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
         </div>
       </div>
       <div class="d-spec">
@@ -619,7 +623,7 @@ button{font-family:inherit}
     <div class="d-motion-wrap">
       <div class="d-motion-stage" id="motionStage">
         <div class="d-motion-topbar"><b>查询结果</b></div>
-        <button class="icon-btn menu-trigger is-open" id="motionTrigger" data-menu="menu-motion" aria-haspopup="menu" aria-expanded="true" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+        <button class="icon-btn menu-trigger is-open" id="motionTrigger" data-menu="menu-motion" aria-haspopup="menu" aria-expanded="true" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
         <div class="d-motion-card"><b>竹料 → 广州南站</b><span>19:21 – 20:35 · 换乘 2 次 · 28 元</span></div>
         <div class="menu-layer" data-layer="menu-motion">
           <div class="menu" id="motionMenu" role="menu" aria-label="路线更多操作" style="--menu-top:66px;--menu-right:14px;--menu-w:224px;--menu-origin:top right">
@@ -776,14 +780,15 @@ button{font-family:inherit}
     <p class="d-note">
       <strong>件号暂记：</strong>T24-01 <code>.menu-layer / .menu</code>（点击层与壳）；T24-02 <code>.menu-item</code> 及 <code>.is-checked / .is-danger / .is-disabled</code>；
       T24-03 <code>.menu-group-label / .menu-sep</code>；T24-04 <code>.menu-trigger.is-open</code>；T24-05 <code>.menu-dots</code>；T24-06 <code>.menu-text-trigger</code>；
-      T24-07 动效；T18-09 <code>.glyph-more</code>。定稿后再按件号表落号，不先写死。
+      T24-07 动效；T18-10 <code>.glyph-more-disc</code>（顶栏 42 圆钮）/ T18-09 <code>.glyph-more</code>（正文裸三点、底栏）。
+      定稿后再按件号表落号，不先写死。
     </p>
     <pre class="d-code"><span class="d-c">&lt;!-- 触发器：任何现有按钮都可以，只多一个 .menu-trigger 与打开态；
-     顶栏圆钮用 .icon-btn + T18-09；正文通用动作用 .menu-dots + T18-09；
+     顶栏圆钮用 .icon-btn + T18-10（24 盒，按 42 圆反算）；正文通用动作用 .menu-dots + T18-09（20 盒）；
      筛选 / 排序用 .menu-text-trigger + T18-05（资产无筛选、排序图标，不新造） --&gt;</span>
 <span class="d-a">&lt;button</span> <span class="d-t">class</span>=<span class="d-s">"icon-btn menu-trigger"</span>
         <span class="d-t">data-menu</span>=<span class="d-s">"menu-more"</span>
-        <span class="d-t">aria-haspopup</span>=<span class="d-s">"menu"</span> <span class="d-t">aria-expanded</span>=<span class="d-s">"false"</span><span class="d-a">&gt;</span><span class="d-a">&lt;i</span> <span class="d-t">class</span>=<span class="d-s">"glyph glyph-more"</span><span class="d-a">&gt;&lt;/i&gt;&lt;/button&gt;</span>
+        <span class="d-t">aria-haspopup</span>=<span class="d-s">"menu"</span> <span class="d-t">aria-expanded</span>=<span class="d-s">"false"</span><span class="d-a">&gt;</span><span class="d-a">&lt;i</span> <span class="d-t">class</span>=<span class="d-s">"glyph glyph-more-disc"</span><span class="d-a">&gt;&lt;/i&gt;&lt;/button&gt;</span>
 
 <span class="d-c">&lt;!-- 菜单层：透明点击层 + 面板 --&gt;</span>
 <span class="d-a">&lt;div</span> <span class="d-t">class</span>=<span class="d-s">"menu-layer"</span> <span class="d-t">id</span>=<span class="d-s">"menu-more"</span> <span class="d-t">hidden</span><span class="d-a">&gt;</span>
