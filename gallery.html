@@ -120,43 +120,43 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T03</span> 顶栏与返回</h2>
   <p class="g-note">顶栏两档：<code>.ios-fixed-topbar</code>（72px）为**默认档 = 微信小程序方案**——不透明底 <code>--bg</code> + 强边框 <code>--topbar-bd-strong</code>，那套是修苹果端小程序渲染 bug 的补丁；不做小程序的宿主（Flutter / Web / 原生）加 <code>.is-translucent</code> 用半透明档（T03-02b）。<code>.fixed-topbar</code> 为历史代际（O-01 保留备用，其底色/边框即半透明档的出处）。<code>.sticky-topbar</code> 经 M0 审阅已移除（O-02）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-01/02/04/05</span><span class="g-cls">.ios-fixed-topbar .back .back-glyph .title .sub</span><span class="g-src">index:473-521,228-258</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-01/02/04/05</span><span class="g-cls">.ios-fixed-topbar .back .glyph .glyph-back .title .sub</span><span class="g-src">index:473-521,228-258</span></figcaption>
       <div class="g-stage pad0"><div class="demo-viewport">
-        <div class="ios-fixed-topbar"><view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">3号线 · 全程 18 分钟</div></div></div>
+        <div class="ios-fixed-topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">3号线 · 全程 18 分钟</div></div></div>
       </div></div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-02b</span><span class="g-cls">.ios-fixed-topbar.is-translucent（半透明档 · 软件端）</span><span class="g-src">index:376-395（配色出处）+ T03-02 几何</span></figcaption>
       <div class="g-stage pad0"><div style="display:grid;gap:10px">
         <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">默认档（小程序方案，不加类）：不透明底 + 强边框</p>
-          <div class="demo-viewport"><div class="ios-fixed-topbar"><view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">默认档 · 微信小程序方案</div></div></div></div></div>
+          <div class="demo-viewport"><div class="ios-fixed-topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">默认档 · 微信小程序方案</div></div></div></div></div>
         <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">半透明档（加 <code>.is-translucent</code>）：底色 .98 + 边框 .92</p>
-          <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">半透明档 · 软件端</div></div></div></div></div>
+          <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">半透明档 · 软件端</div></div></div></div></div>
         <p style="margin:2px 0 0;font-size:11px;color:var(--text-2);line-height:1.6">⚠ 两档在浅色下**肉眼几乎无差**（.98 vs 1.0，仅滚动内容从底下透出时可见）；真正的差别是语义与边框强弱（.92 vs .96）。要看清就把页面滚起来。</p>
       </div></div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-02c</span><span class="g-cls">.topbar-main .topbar-actions（三子项布局 · 宿主新增，母本无此件）</span><span class="g-src">新增件：母本只有两子项（返回 + 标题组）</span></figcaption>
       <div class="g-stage pad0"><div style="display:grid;gap:10px">
         <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">两子项（母本原状）：标题组恰好是最后一子项，被 <code>:last-child</code> 拉伸</p>
-          <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">两子项 · 标题组吃剩余</div></div></div></div></div>
+          <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">两子项 · 标题组吃剩余</div></div></div></div></div>
         <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">三子项（加 <code>.topbar-main</code> + <code>.topbar-actions</code>）：标题吃剩余，右侧动作不被拉伸</p>
-          <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view><div class="topbar-main"><div class="title">体育西路 → 广州塔</div><div class="sub">三子项 · 动作位不伸缩</div></div><div class="topbar-actions"><view class="back" data-hover-class="press"><text class="back-glyph">⋯</text></view></div></div></div></div>
+          <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div class="topbar-main"><div class="title">体育西路 → 广州塔</div><div class="sub">三子项 · 动作位不伸缩</div></div><div class="topbar-actions"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view></div></div></div></div>
         <p style="margin:2px 0 0;font-size:11px;color:var(--text-2);line-height:1.6">⚠ 只给 <code>.topbar-actions</code> 而不给 <code>.topbar-main</code>：标题组没人吃剩余宽度，标题缩到内容宽、动作钮紧贴标题右侧 —— 看起来像"右侧没对齐"，其实是标题没撑开。</p>
       </div></div>
     </figure>
-        <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-05</span><span class="g-cls">.back-glyph .home-glyph（栈根 ⌂ 字形）</span><span class="g-src">index:243-258</span></figcaption>
+        <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-05</span><span class="g-cls">.glyph .glyph-back / .glyph .glyph-home（栈根 ⌂ 字形）</span><span class="g-src">index:251-265</span></figcaption>
       <div class="g-stage"><div style="display:flex;gap:12px">
-        <view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view>
-        <view class="back" data-hover-class="press"><text class="back-glyph home-glyph">⌂</text></view>
+        <view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view>
+        <view class="back" data-hover-class="press"><view class="glyph glyph-home"></view></view>
       </div></div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-01</span><span class="g-cls">.topbar .title .sub（非固定档）· .bar-main</span><span class="g-src">index:10-12 · results-timeline:15</span></figcaption>
       <div class="g-stage">
-        <div class="topbar"><view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view><div class="bar-main"><div class="title">乘车方案</div><div class="sub">随页面滚动的普通顶栏</div></div></div>
+        <div class="topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div class="bar-main"><div class="title">乘车方案</div><div class="sub">随页面滚动的普通顶栏</div></div></div>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-03（孤儿 O-01 保留）</span><span class="g-cls">.fixed-topbar（历史代际，母本已无页面引用；.sticky-topbar 已按 M0 移除）</span><span class="g-src">index:376-395</span></figcaption>
       <div class="g-stage pad0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="demo-viewport"><div class="fixed-topbar"><view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view><div><div class="title">fixed-topbar</div><div class="sub">v1 · 居中固定</div></div></div></div>
+        <div class="demo-viewport"><div class="fixed-topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">fixed-topbar</div><div class="sub">v1 · 居中固定</div></div></div></div>
       </div></div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-06</span><span class="g-cls">@media(max-width:430px) 窄屏覆盖</span><span class="g-src">index:517-521</span></figcaption>
@@ -319,15 +319,15 @@ button{cursor:pointer;pointer-events:auto}
         <div class="route-actions" style="margin-top:12px;padding:0"><button class="expand-btn" data-hover-class="expand-hover"><view class="action-glyph"></view>路线预览</button></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-13</span><span class="g-cls">.icon-btn .glyph-more-disc（对照 .back .back-glyph）</span><span class="g-src">宿主新增件：几何沿用 .back，字形自选</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-13</span><span class="g-cls">.icon-btn .glyph-more-disc（对照 .back .glyph .glyph-back）</span><span class="g-src">宿主新增件：几何沿用 .back，字形自选</span></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:12px">
-          <view class="back" data-hover-class="press"><text class="back-glyph">‹</text></view>
+          <view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view>
           <view class="icon-btn" data-hover-class="press">☾</view>
           <view class="icon-btn" data-hover-class="press">☀</view>
           <view class="icon-btn" data-hover-class="press"><i class="glyph glyph-more-disc"></i></view>
         </div>
-        <p class="g-hint">左边是返回钮 <code>.back</code>（字形按 ‹ 调过）；右边三颗是 <code>.icon-btn</code>，放字符都居中对齐，不会被字形带偏。<br>第三颗放的是三点图形件：42 圆里必须用 T18-10 <code>.glyph-more-disc</code>（24 盒，点径 3.5）；用 T18-09 的 20 盒会显得又小又细（跨度只剩直径的 28.6%、点径 2.0）。「里面显得小」是字形档位的事，不是这个壳的事。</p>
+        <p class="g-hint">左边是返回钮 <code>.back</code>（放 T18-01 图形件）；右边三颗是 <code>.icon-btn</code>，放图形件都居中对齐，不受字形档位带偏。<br>第三颗放的是三点图形件：42 圆里必须用 T18-10 <code>.glyph-more-disc</code>（24 盒，点径 3.5）；用 T18-09 的 20 盒会显得又小又细（跨度只剩直径的 28.6%、点径 2.0）。「里面显得小」是字形档位的事，不是这个壳的事。</p>
       </div>
     </figure>
   </div>
@@ -543,7 +543,7 @@ button{cursor:pointer;pointer-events:auto}
   <p class="g-note">半屏四件：通栏 / 只上圆角 24 / 贴底（safe 由 padding 吃）/ 只向上投影。配色独立选档：<code>--sheet</code>（同页底）或 <code>--card</code>（亮一档，dtp）。悬浮对话框档：宽 calc(100%−32px)、四角 24、投影向下。点「打开」体验 380ms 回弹滑入（62% 处 −3px 折返）。</p>
   <div class="g-togglebar"><button id="openSheet">打开半屏 sheet（station-picker）</button><button id="openDtp">打开日期时间（dtp · 卡底）</button><button id="openSnp">打开悬浮对话框（snp）</button><button id="toggleNb">显隐 nb sheet（冻结/重放）</button></div>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01/05/07</span><span class="g-cls">.sheet-mask .sheet-panel .picker-hidden .picker-closing .station-picker-head .station-picker-title .station-picker-close .station-picker-close-x .station-picker-close-hover .station-picker-head-acts .station-picker-map .station-picker-map-glyph .station-picker-map-label .station-picker-list .station-picker-item .station-picker-title-row .station-picker-name .station-picker-mark .mark-tone-* .station-picker-meta .station-picker-translation .next-station</span><span class="g-src">station-picker.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01/05/07</span><span class="g-cls">.sheet-mask .sheet-panel .picker-hidden .picker-closing .station-picker-head .station-picker-title .station-picker-close .station-picker-close-hover .station-picker-head-acts .station-picker-map .station-picker-map-glyph .station-picker-map-label .station-picker-list .station-picker-item .station-picker-title-row .station-picker-name .station-picker-mark .mark-tone-* .station-picker-meta .station-picker-translation .next-station</span><span class="g-src">station-picker.wxss</span></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" id="vp-sheet" style="height:78vh">
           <div style="padding:14px;color:var(--text-2);font-size:12px">页面内容（演示遮罩之下）</div>
@@ -1050,7 +1050,7 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G16/T24 菜单 ================= -->
 <section class="g-sec" id="g-t24">
   <h2><span class="g-secid">T24</span> 菜单（自建 · 由按钮打开）</h2>
-  <p class="g-note">短动作浮层：由现有按钮打开，只放当前上下文的 3~7 个动作。壳 <code>.menu-layer + .menu</code>，行 <code>.menu-item</code>；危险动作转 T21，不进菜单直接执行。正文入口有两种皮：通用「更多」用裸三点（T18-09），筛选 / 排序用品牌文字 + T18-05 —— <strong>资产目前没有筛选、排序图标，不临时画</strong>。</p>
+  <p class="g-note">短动作浮层：由现有按钮打开，只放当前上下文的 3~7 个动作。壳 <code>.menu-layer + .menu</code>，行 <code>.menu-item</code>；危险动作转 T21，不进菜单直接执行。正文入口有两种皮：通用「更多」用裸三点（T18-09），筛选 / 排序用品牌文字 + T18-05 —— <strong>v1.23 起资产已有筛选 / 排序图标（T18-12 / 13 / 14）</strong>，但正文触发器是否改为图标本版未定，未定之前仍走文字档，不要自行取舍。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-01 / T24-02 / T24-03</span><span class="g-cls">.menu-layer .menu .menu-item .menu-main .menu-text .menu-desc .menu-meta .menu-check .is-checked .is-danger .is-disabled .has-desc .menu-group-label .menu-sep</span><span class="g-src">自建：docs/设计稿-菜单.html</span></figcaption>
       <div class="g-stage pad0">
@@ -1097,7 +1097,7 @@ button{cursor:pointer;pointer-events:auto}
             <button class="cell menu-trigger is-open"><span class="g-bn-more"><i class="glyph glyph-more"></i></span><span>更多</span></button>
           </nav>
         </div>
-        <p class="g-hint">顶栏 42 圆钮用 <code>.glyph-more-disc</code>（T18-10，24 盒）/ 正文裸三点（无圆底、无边框，视觉 20 / 热区 44；卡片右缘加 <code>.is-edge</code>）/ 正文品牌文字 + T18-05 / 底栏更多格用中性 <code>--press</code> + 深字。筛选、排序图标不在资产里，不要临时画。<br>三点在两个宿主里的档位不同是故意的：圆钮 42 用 T18-10（点 3.5），正文与底栏用 T18-09（20 盒、点 2.0），同一套「点径 : 空隙 ≈ 1.17:1」比例，按容器各自反算。不要拿一档去套另一处。</p>
+        <p class="g-hint">顶栏 42 圆钮用 <code>.glyph-more-disc</code>（T18-10，24 盒）/ 正文裸三点（无圆底、无边框，视觉 20 / 热区 44；卡片右缘加 <code>.is-edge</code>）/ 正文品牌文字 + T18-05 / 底栏更多格用中性 <code>--press</code> + 深字。筛选、排序图标 v1.23 已进资产（T18-12 / 13 / 14），见 T18 节样片；正文触发器是否改为图标本版未定，不要自行决定。<br>三点在两个宿主里的档位不同是故意的：圆钮 42 用 T18-10（点 3.5），正文与底栏用 T18-09（20 盒、点 2.0），同一套「点径 : 空隙 ≈ 1.17:1」比例，按容器各自反算。不要拿一档去套另一处。</p>
       </div>
     </figure>
 
@@ -1150,6 +1150,16 @@ button{cursor:pointer;pointer-events:auto}
           <view class="glyph glyph-back" style="width:19px;height:19px;color:var(--brand)"></view>
         </div>
         <p class="g-hint">底色来自 <code>.back</code>（42 圆 / <code>--card</code>），字形只负责墨迹；颜色走 <code>currentColor</code>，换品牌色不用改件。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-11</span><span class="g-cls">.glyph .glyph-home（回首页 ⌂ · 栈根态）</span><span class="g-src">19 盒 · 描边 2px（stroke-unit 2.53）· 屋顶 + 屋身两条 path</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:14px">
+          <view class="back" data-hover-class="press"><view class="glyph glyph-home"></view></view>
+          <view class="back" data-hover-class="press"><view class="glyph glyph-home" style="width:24px;height:24px"></view></view>
+          <view class="glyph glyph-home" style="width:19px;height:19px;color:var(--brand)"></view>
+        </div>
+        <p class="g-hint">返回钮的栈根态（canBack=false，没有上一页可退，点它回首页）。形状取底导 <code>.bn-ico.home</code> 同一条 path 只删掉那道门 —— 门洞在 19px 下只剩 1px 多，保留会糊成实心块。盒与描边沿用 <code>.glyph-back</code>，两个状态视觉同重；逐值照抄母本 index.wxss:258-265。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-02</span><span class="g-cls">.glyph .glyph-close（关闭 ×）</span><span class="g-src">26 盒 · 描边 2px · 墨迹 12.8px</span></figcaption>
@@ -1221,12 +1231,54 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">月份切换的左右成对件：13 盒 / stroke-unit 3.69（= 2×24/13）/ 屏幕线宽 2px，取 Flutter 侧 <code>date_time_picker_sheet.dart:411-414 / :436-439</code> 的 <code>size: 13</code>。两枚都要重画 mask —— 不要拿 16 盒的 T18-03 缩到 13 盒（线宽会掉到 1.63px）。单枚出现的左箭头（顶栏返回）仍用 T18-01，行尾通用右箭头仍用 T18-03。</p>
       </div>
     </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-12</span><span class="g-cls">.glyph .glyph-filter（筛选 · 漏斗）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 17×15</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:16px">
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-filter"></view></view>
+          <view class="glyph glyph-filter" style="color:var(--text-2)"></view>
+          <view class="glyph glyph-filter" style="color:var(--brand)"></view>
+        </div>
+        <p class="g-hint">漏斗轮廓，24 盒 / stroke-unit 2 / 圆头圆角。<b>为什么不画三横条</b>：三横条已被 T18-07 <code>.glyph-pick</code> 占住（车站列表 / 线路网格入口），同框放两枚三横条分不清哪个是「打开列表」。颈宽 5 / 内净空 3 是硬下限 —— 2px 描边左右各吃 1px，再窄必糊成一团（同 T18-11 删门）。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-13 / T18-14</span><span class="g-cls">.glyph .glyph-sort-asc / .glyph .glyph-sort-desc（排序 · 正序 / 倒序）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16.9×16.4 · 两枚为上下镜像</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:16px">
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-sort-asc"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-sort-desc"></view></view>
+          <view class="glyph glyph-sort-asc" style="color:var(--text-2)"></view>
+          <view class="glyph glyph-sort-desc" style="color:var(--text-2)"></view>
+        </div>
+        <p class="g-hint">构图：<b>左竖箭头 + 右三条等长横线</b>。等长是刻意的 —— 长短递减在这套语言里读作「数据量」，等长才读作「列表顺序」。两枚是同一件的上下镜像：三条横线逐值相同（y 6.5 / 12 / 17.5，x 13.5→19.5），只把箭头翻过来。<br>箭头是 45° 对称双翼：单翼（勾形）会被读成「已完成」，与「方向」的语义正好相反。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-15 / T18-16</span><span class="g-cls">.glyph .glyph-favorite / .glyph .glyph-favorite-on（收藏 · 未选中 / 已选中）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 17×15.5 · 家族第一枚「同形两态」</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:16px">
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-favorite"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-favorite-on"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-favorite-on" style="color:var(--brand)"></view></view>
+          <view class="glyph glyph-favorite" style="color:var(--text-2)"></view>
+          <view class="glyph glyph-favorite-on" style="color:var(--text-2)"></view>
+        </div>
+        <p class="g-hint">两态的 path <b>逐字相同</b>，只差根上的 <code>fill</code>，并且选中态保留同一道 2px 描边 —— 只填不描，选中态外轮廓会瘦 1px，切换时心形「缩一下」，这种缺陷最容易被当成动画抖过去。选中靠<b>填色</b>（形状差异，色弱可辨），不靠颜色；要不要同时改色（第三颗用了 <code>--brand</code>）是宿主的事。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-17</span><span class="g-cls">.glyph .glyph-share（分享 · 三节点两连线）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16×16.8</span></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border-radius:16px;width:fit-content">
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-filter"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-sort-desc"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-favorite"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-share"></view></view>
+        </div>
+        <p class="g-hint">构图：右上 / 中左 / 右下三个节点，中左那个分别连另外两个（之字走向）。<b>为什么是空心环</b>：做成实心点会与同框的 T18-10（三点实心圆）撞形，环让两枚在小尺寸下仍能区分。两段连线的端点落在环外缘（距圆心 3.4 = r 2.4 + 半个线宽），圆头端点与环合流，不留缝也不扎进环心。<br>上面四颗同框即是这六枚的典型用法：<b>线宽、盒尺寸、墨迹占比一致</b>，放进工具栏不会有一枚显出「细」或「大」。</p>
+      </div>
+    </figure>
     <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18 对照</span><span class="g-cls">字符版（历史）vs 图形版（现行）</span><span class="g-src">母本已全部换用图形件，字符版只剩迁移对照价值</span></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
-          <div style="text-align:center"><view class="back"><text class="back-glyph">‹</text></view><p class="g-hint" style="margin-top:6px">字符 ‹</p></div>
           <div style="text-align:center"><view class="back"><view class="glyph glyph-back"></view></view><p class="g-hint" style="margin-top:6px">图形</p></div>
-          <div style="text-align:center"><view class="sheet-close"><text class="station-picker-close-x">×</text></view><p class="g-hint" style="margin-top:6px">字符 ×</p></div>
           <div style="text-align:center"><view class="sheet-close"><view class="glyph glyph-close"></view></view><p class="g-hint" style="margin-top:6px">图形</p></div>
         </div>
         <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:14px">
@@ -1234,7 +1286,7 @@ button{cursor:pointer;pointer-events:auto}
           <div style="text-align:center"><view class="nb-sheet-close"><text class="nb-sheet-close-x">×</text></view><p class="g-hint" style="margin-top:6px">nb-sheet 字符版</p></div>
           <div style="text-align:center"><view class="ig-close"><text class="ig-close-x">×</text></view><p class="g-hint" style="margin-top:6px">ig-panel 字符版</p></div>
         </div>
-        <p class="g-hint">这五个字符类在母本里已经全部换成 <code>.glyph-close</code>（2026-11-07 核过：五个类在母本 wxml/wxss 均为零引用），保留它们只为说明迁移前后的差异，<b>新页面一律用图形版</b>。下面三个零引用的类是否从资产里清掉，等定。</p>
+        <p class="g-hint">back / close 的两个字符类已随 v1.22.2 从资产清出（母本 2026-11-07 核过：五个字符类在母本 wxml/wxss 均为零引用、已全量换用图形件），上面只留图形版样片，<b>新页面一律用图形版</b>。下面三个字符类（sd-panel / nb-sheet / ig-panel 的 ×）母本同样已换图形件，资产里是否跟着清掉，等定。</p>
       </div>
     </figure>
   </div>

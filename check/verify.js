@@ -823,7 +823,18 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     ['T18-09', 'glyph-more', 'width:20px;height:20px'],
     /* T18-10 的尺寸只是壳；真正的口径是「三枚点径都是 r=1.75」，由下面那条计数断言单独看守。
        塞进本行只查「文件里有 r='1.75'」，改掉其中一枚照样过。 */
-    ['T18-10', 'glyph-more-disc', 'width:24px;height:24px']
+    ['T18-10', 'glyph-more-disc', 'width:24px;height:24px'],
+    /* T18-11 的 stroke-unit 2.53 是一组口径（= 2×24/19）：照抄成 2 屏幕线宽就掉到 1.58px，
+       与 T18-01 不再同粗（两个状态视觉同重是母本定下的规矩）。 */
+    ['T18-11', 'glyph-home', 'width:19px;height:19px', "stroke-width='2.53'"],
+    /* v1.23 工具类六枚：24 盒下 stroke-unit 2 就是 2px 屏幕线宽（24/24=1），
+       所以 stroke 与盒是同一组口径，改盒必须同步改 stroke（= 2×24/盒）。 */
+    ['T18-12', 'glyph-filter', 'width:24px;height:24px', "stroke-width='2'"],
+    ['T18-13', 'glyph-sort-asc', 'width:24px;height:24px', "stroke-width='2'"],
+    ['T18-14', 'glyph-sort-desc', 'width:24px;height:24px', "stroke-width='2'"],
+    ['T18-15', 'glyph-favorite', 'width:24px;height:24px', "stroke-width='2'"],
+    ['T18-16', 'glyph-favorite-on', 'width:24px;height:24px', "stroke-width='2'"],
+    ['T18-17', 'glyph-share', 'width:24px;height:24px', "stroke-width='2'"]
   ];
   want.forEach(([id, cls, size, strokeNeed]) => {
     const blk = blockOf(cls);
@@ -864,6 +875,47 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     (pairOk ? '13px' : '缺') + ' / ' + pairMasks.map(([w, s]) => w + ':' + s).join(' ') + ' / ' + (pairInGallery ? '有' : '缺'),
     pairOk && pairMaskOk && pairInGallery ? '通过' : '不通过',
     '成对件只查一个方向等于没查；两枚的盒与 stroke 必须同组');
+
+  /* T18-15/16 是本族第一枚「同形两态」，泛型那四条（尺寸 + 双前缀 mask + 样片）对两态之间的
+     关系一个字都不查：把选中态的 path 改一个点、或去掉那道描边，四条照样全过。
+     而这两种改法都是静默的 —— 前者切换时心形走形，后者心形「缩一下」，肉眼很容易当成动画抖过去。 */
+  const dOf = (cls) => {
+    const m = blockOf(cls).match(/d='([^']+)'/);
+    return m ? m[1] : '';
+  };
+  const dOff = dOf('glyph-favorite');
+  const dOn = dOf('glyph-favorite-on');
+  const samePath = !!dOff && dOff === dOn;
+  row('T18-15/16', '收藏两态 path 逐字相同（只该差 fill）', '同一串 d',
+    (dOff && dOn) ? (samePath ? '相同' : '不同') : '缺',
+    samePath ? '通过' : '不通过',
+    '两态靠同一 path 才能让外轮廓完全重合；path 一动，切换时心形就走形');
+  const onBlk = blockOf('glyph-favorite-on');
+  const onFilled = onBlk.includes("fill='%23000'") && onBlk.includes("stroke='%23000'");
+  row('T18-16', '收藏已选中 = 填色 + 保留同一道描边', 'fill 与 stroke 都在',
+    onFilled ? '都在' : '缺',
+    onFilled ? '通过' : '不通过',
+    '只填不描，选中态外轮廓瘦 1px，切过去心形像缩了一下');
+
+  /* T18-13/14 共用同一组三横线，只有箭头翻向。横线是两枚共享的口径，改一处会两枚一起变；
+     而「方向翻反」比横线错更糟 —— 正序位上显示倒序，界面不报错、用户按反。 */
+  const sortAscBlk = blockOf('glyph-sort-asc');
+  const sortDescBlk = blockOf('glyph-sort-desc');
+  const sortBars = 'M13.5 6.5h6M13.5 12h6M13.5 17.5h6';
+  const barsOk = sortAscBlk.includes(sortBars) && sortDescBlk.includes(sortBars);
+  const dirOk = sortAscBlk.includes("d='M6.9 19.2V4.8") && sortDescBlk.includes("d='M6.9 4.8V19.2");
+  row('T18-13/14', '排序两枚 = 同一组三横线 + 箭头正倒各一', '同串 / 一上一下',
+    (barsOk ? '同串' : '不同') + ' / ' + (dirOk ? '一上一下' : '方向不明'),
+    barsOk && dirOk ? '通过' : '不通过',
+    '横线共享、方向相反；方向翻了界面不报错，用户会按反');
+
+  /* T18-17 三颗环是这一件的主体（连线只是两段短线）。少一颗环，图形会静默退化成
+     「一点串两点」，而尺寸与样片断言都不会察觉。注意 CSS 里的 circle 是 URL 编码的 %3Ccircle。 */
+  const shareBlk = blockOf('glyph-share');
+  const shareRings = (shareBlk.match(/%3Ccircle /g) || []).length;
+  row('T18-17', '分享三环 × 双前缀 mask = 6 次 circle', '6',
+    String(shareRings), shareRings === 6 ? '通过' : '不通过',
+    '少一颗环会静默退化成「一点串两点」');
 
   const hasCompare = galleryText.includes('字符版（历史）vs 图形版（现行）');
   row('T18-对照', '样片含字符版与图形版的对照（迁移依据）', '有', hasCompare ? '有' : '缺',

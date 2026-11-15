@@ -485,7 +485,7 @@ button::after{display:none;width:0;height:0;border:0}
 .btn-secondary{flex:0 0 auto;min-width:76px;padding:0 16px;background:var(--brand-tint);color:var(--brand);white-space:nowrap}
 .btn-primary[disabled]{opacity:.7}
 
-/* ===== T03-04/05 返回钮定稿 + 字形 — index:228-258 ===== */
+/* ===== T03-04/05 返回钮壳 — index:228-245（字形已拆给 T18-01/T18-11 图形件）===== */
 .back{
   flex:0 0 42px;
   width:42px;
@@ -501,27 +501,11 @@ button::after{display:none;width:0;height:0;border:0}
   box-shadow:var(--shadow-pop);
   overflow:hidden;
 }
-.back-glyph{
-  display:block;
-  height:30px;
-  line-height:27px;
-  font-size:32px;
-  font-family:Arial,sans-serif;
-  font-weight:400;
-  transform:translateY(-1px);
-}
-.home-glyph {
-  font-weight: 700;
-  text-shadow:
-    0.3px 0 0 currentColor,
-    -0.3px 0 0 currentColor;
-}
-
 /* ===== T06-13 中性圆钮（.icon-btn）— Web / 原生宿主新增，母本无此件 =====
    顶栏右动作位、页面内的小圆钮用它；字形自选，几何与 .back 同（42 / 圆 / 描边 / 投影）。
-   ⚠ .back 的 .back-glyph 是按 ‹ 的光学位置调的（height 30 / line-height 27 / translateY -1），
-     换别的字符会偏上。要放非箭头图标用本件，不要让 .back 兼职。
-   ⚠ 壳（42 / 描边 / 投影 / font-size 19）本身没问题：放字符时墨迹占直径 36~40%，
+   ⚠ .back 只放 T18-01 .glyph-back（图形件一次绘制，无基线偏移，不需要光学补偿）；
+     要放非箭头图标用本件，不要让 .back 兼职。
+   ⚠ 壳（42 / 圆 / 描边 / 投影）本身没问题：T18 图形件的墨迹占直径 31~40%，
      与 .back 箭头同级。「里面显得小」一律是所选字形档位的问题，不是本件的参数问题。
      三点用 T18-10 `.glyph-more-disc`（24 盒，按 42 圆反算），不要沿用 T18-09 的 20 盒。 */
 .icon-btn{
@@ -1241,7 +1225,6 @@ button::after{display:none;width:0;height:0;border:0}
 .sheet-head,.station-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 4px 13px}
 .sheet-title,.station-picker-title{font-size:var(--fs-title-21);font-weight:800}
 .sheet-close,.station-picker-close{flex:0 0 42px;width:42px;height:42px;padding:0;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:50%;background:var(--card);box-shadow:var(--shadow-pop);overflow:hidden}
-.sheet-close-x,.station-picker-close-x{display:block;line-height:1;font-size:30px;font-family:Arial,sans-serif;font-weight:400;color:var(--text-strong)}
 .station-picker-head-acts{display:flex;align-items:center;gap:12px;flex:0 0 auto}
 .station-picker-map{flex:0 0 auto;height:42px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--border);border-radius:var(--radius-pill);background:var(--card);box-shadow:var(--shadow-pop);overflow:hidden;color:var(--text-strong);font-size:var(--fs-small-12);font-weight:650;line-height:1}
 .station-picker-map-label{white-space:nowrap}
@@ -2120,6 +2103,9 @@ button::after{display:none;width:0;height:0;border:0}
      caretDown → .glyph-caret-down（实心三角，与 chevron 不同件）· swap → .glyph-swap
      pick → .glyph-pick（照母本三横条，与 Flutter 的点线形状不同，见该件注释）
      more → .glyph-more（v1.20 本仓自建；Flutter 侧暂无对应 kind，三枚实心点）
+     filter / sortAsc / sortDesc / favorite / favoriteOn / share → .glyph-filter / .glyph-sort-asc /
+       .glyph-sort-desc / .glyph-favorite / .glyph-favorite-on / .glyph-share（v1.23 本仓自建；
+       Flutter 侧暂无对应 kind，跨端待补。24 盒统一档，不预造 16 盒档）
      home / search → .bn-ico.home / .bn-ico.search（在 T17-13 底栏族里，不重复造）
      mapPin / nearbyPin → .nb-pin · mapFind → .station-picker-map-glyph
      navArrow → .sd-nav-glyph · destFlag → .dest-glyph · check → .check-glyph
@@ -2232,6 +2218,76 @@ button::after{display:none;width:0;height:0;border:0}
 .glyph-more-disc{width:24px;height:24px;
   -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='5.5' cy='12' r='1.75'/%3E%3Ccircle cx='12' cy='12' r='1.75'/%3E%3Ccircle cx='18.5' cy='12' r='1.75'/%3E%3C/g%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Ccircle cx='5.5' cy='12' r='1.75'/%3E%3Ccircle cx='12' cy='12' r='1.75'/%3E%3Ccircle cx='18.5' cy='12' r='1.75'/%3E%3C/g%3E%3C/svg%3E")}
+
+/* T18-11 回首页 ⌂（返回钮栈根态 · 2026-11-11 由资产侧字符 ⌂ 迁入）
+   19 盒 · stroke-unit 2.53（= 2px 屏幕线宽）· 屋顶 + 屋身两条 path · 墨迹≈12.8px。
+   逐值照抄母本 index.wxss:258-265：形状取 T17-13 底导 .bn-ico.home 同一条 path，只删掉那道门 ——
+   门洞在 19px 下只剩 1px 多，必然糊成实心块；删门后轮廓干净（19/21/24 盒母本都试过）。
+   盒与描边沿用 .glyph-back（T18-01），返回 / 回首页两个状态视觉同重；颜色由父级 color 给
+   （background-color:currentColor），不要给图标单独写 color。用法见 gallery T03-05 样片：
+   <view class="glyph {{canBack ? 'glyph-back' : 'glyph-home'}}">。 */
+.glyph-home{width:19px;height:19px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.53' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 10.6 L12 3.6 L20.5 10.6'/%3E%3Cpath d='M5.9 9.9 V19.3 A1.9 1.9 0 0 0 7.8 21.2 H16.2 A1.9 1.9 0 0 0 18.1 19.3 V9.9'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.53' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 10.6 L12 3.6 L20.5 10.6'/%3E%3Cpath d='M5.9 9.9 V19.3 A1.9 1.9 0 0 0 7.8 21.2 H16.2 A1.9 1.9 0 0 0 18.1 19.3 V9.9'/%3E%3C/svg%3E")}
+
+/* ── T18-12~17 工具类图标（v1.23 · 2026-11-15）──
+   统一 24 盒 / stroke-unit 2（= 2px 屏幕线宽）/ 圆头圆角，墨迹落在 17×16 上下
+   （占 42 圆钮直径约 39~40%，与 T18-10 同档）。
+   六枚全走 24 盒一档：这一档配 42 圆钮（.icon-btn）与 44 热区；正文行内的 16 盒档不预造 ——
+   按本族规矩要按容器重新反算 stroke-unit，不是把 24 盒缩小了用（见 T18-10 那段的反算口径）。 */
+
+/* T18-12 筛选（漏斗）
+   为什么不画三横条：三横条已被 T18-07 `.glyph-pick` 占住（车站列表 / 线路网格入口），
+   同框放两枚三横条，用户分不清哪个是「打开列表」、哪个是「筛选」。漏斗是可区分的唯一选择。
+   为什么是「平底细颈」而不是「楔形颈」或实心：三者在本尺度都成立，平底细颈的漏斗符号感最正；
+   楔形颈的斜口在 24 盒里读起来像破角，实心件则明显比同框的描边件重（同框还有 T18-01 箭头）。
+   颈宽 5、内净空 3 是硬下限：2px 描边左右各吃 1px，颈再窄净空就掉到 1px 多、必糊成一团
+   （与 T18-11 删门同一个成因）。⚠ 本件只支撑 24 盒；要 16 盒档不成立，须换实心件另立档。 */
+.glyph-filter{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 5.5h15l-5 7.3v5.7h-5v-5.7z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 5.5h15l-5 7.3v5.7h-5v-5.7z'/%3E%3C/svg%3E")}
+
+/* T18-13 / T18-14 排序·正序 / 倒序（v1.23 · 24 盒 · 描边 2px · 墨迹 16.9×16.4）
+   构图：左侧一根竖箭头 + 右侧三条等长横线。等长是刻意的 —— 长短递减在本设计语言里
+   读作「数据量」，等长才读作「列表顺序」。
+   两枚是同一件的上下镜像：三条横线逐值相同（y 6.5 / 12 / 17.5，跨 x 13.5→19.5），
+   只有箭头的走向翻过来（正序向上、倒序向下）。
+   箭头必须是 45° 对称双翼：单翼（勾形）会被读成「已完成」，与「方向」的语义正好相反。
+   为什么不用 T18-07 那三横条：那三枚是 2px 高、圆角 1 的实心条、跨度 13；本件横线是 2px 描边、
+   长 6、间距 5.5，且与箭头并置，读的是「方向 + 列表」，不是「打开列表」。
+   箭杆 x 6.9、两翼长 3.18（端点 4.65 / 9.15），横线与箭头之间的空 2.35。 */
+.glyph-sort-asc{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.9 19.2V4.8M4.65 7.05 6.9 4.8l2.25 2.25M13.5 6.5h6M13.5 12h6M13.5 17.5h6'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.9 19.2V4.8M4.65 7.05 6.9 4.8l2.25 2.25M13.5 6.5h6M13.5 12h6M13.5 17.5h6'/%3E%3C/svg%3E")}
+.glyph-sort-desc{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.9 4.8V19.2M4.65 16.95 6.9 19.2l2.25-2.25M13.5 6.5h6M13.5 12h6M13.5 17.5h6'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.9 4.8V19.2M4.65 16.95 6.9 19.2l2.25-2.25M13.5 6.5h6M13.5 12h6M13.5 17.5h6'/%3E%3C/svg%3E")}
+
+/* T18-15 / T18-16 收藏（未选中 / 已选中）· 本族第一枚「同形两态」
+   v1.23 · 24 盒 · 描边 2px · 墨迹 17×15.5。
+   ⚠ 两态的 path 必须逐字相同，只差根上的 fill：描边态 `fill:none`，选中态 `fill:#000` 并
+     保留同一道 2px 描边。保留描边是为了让两态的外轮廓完全重合 —— 只填不描，选中态整体会
+     瘦一圈，切换时心形「缩一下」，这是最容易被当成抖动放过的静默缺陷（断言单独看守）。
+   ⚠ 选中不靠颜色表达：填色本身就是状态差异（色弱可辨），宿主要不要同时改色是宿主的事
+     （可给 color:var(--brand)），但不要反过来做成「只换色不填形」。
+   心形几何按 Lucide heart 的 path 缩到 0.75 倍（跨度 20→15）：
+   两瓣外弧的半径 4.13、中心凹 6.75、底尖 18.75，左右对称于 x=12。 */
+.glyph-favorite{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.25 13.5c1.12-1.1 2.25-2.41 2.25-4.13A4.13 4.13 0 0 0 15.38 5.25c-1.32 0-2.25.38-3.38 1.5-1.13-1.13-2.06-1.5-3.38-1.5A4.13 4.13 0 0 0 4.5 9.38c0 1.73 1.13 3.04 2.25 4.13l5.25 5.25z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.25 13.5c1.12-1.1 2.25-2.41 2.25-4.13A4.13 4.13 0 0 0 15.38 5.25c-1.32 0-2.25.38-3.38 1.5-1.13-1.13-2.06-1.5-3.38-1.5A4.13 4.13 0 0 0 4.5 9.38c0 1.73 1.13 3.04 2.25 4.13l5.25 5.25z'/%3E%3C/svg%3E")}
+.glyph-favorite-on{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.25 13.5c1.12-1.1 2.25-2.41 2.25-4.13A4.13 4.13 0 0 0 15.38 5.25c-1.32 0-2.25.38-3.38 1.5-1.13-1.13-2.06-1.5-3.38-1.5A4.13 4.13 0 0 0 4.5 9.38c0 1.73 1.13 3.04 2.25 4.13l5.25 5.25z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.25 13.5c1.12-1.1 2.25-2.41 2.25-4.13A4.13 4.13 0 0 0 15.38 5.25c-1.32 0-2.25.38-3.38 1.5-1.13-1.13-2.06-1.5-3.38-1.5A4.13 4.13 0 0 0 4.5 9.38c0 1.73 1.13 3.04 2.25 4.13l5.25 5.25z'/%3E%3C/svg%3E")}
+
+/* T18-17 分享（三个节点 + 两段斜连线 · v1.23 · 24 盒 · 描边 2px · 墨迹 16×16.8）
+   构图：右上 / 中左 / 右下三个节点，中左那个分别连另外两个（之字走向）。
+   为什么是空心环而不是实心点：同框的 T18-10 是三点实心圆，这里再用实心点会与「更多」撞形；
+   环也让两枚在小尺寸下仍能区分。
+   环 r 2.4（描边 2 → 外径 6.8 / 内净空 2.8）；两段连线端点落在环的外缘（距圆心 3.4），
+   圆头端点会探进环的描边带里与环合流，不会留缝也不会扎进环心。 */
+.glyph-share{width:24px;height:24px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='16.6' cy='7' r='2.4'/%3E%3Ccircle cx='7.4' cy='12' r='2.4'/%3E%3Ccircle cx='16.6' cy='17' r='2.4'/%3E%3Cpath d='M10.39 10.38 13.61 8.62M10.39 13.62 13.61 15.38'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='16.6' cy='7' r='2.4'/%3E%3Ccircle cx='7.4' cy='12' r='2.4'/%3E%3Ccircle cx='16.6' cy='17' r='2.4'/%3E%3Cpath d='M10.39 10.38 13.61 8.62M10.39 13.62 13.61 15.38'/%3E%3C/svg%3E")}
 
 /* ============================================================================
    T19 票务指南弹层（v1.6 · origin=母本 2026-10-31/11-01 新增：components/intercity-guide + index 入口件）
