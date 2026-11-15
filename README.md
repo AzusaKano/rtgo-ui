@@ -1,34 +1,32 @@
-# RTGo_slate — 移动端设计系统（通用 CSS 资产包）
+# RTGo-UI
 
-一套拿来就能用的界面词汇表：令牌 + 组件 + 展示页。每个件都与母本逐值对账；改观感只动令牌，不碰组件。
+不止于交通信息呈现。
 
-> **同源另一范式**：同一套设计语言的 Flutter 表达在 `rtgo-flutter-ui` 仓。
-> 两边共用同一套组件词表（T-ID），令牌值互相一致。
+面向移动端的 UI 设计系统及组件库。
 
-## 怎么拿到
-
-- **下载即用（最省事）**：仓库页点 `Code` → `Download ZIP`，解压直接用，没有构建步骤。
-- **命令行**：`git clone https://github.com/AzusaKano/rtgo-ui`
-- **要锁版本**：仓库的 Tags 页有 `v1.11` 等存档点，取那个 tag 即可。
-
-包内不需要安装任何依赖。
+RTGo-UI 的数值取自「轨交速查」应用的界面层，提炼为通用 CSS：令牌、组件、展示页。同一套设计语言另有 Flutter 实现（`rtgo-flutter-ui`），共用一份组件词表。
 
 ## 快速开始
 
+下载 ZIP 解压即用，或 `git clone https://github.com/AzusaKano/rtgo-ui`；包内没有构建步骤，也不需要安装依赖。要锁版本，取 Tags 页的存档点。
+
+引入样式：
+
 ```html
-<!-- 方式一：分开引（推荐，便于只覆盖令牌） -->
+<!-- 分开引（便于只覆盖令牌） -->
 <link rel="stylesheet" href="rtgo-tokens.css">
 <link rel="stylesheet" href="rtgo-components.css">
 
-<!-- 方式二：只用合体文件 -->
+<!-- 或只用合体文件，内容等价 -->
 <link rel="stylesheet" href="rtgo-slate.css">
 
-<!-- 可选：要「浅色/深色/跟随系统」三选一，再加这一份 -->
+<!-- 可选：需要手动切主题时再引 -->
 <link rel="stylesheet" href="theme-overrides.css">
 ```
 
+一个最小组装示例：
+
 ```html
-<!-- 一个最小组装示例 -->
 <div class="app">
   <div class="panel">
     <div class="route-card">
@@ -43,43 +41,47 @@
 </div>
 ```
 
-不加类即跟随系统；要手动切就再引 `theme-overrides.css`，然后给 `<body>` 挂 `theme-light` / `theme-dark`（都不挂 = 跟随系统）。
+## 主题
 
-改主题只覆盖令牌。写在哪一层会影响生效：令牌声明在 `body` 上，而主题档用的是 `body.theme-light` / `body.theme-dark`，比 `body` 多一个类、权重更高。所以分两种情况：
+颜色、字号、圆角都以 CSS 变量定义在令牌层，覆盖变量即可定制，无需改动组件：
 
 ```css
-/* ① 跟随系统（不挂主题类）：写 body 就够 */
-body { --brand: #1f6feb; --card: #ffffff; }
-
-/* ② 手动切主题的页面：两档各写一份，并且放在 theme-overrides.css 之后。
-      只写 ① 会被主题档盖掉：它权重更高，与书写顺序无关。 */
-body.theme-light { --brand: #1f6feb; }
-body.theme-dark  { --brand: #7aa2ff; }   /* 深色下品牌色要提亮，否则对比度不够 */
+body { --brand: #1f6feb; }
 ```
 
-改 `--brand` 时连同 `--brand-ink`（品牌色当文字用）与 `--brand-tint`（品牌浅底，选中胶囊在用）一起改；只改 `--brand`，选中态会是旧浅底配新字色。
+不加主题类时跟随系统；手动切换给 `<body>` 挂 `theme-light` / `theme-dark`。变量声明在 `body` 上，主题档是 `body.theme-light` / `body.theme-dark`——多一个类、权重更高，所以手动切主题的页面两档各写一份，并放在 `theme-overrides.css` 之后：
 
-**不需要构建、不需要装依赖。** 打开 `gallery.html` 就能看到按家族分区的逐件样片与版式参考，页首索引可直接跳到任一件：
-每张样片左上角是对应的组件 ID 与类名，按压类样片可以按住体验手感。
+```css
+body.theme-light { --brand: #1f6feb; }
+body.theme-dark  { --brand: #7aa2ff; }   /* 深色下品牌色提亮，保证对比度 */
+```
+
+改 `--brand` 时连同 `--brand-ink`（品牌色当文字用）和 `--brand-tint`（品牌浅底）一起改：选中态的浅底来自 `--brand-tint`，只改 `--brand` 会出现旧浅底配新字色。
+
+深色模式不需要单独写分支——一切暗色由令牌层重新定义，组件层没有深色规则。
+
+## 演示
+
+逐件样片见 `gallery.html`：按家族分区，页首有索引，标注组件 ID 与类名，按压类样片可按住。整页样板见 `sample/index.html`（查询 / 结果 / 详情 / 时刻表），可交互。
 
 ## 文件
 
-| 文件 | 作用 |
+| 文件 | 内容 |
 |---|---|
-| `rtgo-tokens.css` | 令牌层（颜色浅/暗、字阶 17 档、圆角、阴影、动效、层级）。**定制入口** |
-| `rtgo-components.css` | 组件层，只消费 `var(--*)`。值不要改 |
-| `rtgo-slate.css` | 合体文件 = 上两者拼合。勿手改 |
-| `theme-overrides.css` | 主题档（`.theme-light` / `.theme-dark`）。需要手动切主题才引，勿手改 |
-| `gallery.html` | 逐件样片 + 版式参考，纯静态，双击即开 |
-| `sample/index.html` | **四页样板**（查询 / 结果 / 详情 / 时刻表）：能点、能翻页、能切深浅。照它的骨架改最快 |
-| `docs/组件手册.md` | **主参考**：按场景索引 + 逐家族用途/变体/Do-Don't |
-| `docs/造件规则.md` | 缺件时按什么规则新造：六个维度的取值表与例外台账 |
-| `docs/令牌口径.md` | 逐令牌用途与禁区 |
-| `docs/宿主适配.md` | 跨宿主通道：page/rpx/hover-class/字号/原生组件 |
-| `件号表.md` | 每个件的拆件依据：ID、类名、取自哪里、为什么这么分 |
-| `check/verify.js` | **自检脚本**，见下节。无需安装依赖 |
-| `CHANGELOG.md` | 逐版变更，按件号锚定；破坏性变更标 ⚠ |
-| `SKILL.md` | 给 AI 编码助手用的使用说明 |
+| `rtgo-tokens.css` | 令牌层：颜色（浅/暗）、字阶 17 档、圆角、阴影、动效、层级。定制发生在这里 |
+| `rtgo-components.css` | 组件层，只消费 `var(--*)` |
+| `rtgo-slate.css` | 前两个文件的拼合，内容等价；只想引一个文件时用它 |
+| `theme-overrides.css` | 主题档（`.theme-light` / `.theme-dark`），手动切主题时才引 |
+| `gallery.html` | 逐件样片与版式参考，纯静态，双击即开 |
+| `sample/index.html` | 四页样板：查询 / 结果 / 详情 / 时刻表 |
+| `docs/组件手册.md` | 主参考：按场景索引，逐家族的用途、变体与 Do / Don't |
+| `docs/造件规则.md` | 缺件时的取值规则：六个维度的取值表与例外台账 |
+| `docs/令牌口径.md` | 逐令牌的用途与禁区 |
+| `docs/宿主适配.md` | 跨宿主通道：page / rpx / hover-class / 字号 / 原生组件 |
+| `件号表.md` | 每个组件的 ID、类名与出处 |
+| `check/verify.js` | 自检脚本 |
+| `CHANGELOG.md` | 逐版变更，按件号锚定，破坏性变更标 ⚠ |
+| `SKILL.md` | 给 AI 编码助手的使用说明 |
 
 ## 自检
 
@@ -87,36 +89,16 @@ body.theme-dark  { --brand: #7aa2ff; }   /* 深色下品牌色要提亮，否则
 node check/verify.js
 ```
 
-一条命令，零依赖（Node 自带模块）。断言条数以命令输出为准，检查的是这个包里各文件之间的关系：
+零依赖（Node 自带模块），检查包内各文件的关系：合体文件与两分层一致、主题档与令牌一致、文档覆盖全部件号、gallery 与样式互相接线。输出绿色即内部自洽。
 
-| 组 | 断言什么 | 不查会怎样 |
-|---|---|---|
-| M1-完整性 | `rtgo-slate.css` 逐字等于 `tokens + components` | 合体文件被手改过 ⇒ 分开引和整体引不一样，且不报错 |
-| M4-主题档 | `theme-overrides.css` 与令牌层逐值一致（浅/深两档 + 深档自带底色 + 组件层暗档规则带作用域） | 手动切深色时个别规则不跟，肉眼难查 |
-| M2-覆盖 | `件号表.md` 的每个 ID 都在文档里出现；文档不得引用不存在的 ID | 文档腐烂、凭空造件号 |
-| 接线 | gallery 挂的类都有样式定义；资产里的类都被 gallery 挂过 | 类名拼错不报错，只是静默没样式 |
+## 版本
 
-改完值跑一遍：绿 = 内部自洽；红 = 有处关系断了，输出会指出是哪条、差多少。
-
-这些检查只管**包内关系**，不评价数值本身。上述值取自“轨交速查”并逐个对账，
-本包不重新论证来源。
-
-## 三条使用纪律
-
-1. 改观感只动令牌，不改组件声明。组件值逐件对过账，改一处就与设计稿脱开。
-2. 深色零分支：组件层不写暗色规则，一切暗色由令牌层重定义。
-3. 缺件先查手册。多数场景已有对应件；确缺再扩展，沿用同一套令牌与命名。
+当前版本见 `VERSION`，逐版变更见 [CHANGELOG.md](CHANGELOG.md)，历史版本在 Tags 页。
 
 ## 适用域
 
-移动端组件型界面、深浅双主题、Web / 小程序同范式。
-React Native / 桌面范式未验证。
-
-## 状态
-
-当前版本见 `VERSION`，逐版变更见 [CHANGELOG.md](CHANGELOG.md)（按件号锚定，破坏性变更标 ⚠）。
-每个件「取自哪里、为什么这么分」见 `件号表.md`。
+移动端组件型界面，浅色/深色双主题，Web 与小程序同一范式。React Native、桌面范式未验证。
 
 ## 许可
 
-**BSD-3-Clause** © 2026 AzusaKano · 全文见 [LICENSE](LICENSE)。
+BSD-3-Clause © 2026 AzusaKano，全文见 [LICENSE](LICENSE)。
