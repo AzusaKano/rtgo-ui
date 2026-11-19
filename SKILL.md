@@ -16,7 +16,7 @@ description: 用 RTGo_slate 设计系统构建或修改移动端 Web / 小程序
 | 合体 | `rtgo-slate.css` | 上两者拼合，只想引一个文件时用它 |
 | 主题 | `theme-overrides.css` | 可选。手动切浅/深用（`.theme-light` / `.theme-dark`）；不加类即跟随系统 |
 | 展示 | `gallery.html` | 71 张逐件实况样片，双击即开；按压类样片可按住体验 |
-| 样板 | `sample/index.html` | 能点开的四页样板：查询 / 结果 / 详情 / 时刻表。先看它：骨架、横滑行、卡片底部动作、按压接线都在里面 |
+| 样板 | `sample/index.html` | 能点开的四页样板：查询 / 结果 / 详情 / 时刻表。先看它：骨架、横滑行、卡片底部动作、按压接线、顶栏「更多」菜单（T24）都在里面 |
 
 无需构建、无需装依赖。三个 CSS 是全部组件产物；需要手动切主题时再引 `theme-overrides.css`（给 `<body>` 挂 `.theme-light` / `.theme-dark`，都不挂 = 跟随系统）。
 

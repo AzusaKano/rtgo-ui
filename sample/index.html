@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>RTGo 样板 · 轨交速查</title>
 <link rel="stylesheet" href="../rtgo-slate.css">
+<!-- 主题档：.theme-light / .theme-dark 两套令牌（构建脚本从令牌层生成）。
+     外观三档要真生效必须引这一行；v1.24 之前样板缺它，切档只换了类名，色值不动。 -->
+<link rel="stylesheet" href="../theme-overrides.css">
 <link rel="stylesheet" href="sample.css">
 </head>
 <body>
@@ -19,7 +22,7 @@
         <div class="sub" id="pageSub">真实数据 · 只看结构与接线</div>
       </div>
       <div class="topbar-actions">
-        <view class="icon-btn" id="btnTheme" data-hover-class="press">☾</view>
+        <button class="icon-btn menu-trigger" id="btnMenu" aria-label="更多" aria-haspopup="menu" aria-expanded="false" data-hover-class="press"><i class="glyph glyph-more-disc"></i></button>
       </div>
     </div>
 
@@ -32,7 +35,24 @@
 
 <div id="overlays"></div>
 
-<p class="demo-note">RTGo 样板 · 切页 / 选站弹层 / 日期时间弹层都可点；方案数据取自 2026-11-03 的真实查询（竹料 → 广州南站）</p>
+<!-- T24 菜单：顶栏「更多」的动作浮层。定位由宿主显式给（--menu-top/right）；
+     锚点角钉在触发器那一侧（右上），不做自动翻转。
+     右距要把居中留白算进去：顶栏限宽 --page-max 并居中，而 .menu-layer 是视口级 fixed，
+     直接写 14px 会让面板在宽屏上跑到内容区外面。 -->
+<div class="menu-layer" id="menuLayer" hidden>
+  <div class="menu" role="menu" aria-label="更多" style="--menu-top:calc(62px + env(safe-area-inset-top) + 6px);--menu-right:calc(max(0px,(100vw - var(--page-max))/2) + 14px);--menu-w:252px;--menu-origin:top right">
+    <div class="menu-group-label">外观</div>
+    <button class="menu-item is-checked" role="menuitemradio" aria-checked="true" data-theme="auto"><span class="menu-text">跟随系统</span><span class="menu-check"><i class="check-glyph"></i></span></button>
+    <button class="menu-item" role="menuitemradio" aria-checked="false" data-theme="light"><span class="menu-text">浅色</span><span class="menu-check"></span></button>
+    <button class="menu-item" role="menuitemradio" aria-checked="false" data-theme="dark"><span class="menu-text">深色</span><span class="menu-check"></span></button>
+    <div class="menu-sep"></div>
+    <div class="menu-group-label">样板</div>
+    <button class="menu-item has-desc" role="menuitem" data-href="../gallery.html"><span class="menu-main"><span class="menu-text">逐件样片</span><span class="menu-desc">按家族分区，按压档可按住试</span></span></button>
+    <button class="menu-item" role="menuitem" data-href="../docs/组件手册.md"><span class="menu-text">组件手册</span></button>
+  </div>
+</div>
+
+<p class="demo-note">RTGo 样板 · 切页 / 顶栏菜单 / 选站弹层 / 日期时间弹层都可点；方案数据取自 2026-11-03 的真实查询（竹料 → 广州南站）</p>
 
 <script src="mock.js"></script>
 <script src="app.js"></script>

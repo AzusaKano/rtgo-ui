@@ -1,4 +1,4 @@
-/* 样板做三件事：切页、按压接线、深浅切换。
+/* 样板做三件事：切页、按压接线、顶栏菜单（含外观三档）。
    四个页面的结构、尺寸与间距全部来自资产包的类，本文件只管「怎么把它们拼起来」，
    不写任何样式值 —— 要改观感请改 rtgo-tokens.css 里的令牌。 */
 
@@ -780,32 +780,77 @@ function wirePress(root) {
   });
 }
 
-/* ── 深浅切换（令牌层负责两套值，这里只切类）────────────── */
+/* ── 顶栏「更多」菜单（T24）＋ 外观三档 ─────────────────────
+   顶栏右上是「更多」菜单；外观三档在菜单里（menuitemradio + 勾槽）。 */
 
 const THEME_KEY = 'rtgo-sample-theme';
-const btnTheme = document.getElementById('btnTheme');
+const menuLayer = document.getElementById('menuLayer');
+const menuPanel = menuLayer.querySelector('.menu');
+const btnMenu = document.getElementById('btnMenu');
 
 function applyTheme(mode) {
-  document.body.classList.toggle('theme-dark', mode === 'dark');
-  document.body.classList.toggle('theme-light', mode === 'light');
-  btnTheme.textContent = mode === 'dark' ? '☀' : '☾';
+  document.body.classList.remove('theme-dark', 'theme-light');
+  if (mode === 'light' || mode === 'dark') document.body.classList.add('theme-' + mode);
+  menuPanel.querySelectorAll('[data-theme]').forEach(function (b) {
+    const on = b.dataset.theme === mode;
+    b.classList.toggle('is-checked', on);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
+    b.querySelector('.menu-check').innerHTML = on ? '<i class="check-glyph"></i>' : '';
+  });
 }
 
-function currentTheme() {
-  const saved = localStorage.getItem(THEME_KEY);
-  if (saved) return saved;
-  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+let menuCloseTimer = null;
+
+function openMenu() {
+  clearTimeout(menuCloseTimer);
+  menuLayer.hidden = false;
+  menuLayer.classList.remove('is-closing');
+  btnMenu.classList.add('is-open');
+  btnMenu.setAttribute('aria-expanded', 'true');
 }
 
-btnTheme.addEventListener('click', function () {
-  const next = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
-  localStorage.setItem(THEME_KEY, next);
-  applyTheme(next);
+/* 退场 180ms 走完再收（T24-07）；直接 display:none 会把关闭动画吞掉 */
+function closeMenu() {
+  if (menuLayer.hidden) return;
+  menuLayer.classList.add('is-closing');
+  btnMenu.classList.remove('is-open');
+  btnMenu.setAttribute('aria-expanded', 'false');
+  menuCloseTimer = setTimeout(function () {
+    menuLayer.hidden = true;
+    menuLayer.classList.remove('is-closing');
+  }, 200);
+}
+
+btnMenu.addEventListener('click', function () {
+  menuLayer.hidden ? openMenu() : closeMenu();
+});
+
+/* 点击层铺满全屏：点到面板里由面板处理，点在外面就收 */
+menuLayer.addEventListener('click', function (e) {
+  if (!e.target.closest('.menu')) closeMenu();
+});
+
+menuPanel.addEventListener('click', function (e) {
+  const item = e.target.closest('.menu-item');
+  if (!item) return;
+  if (item.dataset.theme) {
+    localStorage.setItem(THEME_KEY, item.dataset.theme);
+    applyTheme(item.dataset.theme);
+    return;
+  }
+  if (item.dataset.href) {
+    closeMenu();
+    location.href = item.dataset.href;
+  }
+});
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeMenu();
 });
 
 /* ── 启动 ───────────────────────────────────────────────── */
 
-applyTheme(currentTheme());
+applyTheme(localStorage.getItem(THEME_KEY) || 'auto');
 
 document.getElementById('btnBack').addEventListener('click', function () {
   const page = currentPage();
