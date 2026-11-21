@@ -420,7 +420,7 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G8/T08 时间轴 ================= -->
 <section class="g-sec" id="s-t08">
   <h2><span class="g-secid">T08</span> 时间轴（方案详情主轴）</h2>
-  <p class="g-note">行网格 57/25/1fr；节点 17px（换乘 20px，translateY(-1.5px) 同心补偿）；轨线 4px；时刻 17/850 顶对齐 + translateY(4px) 中线对齐（推算时刻 4.4px，不能沿用 4px——真机定稿）。</p>
+  <p class="g-note">行网格 57/25/1fr；节点 17px（换乘 20px，translateY(-1.5px) 同心补偿）；轨线 4px；时刻 17/850 顶对齐 + translateY(4px) 中线对齐（推算时刻 4.4px，不能沿用 4px——真机实测）。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T08-01/02/03/04/07</span></summary><span class="g-cls">.timeline-row .time .time-est .rail .node .node-transfer .rail-line .station .meta .meta-line .formation-tag .station-nav .nav-chev .leg-* .lastStationDetail</span><span class="g-src">index:60-141 · detail.wxss</span></details></figcaption>
       <div class="g-stage">
@@ -863,8 +863,8 @@ button{cursor:pointer;pointer-events:auto}
 
 <!-- ================= G15/T17 跨项目组件 ================= -->
 <section class="g-sec" id="s-t17">
-  <h2><span class="g-secid">T17</span> 跨项目组件（外部产品沉淀）</h2>
-  <p class="g-note">这些件不来自本系统的原始版本 —— 由另一个产品开发时沉淀入册（T17 段）。改名两项：.tt-flat-*（平铺式时刻表）、.facts-plain/.fact-plain（防 T08-11 撞名）。.tag 的 .132em 补偿挂 Y-R1 开放项。</p>
+  <h2><span class="g-secid">T17</span> 跨项目组件（来自外部产品）</h2>
+  <p class="g-note">这些件不来自本系统的原始版本 —— 由另一个产品开发时整理入册（T17 段）。改名两项：.tt-flat-*（平铺式时刻表）、.facts-plain/.fact-plain（防 T08-11 撞名）。.tag 的 .132em 补偿尚有开放项。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-01</span></summary><span class="g-cls">.stop-list .stop-row .stop-pill .stop-main .stop-dir .stop-eta .stop-clock .stop-sub .stop-arrow .is-none</span><span class="g-src">ui-kit:281-294</span></details></figcaption>
       <div class="g-stage">
@@ -1155,7 +1155,7 @@ button{cursor:pointer;pointer-events:auto}
 
 
 
-<!-- ================= G17/T19 票务指南弹层（2026-10-31 新增页） ================= -->
+<!-- ================= G17/T19 票务指南弹层 ================= -->
 <section class="g-sec" id="s-t18">
   <h2><span class="g-secid">T18</span> 图形件（本仓自建）</h2>
   <p class="g-note">这批件的几何不再从字符照抄，而是与 Flutter 侧 <code>foundation/glyphs.dart</code> 共用同一个 <b>24×24 viewBox、同一条 path</b>：两个宿主逐像素同源。理由是字符的墨迹位置随字体与像素密度浮动（同一份样式实测：无头 Chrome 居中、桌面 Chrome 的 <code>×</code> 高 1.9px），只能靠 <code>translateY</code> 打补丁；图形件没有基线问题。线宽按 Flutter 的 2px 屏幕像素换算成 viewBox 单位（<code>2×24/盒尺寸</code>），逐件写死。</p>
@@ -1186,7 +1186,7 @@ button{cursor:pointer;pointer-events:auto}
           <view class="sheet-close"><view class="glyph glyph-close"></view></view>
           <view class="sheet-close"><view class="glyph glyph-close" style="width:18px;height:18px"></view></view>
         </div>
-        <p class="g-hint">26 盒是为把墨迹做到 12.8px 反算出来的（30 号字符实测 12.77px），不是随便给的尺寸 —— 盒小了叉会显瘦，盒大了会顶到圆边。</p>
+        <p class="g-hint">26 盒是为把墨迹做到 12.8px 反算出来的（30 号字符实测 12.77px）—— 盒小了叉会显瘦，盒大了会顶到圆边。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-03</span></summary><span class="g-cls">.glyph .glyph-chevron（右箭头 ›）</span><span class="g-src">16 盒 · 描边 2px · 墨迹 11.3px</span></details></figcaption>
@@ -1206,7 +1206,7 @@ button{cursor:pointer;pointer-events:auto}
           <view class="line-expand-btn"><view class="glyph glyph-chevron-down line-expand-arrow"></view></view>
           <view class="line-grid-expand-row"><view class="line-expand-btn"><view class="glyph glyph-chevron-down line-expand-arrow"></view></view></view>
         </div>
-        <p class="g-hint">左起：主档（14 盒）／站选器线路条的展开钮（34 圆）／收起钮（同一枚 <code>rotate(180deg)</code>）。<b>14 盒不是随手取的</b>：Flutter 侧同一处是 <code>size:14</code>、线宽恒 2dp，换算成 mask 是 14 盒 + stroke-unit 3.43（照抄 3 会细成 1.75px）。描边件的墨迹带关于画布 y=12 对称，按盒心居中即可，<b>不要加光学补偿</b> —— 那是 T18-05 实心三角的事。改盒必须同步改 stroke-unit（= 2×24/盒）。</p>
+        <p class="g-hint">左起：主档（14 盒）／站选器线路条的展开钮（34 圆）／收起钮（同一枚 <code>rotate(180deg)</code>）。<b>mask 用 14 盒、stroke-unit 3.43</b>：按 2px 线宽换算（照抄 3 会细成 1.75px）。描边件的墨迹带关于画布 y=12 对称，按盒心居中即可，<b>不要加光学补偿</b> —— 那是 T18-05 实心三角的事。改盒必须同步改 stroke-unit（= 2×24/盒）。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-05</span></summary><span class="g-cls">.glyph .glyph-caret-down（字尾小三角）</span><span class="g-src">7 盒 · 实心 · 墨迹 5.0×4.7px</span></details></figcaption>
@@ -1215,7 +1215,7 @@ button{cursor:pointer;pointer-events:auto}
           <view style="display:flex;align-items:center;color:var(--text-3)"><text style="font-size:12px">出发日期</text><view class="glyph glyph-caret-down" style="margin-left:6px"></view></view>
           <view style="display:flex;align-items:center;color:var(--text-3)"><text style="font-size:12px">出发时间</text><view class="glyph glyph-caret-down" style="margin-left:6px"></view></view>
         </div>
-        <p class="g-hint">7 盒是照 12px 字符 <code>▾</code> 的实机墨迹（5.0×4.7）反算的，盒底留 2.3px 让墨迹落回原来的基线位置。它<b>只贴在文字后面</b>当「这里能点开」的提示（<code>vertical-align:-2px</code> 让它贴住文字底部）；独立摆放的展开/收起钮用 T18-04 描边下箭头。两件的分界是语义，不是大小。</p>
+        <p class="g-hint">7 盒是照 12px 字符 <code>▾</code> 的实测墨迹（5.0×4.7）反算的，盒底留 2.3px 让墨迹落回原来的基线位置。它<b>只贴在文字后面</b>当「这里能点开」的提示（<code>vertical-align:-2px</code> 让它贴住文字底部）；独立摆放的展开/收起钮用 T18-04 描边下箭头。两件的分界是语义，不是大小。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-06</span></summary><span class="g-cls">.glyph .glyph-swap（交换 ⇄）</span><span class="g-src">24 盒 · 描边 1.6 · 墨迹 14.8×14.8px</span></details></figcaption>
@@ -1224,7 +1224,7 @@ button{cursor:pointer;pointer-events:auto}
           <view class="swap-face"><view class="glyph glyph-swap"></view></view>
           <view class="glyph glyph-swap" style="color:var(--brand)"></view>
         </div>
-        <p class="g-hint">墨迹 14.8×14.8 与 16px 字符 <code>⇄</code> 的实机一致，中心正好在盒心 —— 放进 34 圆（<code>.swap-face</code>）不用再补位移。16px 的 ⇄ 各家字体墨迹差很多，这四条直线是全平台唯一稳定的画法。</p>
+        <p class="g-hint">墨迹 14.8×14.8 与 16px 字符 <code>⇄</code> 的实测一致，中心正好在盒心 —— 放进 34 圆（<code>.swap-face</code>）不用再补位移。16px 的 ⇄ 各家字体墨迹差很多，这四条直线是全平台唯一稳定的画法。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-07</span></summary><span class="g-cls">.glyph .glyph-pick（列表三横条）</span><span class="g-src">13×10 盒 · 三条 2px · 圆角 1</span></details></figcaption>
@@ -1256,7 +1256,7 @@ button{cursor:pointer;pointer-events:auto}
           <view class="glyph glyph-filter" style="color:var(--text-2)"></view>
           <view class="glyph glyph-filter" style="color:var(--brand)"></view>
         </div>
-        <p class="g-hint">漏斗轮廓，24 盒 / stroke-unit 2 / 圆头圆角。<b>为什么不画三横条</b>：三横条已被 T18-07 <code>.glyph-pick</code> 占住（车站列表 / 线路网格入口），同框放两枚三横条分不清哪个是「打开列表」。颈宽 5 / 内净空 3 是硬下限 —— 2px 描边左右各吃 1px，再窄必糊成一团（同 T18-11 删门）。</p>
+        <p class="g-hint">漏斗轮廓，24 盒 / stroke-unit 2 / 圆头圆角。<b>不画三横条</b>：三横条已被 T18-07 <code>.glyph-pick</code> 占住（车站列表 / 线路网格入口），同框放两枚三横条分不清哪个是「打开列表」。颈宽 5 / 内净空 3 是硬下限 —— 2px 描边左右各吃 1px，再窄必糊成一团（同 T18-11 删门）。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-13 / T18-14</span></summary><span class="g-cls">.glyph .glyph-sort-asc / .glyph .glyph-sort-desc（排序 · 正序 / 倒序）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16.9×16.4 · 两枚为上下镜像</span></details></figcaption>
@@ -1267,7 +1267,7 @@ button{cursor:pointer;pointer-events:auto}
           <view class="glyph glyph-sort-asc" style="color:var(--text-2)"></view>
           <view class="glyph glyph-sort-desc" style="color:var(--text-2)"></view>
         </div>
-        <p class="g-hint">构图：<b>左竖箭头 + 右三条等长横线</b>。等长是刻意的 —— 长短递减在这套语言里读作「数据量」，等长才读作「列表顺序」。两枚是同一件的上下镜像：三条横线逐值相同（y 6.5 / 12 / 17.5，x 13.5→19.5），只把箭头翻过来。<br>箭头是 45° 对称双翼：单翼（勾形）会被读成「已完成」，与「方向」的语义正好相反。</p>
+        <p class="g-hint">构图：<b>左竖箭头 + 右三条等长横线</b>。等长 —— 长短递减在这套语言里读作「数据量」，等长才读作「列表顺序」。两枚是同一件的上下镜像：三条横线逐值相同（y 6.5 / 12 / 17.5，x 13.5→19.5），只把箭头翻过来。<br>箭头是 45° 对称双翼：单翼（勾形）会被读成「已完成」，与「方向」的语义正好相反。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-15 / T18-16</span></summary><span class="g-cls">.glyph .glyph-favorite / .glyph .glyph-favorite-on（收藏 · 未选中 / 已选中）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 17×15.5 · 家族第一枚「同形两态」</span></details></figcaption>
@@ -1290,7 +1290,7 @@ button{cursor:pointer;pointer-events:auto}
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-favorite"></view></view>
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-share"></view></view>
         </div>
-        <p class="g-hint">构图：右上 / 中左 / 右下三个节点，中左那个分别连另外两个（之字走向）。<b>为什么是空心环</b>：做成实心点会与同框的 T18-10（三点实心圆）撞形，环让两枚在小尺寸下仍能区分。两段连线的端点落在环外缘（距圆心 3.4 = r 2.4 + 半个线宽），圆头端点与环合流，不留缝也不扎进环心。<br>上面四颗同框即是这六枚的典型用法：<b>线宽、盒尺寸、墨迹占比一致</b>，放进工具栏不会有一枚显出「细」或「大」。</p>
+        <p class="g-hint">构图：右上 / 中左 / 右下三个节点，中左那个分别连另外两个（之字走向）。<b>空心环</b>：做成实心点会与同框的 T18-10（三点实心圆）撞形，环让两枚在小尺寸下仍能区分。两段连线的端点落在环外缘（距圆心 3.4 = r 2.4 + 半个线宽），圆头端点与环合流，不留缝也不扎进环心。<br>上面四颗同框即是这六枚的典型用法：<b>线宽、盒尺寸、墨迹占比一致</b>，放进工具栏不会有一枚显出「细」或「大」。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18 对照</span></summary><span class="g-cls">字符版（历史）vs 图形版（现行）</span><span class="g-src">母本已全部换用图形件，字符版只剩迁移对照价值</span></details></figcaption>
@@ -1304,7 +1304,7 @@ button{cursor:pointer;pointer-events:auto}
           <div style="text-align:center"><view class="nb-sheet-close"><text class="nb-sheet-close-x">×</text></view><p class="g-hint" style="margin-top:6px">nb-sheet 字符版</p></div>
           <div style="text-align:center"><view class="ig-close"><text class="ig-close-x">×</text></view><p class="g-hint" style="margin-top:6px">ig-panel 字符版</p></div>
         </div>
-        <p class="g-hint">back / close 的两个字符类已随 v1.22.2 从资产清出（2026-11-07 核过：五个字符类在上游 wxml/wxss 均为零引用、已全量换用图形件），上面只留图形版样片，<b>新页面一律用图形版</b>。下面三个字符类（sd-panel / nb-sheet / ig-panel 的 ×）上游同样已换图形件，资产里是否跟着清掉，等定。</p>
+        <p class="g-hint">back / close 的两个字符类已从资产清出（核过：五个字符类均零引用、已全量换用图形件），上面只留图形版样片，<b>新页面一律用图形版</b>。下面三个字符类（sd-panel / nb-sheet / ig-panel 的 ×）同样已换图形件，资产里保留作对照。</p>
       </div>
     </figure>
   </div>
@@ -1352,7 +1352,7 @@ button{cursor:pointer;pointer-events:auto}
 
 <section class="g-sec" id="g-t21">
   <h2><span class="g-secid">T21</span> 确认对话框（组合件 · 不新增壳类）</h2>
-  <p class="g-note">壳/头/钮**全部复用既有件**：<code>.snp-mask/.snp-panel</code>（T10-03 悬浮对话框档，**不是** T10-01 半屏的 78vh）＋ <code>.snp-head/.snp-title</code>（T10-05）＋ <code>.dtp-actions/.dtp-btn</code>（T06-06）。本族只补两件缺的子件：<code>.snp-body</code>（正文）与 <code>.dtp-btn.is-danger</code>（危险档）。上游组件自有 <code>.confirm-*</code> 名，资产侧不复制。</p>
+  <p class="g-note">壳/头/钮**全部复用既有件**：<code>.snp-mask/.snp-panel</code>（T10-03 悬浮对话框档，**不是** T10-01 半屏的 78vh）＋ <code>.snp-head/.snp-title</code>（T10-05）＋ <code>.dtp-actions/.dtp-btn</code>（T06-06）。本族只补两件缺的子件：<code>.snp-body</code>（正文）与 <code>.dtp-btn.is-danger</code>（危险档）。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T21-01</span></summary><span class="g-cls">.snp-mask .snp-panel .snp-head .snp-title .snp-body .dtp-actions .dtp-btn .is-cancel .is-confirm .is-danger</span><span class="g-src">组合：T10-03 ＋ T10-05 ＋ T06-06（母本 components/confirm-dialog）</span></details></figcaption>
       <div class="g-stage pad0 bg-mask">
@@ -1384,7 +1384,7 @@ button{cursor:pointer;pointer-events:auto}
 
 <section class="g-sec" id="g-t22">
   <h2><span class="g-secid">T22</span> 列表管理（卡级选中 · 勾槽 · 管理底栏 · 顶栏动作）</h2>
-  <p class="g-note">上游类名是页面私有的 <code>.saved-*</code>，资产侧改通用名（2026-11-07 定稿：通用名更适合不面向单一产品的资产包）。<strong>卡内部版式不进件号</strong>：卡头/标题/时间行/时长全部由现有件拼（T04-01 卡壳 ＋ <code>.route-top</code> ＋ T08 <code>.duration</code> ＋ T08-08 轴 ＋ T08-11 facts），最后一张就是拼装示范。</p>
+  <p class="g-note">类名在原产品页面里是私有的 <code>.saved-*</code>，资产包改用通用名（不绑定单一产品）。<strong>卡内小件不单列</strong>：卡头/标题/时间行/时长全部由现有件拼（T04-01 卡壳 ＋ <code>.route-top</code> ＋ T08 <code>.duration</code> ＋ T08-08 轴 ＋ T08-11 facts），最后一张就是拼装示范。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T22-03</span></summary><span class="g-cls">.route-card.is-selectable .route-card.is-selected .nb-row-chk.is-hollow .is-on .check-glyph .station-chip.is-strong .warning-badge.is-compact .duration .route-top</span><span class="g-src">母本 .saved-card / .saved-check / .saved-stale / .saved-warning</span></details></figcaption>
       <div class="g-stage bg-page">
@@ -1473,7 +1473,7 @@ button{cursor:pointer;pointer-events:auto}
 </section>
 
 
-<p style="margin-top:60px;color:var(--text-3);font-size:11px;text-align:center">RTGo_slate · 令牌 + 组件 + 样片 · 数值 1:1 照抄自真实上线产品</p>
+<p style="margin-top:60px;color:var(--text-3);font-size:11px;text-align:center">RTGo_slate · 令牌 + 组件 + 样片</p>
 </div>
 
 <script>
