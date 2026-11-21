@@ -18,7 +18,10 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Micros
 .g-top b{font-size:16px;color:var(--text)}
 .g-top .g-links{display:flex;gap:10px;font-size:12px;color:var(--text-2)}
 .g-top a{color:var(--brand);text-decoration:none}
-.g-themes{margin-left:auto;display:flex;gap:6px}
+.g-work{margin-left:auto;display:flex}
+.g-work button{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);font-size:12px;cursor:pointer}
+.g-work button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.g-themes{margin-left:0;display:flex;gap:6px}
 .g-themes button{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);font-size:12px;cursor:pointer}
 .g-themes button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
 .g-wrap{max-width:1080px;margin:0 auto;padding:26px 20px 80px}
@@ -26,21 +29,33 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Micros
 .g-hero h1{margin:0 0 6px;font-size:26px;font-weight:800;color:var(--text)}
 .g-hero p{margin:0;color:var(--text-2);font-size:13px;line-height:1.7}
 .g-hero code{font-family:Consolas,monospace;font-size:12px;color:var(--brand)}
+.g-hero-meta{margin-top:10px;border:1px dashed var(--border);border-radius:8px}
+.g-hero-detail{margin:0;padding:0 12px 10px;font-size:12px;color:var(--text-2);line-height:1.7}
 .g-sec{margin-top:44px;scroll-margin-top:56px}
 .g-sec>h2{margin:0 0 4px;font-size:19px;font-weight:800;color:var(--text);display:flex;align-items:baseline;gap:10px}
 .g-sec>h2 .g-secid{font-size:12px;font-weight:600;color:var(--brand);font-family:Consolas,monospace}
 .g-sec>p.g-note{margin:0 0 14px;font-size:12px;color:var(--text-2);line-height:1.7}
 .g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 /* scroll-margin-top：顶栏是 sticky 的，索引跳转时不给留位，目标样片的
-   「ID + 类名」标签栏会被顶栏盖住（索引共 126 条，区段写法会展开）。
+   「ID + 类名」标签栏会被顶栏盖住（索引运行时生成，2026-11-21 实测 144 条）。
    值 = 顶栏高 49 + 余量。 */
 .g-spec{margin:0;border:1px dashed var(--border);border-radius:12px;overflow:hidden;background:var(--card);scroll-margin-top:64px}
-.g-spec>.g-tag{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:7px 12px;border-bottom:1px solid var(--border-weak);background:var(--bg)}
-.g-spec>.g-tag .g-id{font-family:Consolas,monospace;font-size:11px;font-weight:700;color:var(--brand)}
-.g-spec>.g-tag .g-cls{font-family:Consolas,monospace;font-size:11px;color:var(--text-2);word-break:break-all}
-.g-spec>.g-tag .g-src{margin-left:auto;font-size:10px;color:var(--text-3);font-family:Consolas,monospace}
+/* 工程标注默认折叠（details.g-meta）：summary 只留弱化件号徽章；
+   展开后件号/类名/出处三行齐全，与折叠前逐字一致。顶栏「工程模式」可一键全展开。 */
+.g-spec>.g-tag{display:block;padding:0;border-bottom:1px solid var(--border-weak);background:var(--bg)}
+.g-meta summary{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;list-style:none;user-select:none}
+.g-meta summary::-webkit-details-marker{display:none}
+.g-meta summary::before{content:"▸";flex:none;font-size:10px;color:var(--text-3)}
+.g-meta[open] summary::before{content:"▾"}
+.g-meta summary .g-id{font-family:Consolas,monospace;font-size:11px;font-weight:600;color:var(--text-3)}
+.g-meta summary:hover .g-id{color:var(--text-2)}
+.g-meta .g-cls{display:block;padding:1px 12px 0;font-family:Consolas,monospace;font-size:11px;color:var(--text-2);word-break:break-all}
+.g-meta .g-src{display:block;padding:0 12px 8px;font-size:10px;color:var(--text-3);font-family:Consolas,monospace}
 .g-stage{padding:16px;min-height:56px}
 .g-stage.bg-page{background:var(--bg)}
+/* 舞台词汇扩展：bg-mask=浮层件（遮罩色示意真实层次）；bg-checker=透明件（棋盘格示意零底墨迹）。全走令牌。 */
+.g-stage.bg-mask{background:var(--mask)}
+.g-stage.bg-checker{background-color:var(--card);background-image:linear-gradient(45deg,var(--border-weak) 25%,transparent 25%,transparent 75%,var(--border-weak) 75%),linear-gradient(45deg,var(--border-weak) 25%,transparent 25%,transparent 75%,var(--border-weak) 75%);background-position:0 0,9px 9px;background-size:18px 18px}
 .g-stage.pad0{padding:0}
 .g-swatch{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:8px}
 .g-swatch i{display:block;width:34px;height:22px;border-radius:6px;border:1px solid var(--border);flex:none}
@@ -84,6 +99,7 @@ button{cursor:pointer;pointer-events:auto}
   <span class="g-links">
     <a href="docs/组件手册.md">组件手册</a><a href="件号表.md">件号表</a><a href="rtgo-slate.css">rtgo-slate.css</a>
   </span>
+  <span class="g-work"><button id="workmode" type="button">工程模式</button></span>
   <span class="g-themes" id="themes">
     <button data-t="auto" class="on">跟随系统</button><button data-t="light">浅色</button><button data-t="dark">深色</button>
   </span>
@@ -93,9 +109,11 @@ button{cursor:pointer;pointer-events:auto}
 
 <div class="g-hero">
   <h1>RTGo_slate — 移动端设计系统</h1>
-  <p>全部数值取自一个真实上线的移动端产品，<b>1:1 照抄</b>，不是凭感觉调出来的。<b>改观感只改令牌</b>，不要改组件值。
-  每个样片左上角是件号 与类名；<span class="g-kbd">按压档</span>样片可按住体验（JS 复刻 hover-class 挂摘类语义，含从当前值折返）。
-  用法/变体/Do-Don't 见 <a href="docs/组件手册.md" style="color:var(--brand)">组件手册</a>。</p>
+  <p>一套令牌驱动的移动端界面样式库（令牌 + 组件双层、浅/暗两档主题），按家族陈列 <b>102 张样片</b>；<span class="g-kbd">按压档</span>样片可按住体验（JS 复刻 hover-class 挂摘类语义，含从当前值折返）。
+  <b><a href="sample/" style="color:var(--brand)">打开体验页</a></b> 可玩完整交互样板；用法/变体/Do-Don't 见 <a href="docs/组件手册.md" style="color:var(--brand)">组件手册</a>。</p>
+  <details class="g-meta g-hero-meta"><summary><span class="g-id">工程口径</span></summary>
+    <p class="g-hero-detail">母本：微信小程序 <code>母本工程</code> → 通用 CSS。<b>全部数值 1:1 照抄</b>，件号表见 <code>件号表.md</code>，逐件断言见 <code>check/verify.js</code>；改观感只改令牌，不要改组件值。每个样片的件号/类名/出处默认折叠，顶栏「工程模式」一键展开。</p>
+  </details>
   <div class="g-index" id="gIndex"><div class="g-it">ID 索引（自动生成自样片标注；点击跳样片）</div></div>
 </div>
 
@@ -109,8 +127,8 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G2/T02 字阶 ================= -->
 <section class="g-sec" id="s-t02">
   <h2><span class="g-secid">T02</span> 字号令牌（rem+max 死区，双写降级）</h2>
-  <p class="g-note">默认档 1rem=16px≤17 → 增量 0，字号精确=基准 px；宿主调 <code>html{font-size}</code> 即得母本「系统字号档位」缩放（T15-04）。</p>
-  <div class="g-spec"><figcaption class="g-tag"><span class="g-id">T02-01~07</span><span class="g-cls">--fs-hero-* / title / strong / body / sub / small / micro / tag + .app 继承字号</span><span class="g-src">app.wxss:156-183 · index:9</span></figcaption>
+  <p class="g-note">默认档 1rem=16px≤17 → 增量 0，字号精确=基准 px；宿主调 <code>html{font-size}</code> 即得整套「系统字号档位」缩放（T15-04）。</p>
+  <div class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T02-01~07</span></summary><span class="g-cls">--fs-hero-* / title / strong / body / sub / small / micro / tag + .app 继承字号</span><span class="g-src">app.wxss:156-183 · index:9</span></details></figcaption>
     <div class="g-stage" id="fsRows"></div>
   </div>
 </section>
@@ -120,12 +138,12 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T03</span> 顶栏与返回</h2>
   <p class="g-note">顶栏两档：<code>.ios-fixed-topbar</code>（72px）为**默认档 = 微信小程序方案**——不透明底 <code>--bg</code> + 强边框 <code>--topbar-bd-strong</code>，那套是修苹果端小程序渲染 bug 的补丁；不做小程序的宿主（Flutter / Web / 原生）加 <code>.is-translucent</code> 用半透明档（T03-02b）。<code>.fixed-topbar</code> 为历史代际（O-01 保留备用，其底色/边框即半透明档的出处）。<code>.sticky-topbar</code> 经 M0 审阅已移除（O-02）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-01/02/04/05</span><span class="g-cls">.ios-fixed-topbar .back .glyph .glyph-back .title .sub</span><span class="g-src">index:473-521,228-258</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-01/02/04/05</span></summary><span class="g-cls">.ios-fixed-topbar .back .glyph .glyph-back .title .sub</span><span class="g-src">index:473-521,228-258</span></details></figcaption>
       <div class="g-stage pad0"><div class="demo-viewport">
         <div class="ios-fixed-topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">3号线 · 全程 18 分钟</div></div></div>
       </div></div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-02b</span><span class="g-cls">.ios-fixed-topbar.is-translucent（半透明档 · 软件端）</span><span class="g-src">index:376-395（配色出处）+ T03-02 几何</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-02b</span></summary><span class="g-cls">.ios-fixed-topbar.is-translucent（半透明档 · 软件端）</span><span class="g-src">index:376-395（配色出处）+ T03-02 几何</span></details></figcaption>
       <div class="g-stage pad0"><div style="display:grid;gap:10px">
         <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">默认档（小程序方案，不加类）：不透明底 + 强边框</p>
           <div class="demo-viewport"><div class="ios-fixed-topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">默认档 · 微信小程序方案</div></div></div></div></div>
@@ -134,32 +152,32 @@ button{cursor:pointer;pointer-events:auto}
         <p style="margin:2px 0 0;font-size:11px;color:var(--text-2);line-height:1.6">⚠ 两档在浅色下**肉眼几乎无差**（.98 vs 1.0，仅滚动内容从底下透出时可见）；真正的差别是语义与边框强弱（.92 vs .96）。要看清就把页面滚起来。</p>
       </div></div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-02c</span><span class="g-cls">.topbar-main .topbar-actions（三子项布局 · 宿主新增，母本无此件）</span><span class="g-src">新增件：母本只有两子项（返回 + 标题组）</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-02c</span></summary><span class="g-cls">.topbar-main .topbar-actions（三子项布局 · 宿主新增，母本无此件）</span><span class="g-src">新增件：母本只有两子项（返回 + 标题组）</span></details></figcaption>
       <div class="g-stage pad0"><div style="display:grid;gap:10px">
-        <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">两子项（母本原状）：标题组恰好是最后一子项，被 <code>:last-child</code> 拉伸</p>
+        <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">两子项（原状）：标题组恰好是最后一子项，被 <code>:last-child</code> 拉伸</p>
           <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">体育西路 → 广州塔</div><div class="sub">两子项 · 标题组吃剩余</div></div></div></div></div>
         <div><p style="margin:0 0 4px;font-size:11px;color:var(--text-2)">三子项（加 <code>.topbar-main</code> + <code>.topbar-actions</code>）：标题吃剩余，右侧动作不被拉伸</p>
           <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div class="topbar-main"><div class="title">体育西路 → 广州塔</div><div class="sub">三子项 · 动作位不伸缩</div></div><div class="topbar-actions"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view></div></div></div></div>
         <p style="margin:2px 0 0;font-size:11px;color:var(--text-2);line-height:1.6">⚠ 只给 <code>.topbar-actions</code> 而不给 <code>.topbar-main</code>：标题组没人吃剩余宽度，标题缩到内容宽、动作钮紧贴标题右侧 —— 看起来像"右侧没对齐"，其实是标题没撑开。</p>
       </div></div>
     </figure>
-        <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-05</span><span class="g-cls">.glyph .glyph-back / .glyph .glyph-home（栈根 ⌂ 字形）</span><span class="g-src">index:251-265</span></figcaption>
-      <div class="g-stage"><div style="display:flex;gap:12px">
+        <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-05</span></summary><span class="g-cls">.glyph .glyph-back / .glyph .glyph-home（栈根 ⌂ 字形）</span><span class="g-src">index:251-265</span></details></figcaption>
+      <div class="g-stage bg-page"><div style="display:flex;gap:12px">
         <view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view>
         <view class="back" data-hover-class="press"><view class="glyph glyph-home"></view></view>
       </div></div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-01</span><span class="g-cls">.topbar .title .sub（非固定档）· .bar-main</span><span class="g-src">index:10-12 · results-timeline:15</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-01</span></summary><span class="g-cls">.topbar .title .sub（非固定档）· .bar-main</span><span class="g-src">index:10-12 · results-timeline:15</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div class="bar-main"><div class="title">乘车方案</div><div class="sub">随页面滚动的普通顶栏</div></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-03（孤儿 O-01 保留）</span><span class="g-cls">.fixed-topbar（历史代际，母本已无页面引用；.sticky-topbar 已按 M0 移除）</span><span class="g-src">index:376-395</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-03（孤儿 O-01 保留）</span></summary><span class="g-cls">.fixed-topbar（历史代际，母本已无页面引用；.sticky-topbar 已按 M0 移除）</span><span class="g-src">index:376-395</span></details></figcaption>
       <div class="g-stage pad0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div class="demo-viewport"><div class="fixed-topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">fixed-topbar</div><div class="sub">v1 · 居中固定</div></div></div></div>
       </div></div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T03-06</span><span class="g-cls">@media(max-width:430px) 窄屏覆盖</span><span class="g-src">index:517-521</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-06</span></summary><span class="g-cls">@media(max-width:430px) 窄屏覆盖</span><span class="g-src">index:517-521</span></details></figcaption>
       <div class="g-stage"><p style="margin:0;font-size:12px;color:var(--text-2);line-height:1.7">窄屏（≤430px）自动收窄内距、gap 降 10、标题降 <code>--fs-title-24</code>、副标降 <code>--fs-small-12</code>。把窗口拉窄即可看到。</p></div>
     </figure>
   </div>
@@ -170,7 +188,7 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T04</span> 表面 · 卡片 · 页面骨架</h2>
   <p class="g-note">卡壳 radius 24 / 投影 <code>0 10px 28px rgba(35,47,78,.08)</code>；卡外标题缩进 21px（1px 边框 + 20px 内距的口径）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T04-01/02</span><span class="g-cls">.panel .route-card .border-for-route .h2 .hint .page-divider</span><span class="g-src">index:13-17,1161</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T04-01/02</span></summary><span class="g-cls">.panel .route-card .border-for-route .h2 .hint .page-divider</span><span class="g-src">index:13-17,1161</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="page-h2 h3">卡外分组标题（.page-h2）</div>
         <div class="panel border-for-route"><div class="h2">panel 标题</div><div class="hint">hint 次级说明文字，行高 1.65。</div></div>
@@ -179,21 +197,21 @@ button{cursor:pointer;pointer-events:auto}
         <div class="route-card"><div class="h2">route-card</div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T04-06/07 · T02-07</span><span class="g-cls">.screen .screen-scroll .screen-body .empty .app</span><span class="g-src">index:720-734,54,9</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T04-06/07 · T02-07</span></summary><span class="g-cls">.screen .screen-scroll .screen-body .empty .app</span><span class="g-src">index:720-734,54,9</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="panel"><div class="empty">暂无方案<br>换个时间试试</div></div>
         <div class="demo-viewport" style="height:150px"><div class="screen"><div class="screen-scroll"><div class="screen-body" style="padding-top:14px;color:var(--text-2);font-size:12px">.screen（fixed 全屏滚动容器，演示域内转 absolute）→ .screen-scroll → .screen-body（padding 0 14 + 底 50px+safe）</div></div></div></div>
         <p class="g-hint">.app 为 780px 容器 + 继承字号死区（T02-07）。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T04-03/04</span><span class="g-cls">.on-bg .recent-combo(on-bg) .field-grid.on-bg</span><span class="g-src">index:1078-1086</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T04-03/04</span></summary><span class="g-cls">.on-bg .recent-combo(on-bg) .field-grid.on-bg</span><span class="g-src">index:1078-1086</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="on-bg"><view class="recent-combo" data-hover-class="press">体育西路 → 广州塔</view></div>
         <div class="field-grid on-bg" style="margin-top:10px"><div class="field"><view class="picker">页面底上的输入框（--input-on-bg）</view></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T04-05 · T08-08</span><span class="g-cls">.advanced .advanced-title .advanced-sub-divider .advanced-pane</span><span class="g-src">index:30-31,923</span></figcaption>
-      <div class="g-stage bg-page">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T04-05 · T08-08</span></summary><span class="g-cls">.advanced .advanced-title .advanced-sub-divider .advanced-pane</span><span class="g-src">index:30-31,923</span></details></figcaption>
+      <div class="g-stage">
         <div class="advanced" style="border-top:0;padding-top:0">
           <div class="advanced-title">附加功能（.advanced-title）</div>
           <div class="advanced-sub-divider"></div>
@@ -202,8 +220,8 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T04-09</span><span class="g-cls">.hscroll .recent-scroll-wrap .recent-scroll .hscroll-fade</span><span class="g-src">宿主新增件：母本的横滑靠原生 scroll-view，通用 CSS 无对应物</span></figcaption>
-      <div class="g-stage bg-page">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T04-09</span></summary><span class="g-cls">.hscroll .recent-scroll-wrap .recent-scroll .hscroll-fade</span><span class="g-src">宿主新增件：母本的横滑靠原生 scroll-view，通用 CSS 无对应物</span></details></figcaption>
+      <div class="g-stage">
         <div class="recent-scroll-wrap">
           <div class="recent-scroll hscroll">
             <button class="recent-combo" data-hover-class="press">体育西路 → 广州塔</button>
@@ -224,7 +242,7 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T05</span> 字段与输入</h2>
   <p class="g-note">输入框 radius 14 / min-h 46 / 底随表面（卡上 <code>--input-on-card</code>、页底 <code>--input-on-bg</code>、弹层同口径）；站点对 h52、外圆 13 内直角。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T05-01/02/03/04</span><span class="g-cls">.field .label .input .picker .json-input .api-preview .input-ph</span><span class="g-src">index:17-32</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T05-01/02/03/04</span></summary><span class="g-cls">.field .label .input .picker .json-input .api-preview .input-ph</span><span class="g-src">index:17-32</span></details></figcaption>
       <div class="g-stage">
         <div class="panel">
           <div class="field"><view class="label">出发站</view><input class="input" placeholder="输入站名（.input-ph 占位）"></div>
@@ -234,7 +252,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T05-06</span><span class="g-cls">.station-pair .station-slot .station-swap .swap-face .is-empty</span><span class="g-src">index:1111-1160</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T05-06</span></summary><span class="g-cls">.station-pair .station-slot .station-swap .swap-face .is-empty</span><span class="g-src">index:1111-1160</span></details></figcaption>
       <div class="g-stage">
         <div class="station-pair">
           <view class="station-slot is-origin" data-hover-class="press-flat"><text class="station-slot-label">出发站</text><text class="station-slot-value">体育西路</text></view>
@@ -244,7 +262,7 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">按压态半径 13=容器 14−1px 描边（外侧），内侧直角——底色必须跟着容器圆角走。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T05-06</span><span class="g-cls">.station-pair.is-manual .station-slot.is-input .station-manual-pick .pick-icon .swap-btn.is-mini</span><span class="g-src">index:1138-1160</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T05-06</span></summary><span class="g-cls">.station-pair.is-manual .station-slot.is-input .station-manual-pick .pick-icon .swap-btn.is-mini</span><span class="g-src">index:1138-1160</span></details></figcaption>
       <div class="g-stage">
         <div class="station-pair is-manual">
           <div class="station-slot is-input" data-hover-class="press-flat">
@@ -257,24 +275,24 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T05-07</span><span class="g-cls">.dt-grid .dt-field .dt-hit .dt-label .dt-value .is-now .dt-sub .dt-chev .page-dt</span><span class="g-src">index:1174-1188</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T05-07</span></summary><span class="g-cls">.dt-grid .dt-field .dt-hit .dt-label .dt-value .is-now .dt-sub .dt-chev .page-dt</span><span class="g-src">index:1174-1188</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="dt-grid page-dt">
           <div class="dt-field"><div class="dt-hit" data-hover-class="press-flat"><div class="dt-label">出发日期</div><div class="dt-value"><span class="is-now">今天</span><span class="dt-sub">10-30</span><span class="dt-chev">▾</span></div></div></div>
           <div class="dt-field"><div class="dt-hit" data-hover-class="press-flat"><div class="dt-label">出发时间</div><div class="dt-value"><span class="is-now">现在</span><span class="dt-sub">08:00</span><span class="dt-chev">▾</span></div></div></div>
         </div>
-        <p class="g-hint">品牌色「今天/现在」=「这是默认的当下」信号（母本口径）。</p>
+        <p class="g-hint">品牌色「今天/现在」=「这是默认的当下」信号（体系口径）。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T05-08</span><span class="g-cls">.station-search-box .station-search-input .station-search-clear .station-search-lines .station-search-line .station-search-empty*</span><span class="g-src">station-picker:105-114</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T05-08</span></summary><span class="g-cls">.station-search-box .station-search-input .station-search-clear .station-search-lines .station-search-line .station-search-empty*</span><span class="g-src">station-picker:105-114</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="station-search-box"><input class="station-search-input" value="体育西"><text class="station-search-clear" data-hover-class="press">清除</text></div>
         <div class="station-search-result"><div class="station-search-lines"><span class="station-search-line"><i class="station-search-line-dot" style="background:#3970e5"></i>3号线</span><span class="station-search-line"><i class="station-search-line-dot" style="background:#414f8d"></i>城际</span></div></div>
         <div class="station-search-empty"><div class="station-search-empty-title">没有找到车站</div><div class="station-search-empty-sub">试试输入完整站名，或从线路进入</div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T05-09/10</span><span class="g-cls">.schedule-query-box .schedule-query-hint .pick-mode-row .pick-mode-title .pick-mode-hint</span><span class="g-src">index:828-832,626-630</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T05-09/10</span></summary><span class="g-cls">.schedule-query-box .schedule-query-hint .pick-mode-row .pick-mode-title .pick-mode-hint</span><span class="g-src">index:828-832,626-630</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="schedule-query-box"><view class="label">城际时刻表</view><div class="schedule-query-hint">查询广州东环城际列车时刻</div><button class="schedule-query-btn" data-hover-class="press-scale">查询时刻表</button></div>
         <div class="pick-mode-row" style="margin-top:12px"><div class="pick-mode-info"><div class="pick-mode-title">站点输入模式</div><div class="pick-mode-hint">手动键入站名（原生 switch，T15-07）</div></div><span role="switch" aria-checked="false" style="width:51px;height:31px;border-radius:16px;background:var(--input-on-card);display:inline-block"></span></div>
       </div>
@@ -287,12 +305,12 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T06</span> 按钮族</h2>
   <p class="g-note">主钮 48px 实心品牌底；次钮 <code>--brand-tint</code> 底；对话框取消钮走 Flyme 口径 <code>--fill-plain</code> 底 + 品牌字（主次只靠底的浓淡）。禁用一律只降透明度（0.7 / .is-dim 0.5），不换灰底。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-01</span><span class="g-cls">.actions .primary .secondary（press-scale）</span><span class="g-src">index:24-28,201-225</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T06-01</span></summary><span class="g-cls">.actions .primary .secondary（press-scale）</span><span class="g-src">index:24-28,201-225</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="actions actions-bg"><button class="primary" data-hover-class="press-scale">查询方案</button><button class="secondary" data-hover-class="press-scale">解析 JSON</button></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-03/04/05</span><span class="g-cls">.share-btn[disabled] .swap-btn .station-select-btn .station-input-row .station-input</span><span class="g-src">index:616-618,755-769</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T06-03/04/05</span></summary><span class="g-cls">.share-btn[disabled] .swap-btn .station-select-btn .station-input-row .station-input</span><span class="g-src">index:616-618,755-769</span></details></figcaption>
       <div class="g-stage">
         <div class="station-input-row"><input class="input station-input" value="体育西路"><button class="station-select-btn" data-hover-class="press-scale">选择</button></div>
         <button class="swap-btn" data-hover-class="press" style="margin-top:10px">⇄ 交换</button>
@@ -300,27 +318,27 @@ button{cursor:pointer;pointer-events:auto}
         <view class="share-canvas"></view>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-06/07</span><span class="g-cls">.dtp-actions .dtp-btn .is-cancel .is-confirm · .snp-btn</span><span class="g-src">datetime-picker:159-162 · snp:54-56</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T06-06/07</span></summary><span class="g-cls">.dtp-actions .dtp-btn .is-cancel .is-confirm · .snp-btn</span><span class="g-src">datetime-picker:159-162 · snp:54-56</span></details></figcaption>
       <div class="g-stage">
         <div class="dtp-actions"><button class="dtp-btn is-cancel" data-hover-class="press-scale">取消</button><button class="dtp-btn is-confirm" data-hover-class="press-scale">确定</button></div>
         <div class="snp-actions" style="margin-top:10px"><button class="snp-btn" data-hover-class="snp-press">取消</button></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-12</span><span class="g-cls">.btn-primary .btn-secondary（独立原语档，v1.3 资产归纳；值镜像 .actions .primary，不依赖容器）</span><span class="g-src">归纳自 index:201-225</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T06-12</span></summary><span class="g-cls">.btn-primary .btn-secondary（独立原语档，v1.3 资产归纳；值镜像 .actions .primary，不依赖容器）</span><span class="g-src">归纳自 index:201-225</span></details></figcaption>
       <div class="g-stage bg-page">
         <div style="display:flex;gap:10px"><button class="btn-primary" data-hover-class="press-scale">独立主按钮</button><button class="btn-secondary" data-hover-class="press-scale">独立次按钮</button></div>
         <p class="g-hint">脱离 .actions 容器使用（弹层内/独立行/工具页）；值与容器档逐字一致，禁用同 opacity .7。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-08/09/10</span><span class="g-cls">.nb-gate-btn .is-primary .nb-done .is-dim .ex-btn .expand-btn .route-actions .expand-hover .route-detail-entry</span><span class="g-src">map:70-74,191-193 · exit-review · index:540-577</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T06-08/09/10</span></summary><span class="g-cls">.nb-gate-btn .is-primary .nb-done .is-dim .ex-btn .expand-btn .route-actions .expand-hover .route-detail-entry</span><span class="g-src">map:70-74,191-193 · exit-review · index:540-577</span></details></figcaption>
       <div class="g-stage">
         <div class="nb-gate-actions" style="max-width:260px"><button class="nb-gate-btn is-primary" data-hover-class="press-scale">品牌实心（=主页 .primary 口径）</button><button class="nb-gate-btn" data-hover-class="press-scale">浅底出口钮</button><button class="nb-done" data-hover-class="press-scale">完成</button><button class="nb-done is-dim">禁用（.is-dim · opacity .5）</button></div>
         <div class="ex-export" style="margin-top:12px"><button class="ex-btn" data-hover-class="press-scale">导出 JSON</button><button class="ex-btn ex-btn-plain ex-danger" data-hover-class="press-scale">清空本站</button></div>
         <div class="route-actions" style="margin-top:12px;padding:0"><button class="expand-btn" data-hover-class="expand-hover"><view class="action-glyph"></view>路线预览</button></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-13</span><span class="g-cls">.icon-btn .glyph-more-disc（对照 .back .glyph .glyph-back）</span><span class="g-src">宿主新增件：几何沿用 .back，字形自选</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T06-13</span></summary><span class="g-cls">.icon-btn .glyph-more-disc（对照 .back .glyph .glyph-back）</span><span class="g-src">宿主新增件：几何沿用 .back，字形自选</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;align-items:center;gap:12px">
           <view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view>
           <view class="icon-btn" data-hover-class="press">☾</view>
@@ -338,18 +356,18 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T07</span> 胶囊族</h2>
   <p class="g-note">标准筛选胶囊 44px 高（<code>line-height:42</code> = 内容盒高，真机校准值）；线路选择胶囊 34px；线路色胶囊白字 800。线路色为业务数据色，由 wxml 内联注入（演示同口径用 inline style）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-01</span><span class="g-cls">.toolbar .toolbar-inner .chip .chip.active .chip-bar-wrap .hscroll-fade.is-page（press-scale）</span><span class="g-src">index:35-38,281-293,861-864</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-01</span></summary><span class="g-cls">.toolbar .toolbar-inner .chip .chip.active .chip-bar-wrap .hscroll-fade.is-page（press-scale）</span><span class="g-src">index:35-38,281-293,861-864</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="g-togglebar"><button onclick="toggleActive(this,'chip')">切换 .active</button></div>
         <div class="chip-bar-wrap"><div class="toolbar"><div class="toolbar-inner"><button class="chip active" data-hover-class="press-scale">乘车方案</button><button class="chip" data-hover-class="press-scale">城际时刻表</button><button class="chip" data-hover-class="press-scale">时间最短</button><button class="chip" data-hover-class="press-scale">少换乘</button></div></div><div class="hscroll-fade is-page"></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-02 · T10-06</span><span class="g-cls">.station-line-bar .station-line-chip .station-line-dot .line-expand-btn .line-expand-arrow .station-line-list .station-line-scroll-wrap .sheet-panel .hscroll-fade</span><span class="g-src">station-picker:58-80</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-02 · T10-06</span></summary><span class="g-cls">.station-line-bar .station-line-chip .station-line-dot .line-expand-btn .line-expand-arrow .station-line-list .station-line-scroll-wrap .sheet-panel .hscroll-fade</span><span class="g-src">station-picker:58-80</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="station-line-bar"><div class="station-line-scroll-wrap"><div class="station-line-scroll"><div class="station-line-list"><button class="station-line-chip active" data-hover-class="press-scale" style="--chip-fill:#3970e5"><i class="station-line-dot" style="background:#3970e5"></i>3号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#D98A5B"></i>14号线</button><button class="station-line-chip" data-hover-class="press-scale"><i class="station-line-dot" style="background:#4F8064"></i>21号线</button></div></div><div class="hscroll-fade"></div></div><view class="line-expand-btn" data-hover-class="press"><view class="glyph glyph-chevron-down line-expand-arrow"></view></view></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-03/04/05/06</span><span class="g-cls">.line-pill .sd-pill .snp-pill .mode-badge .mode-chip .seg-type .station-chip-wrap .station-chip .station-chips .is-on-light</span><span class="g-src">index:81,176,316-338,102-103</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-03/04/05/06</span></summary><span class="g-cls">.line-pill .sd-pill .snp-pill .mode-badge .mode-chip .seg-type .station-chip-wrap .station-chip .station-chips .is-on-light</span><span class="g-src">index:81,176,316-338,102-103</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
           <text class="line-pill" style="background:#3970e5">3号线</text>
@@ -362,20 +380,20 @@ button{cursor:pointer;pointer-events:auto}
         <div class="station-chips" style="margin-top:10px"><div class="station-chip-wrap"><text class="station-chip">体育西路</text><text class="station-chip">珠城路</text><text class="station-chip">广州塔</text></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-07 · T13-02</span><span class="g-cls">.recent .recent-head .recent-label .recent-clear .recent-list .recent-combo .recent-combo-text .recent-del .recent-scroll-wrap .recent-scroll .hscroll-fade</span><span class="g-src">index:840-869</span></figcaption>
-      <div class="g-stage bg-page">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-07 · T13-02</span></summary><span class="g-cls">.recent .recent-head .recent-label .recent-clear .recent-list .recent-combo .recent-combo-text .recent-del .recent-scroll-wrap .recent-scroll .hscroll-fade</span><span class="g-src">index:840-869</span></details></figcaption>
+      <div class="g-stage">
         <div class="recent"><div class="recent-head"><text class="recent-label">最近查询</text><text class="recent-clear">清空</text></div>
           <div class="recent-scroll-wrap"><div class="recent-scroll"><div class="recent-list"><view class="recent-combo" data-hover-class="press"><text class="recent-combo-text">体育西路 → 广州塔</text><view class="recent-del">×</view></view><view class="recent-combo" data-hover-class="press"><text class="recent-combo-text">竹料（城际） → 番禺（城际）</text><view class="recent-del">×</view></view><view class="recent-combo" data-hover-class="press"><text class="recent-combo-text">科韵路 → 万胜围</text><view class="recent-del">×</view></view></div></div><div class="hscroll-fade"></div></div>
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-08</span><span class="g-cls">.nearby-bar .nearby-tag .nearby-pin .nearby-chip .nearby-chip-name .nearby-chip-dist .nearby-hint .nearby-skeleton .nearby-act .nearby-tag-warn .nearby-hint-fixed</span><span class="g-src">station-picker:161-181</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-08</span></summary><span class="g-cls">.nearby-bar .nearby-tag .nearby-pin .nearby-chip .nearby-chip-name .nearby-chip-dist .nearby-hint .nearby-skeleton .nearby-act .nearby-tag-warn .nearby-hint-fixed</span><span class="g-src">station-picker:161-181</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="nearby-bar" data-hover-class="press"><text class="nearby-tag"><i class="nearby-pin"></i>附近</text><view class="nearby-chip" data-hover-class="press-scale"><text class="nearby-chip-name">珠江新城</text><text class="nearby-chip-dist">350m</text></view><text class="nearby-hint">定位开启时显示最近车站</text><text class="nearby-act" data-hover-class="press-scale">更换</text></div>
         <div class="nearby-bar"><text class="nearby-tag nearby-tag-warn"><i class="nearby-pin"></i>附近</text><view class="nearby-skeleton"></view><text class="nearby-hint nearby-hint-fixed">定位失败</text></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-09/10/13</span><span class="g-cls">.dtp-quicks .dtp-chip · .snp-grid .snp-chip · .ex-chips .ex-chip .ex-chip-n · .er-nav .er-nav-btn</span><span class="g-src">datetime-picker:145-146 · snp:43-51 · exit-review</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-09/10/13</span></summary><span class="g-cls">.dtp-quicks .dtp-chip · .snp-grid .snp-chip · .ex-chips .ex-chip .ex-chip-n · .er-nav .er-nav-btn</span><span class="g-src">datetime-picker:145-146 · snp:43-51 · exit-review</span></details></figcaption>
       <div class="g-stage">
         <div class="dtp-quicks"><button class="dtp-chip" data-hover-class="press-scale">+15分</button><button class="dtp-chip" data-hover-class="press-scale">+30分</button><button class="dtp-chip" data-hover-class="press-scale">+1时</button></div>
         <div class="snp-grid" style="margin-top:10px;max-width:340px"><button class="snp-chip" data-hover-class="snp-press">A口</button><button class="snp-chip" data-hover-class="snp-press">B1口</button><button class="snp-chip" data-hover-class="snp-press">C口</button></div>
@@ -383,14 +401,14 @@ button{cursor:pointer;pointer-events:auto}
         <div class="er-nav" style="margin-top:10px"><view class="chip er-nav-btn" data-hover-class="press-flat">‹ 上一站</view><view class="chip er-nav-btn" data-hover-class="press-flat">下一站 ›</view><view class="chip er-nav-btn" data-hover-class="press-flat">恢复默认</view></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-11/12/14</span><span class="g-cls">.trip-badge .is-circle .trip-head .trip-head-sub .route-badges .warning-badge .sd-nav .sd-nav-glyph .sd-ex-letter</span><span class="g-src">index:1199-1204,696-699 · sd:73-78,107</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-11/12/14</span></summary><span class="g-cls">.trip-badge .is-circle .trip-head .trip-head-sub .route-badges .warning-badge .sd-nav .sd-nav-glyph .sd-ex-letter</span><span class="g-src">index:1199-1204,696-699 · sd:73-78,107</span></details></figcaption>
       <div class="g-stage">
         <div class="trip-head"><text class="trip-badge is-circle">1</text><text class="trip-badge">第 1 程</text><text class="trip-head-sub">3号线 · 途经 8 站</text></div>
         <div style="display:flex;gap:10px;margin-top:10px;justify-content:flex-end"><div class="route-badges"><text class="warning-badge">末班车 22:45 · 紧张</text><text class="warning-badge">换乘通道关闭</text></div></div>
         <div style="display:flex;gap:10px;margin-top:10px;align-items:center"><view class="sd-nav" data-hover-class="press-scale">导航<i class="sd-nav-glyph"></i></view><text class="sd-ex-letter">A</text><text class="sd-ex-letter">B1</text></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T07-15</span><span class="g-cls">.route-tag-row .route-tag .is-recommend .is-time .is-comfort .is-price</span><span class="g-src">index:642-648</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T07-15</span></summary><span class="g-cls">.route-tag-row .route-tag .is-recommend .is-time .is-comfort .is-price</span><span class="g-src">index:642-648</span></details></figcaption>
       <div class="g-stage">
         <div class="route-tag-row"><view class="route-tag is-recommend">推荐</view><view class="route-tag is-time">等待最少</view><view class="route-tag is-comfort">少换乘</view><view class="route-tag is-price">最便宜</view></div>
         <p class="g-hint">结果页卡内标签行。底色走 <code>--route-tag-bg</code>，四档只换前景色；推荐档是实心（底 <code>--route-tag-recommend-bg</code> + 白字 + 800 字重）。这 6 枚令牌只服务这一处，不与其他浅底/品牌色共用。</p>
@@ -402,9 +420,9 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G8/T08 时间轴 ================= -->
 <section class="g-sec" id="s-t08">
   <h2><span class="g-secid">T08</span> 时间轴（方案详情主轴）</h2>
-  <p class="g-note">行网格 57/25/1fr；节点 17px（换乘 20px，translateY(-1.5px) 同心补偿）；轨线 4px；时刻 17/850 顶对齐 + translateY(4px) 中线对齐（推算时刻 4.4px，不能沿用 4px——母本真机定稿）。</p>
+  <p class="g-note">行网格 57/25/1fr；节点 17px（换乘 20px，translateY(-1.5px) 同心补偿）；轨线 4px；时刻 17/850 顶对齐 + translateY(4px) 中线对齐（推算时刻 4.4px，不能沿用 4px——真机定稿）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T08-01/02/03/04/07</span><span class="g-cls">.timeline-row .time .time-est .rail .node .node-transfer .rail-line .station .meta .meta-line .formation-tag .station-nav .nav-chev .leg-* .lastStationDetail</span><span class="g-src">index:60-141 · detail.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T08-01/02/03/04/07</span></summary><span class="g-cls">.timeline-row .time .time-est .rail .node .node-transfer .rail-line .station .meta .meta-line .formation-tag .station-nav .nav-chev .leg-* .lastStationDetail</span><span class="g-src">index:60-141 · detail.wxss</span></details></figcaption>
       <div class="g-stage">
         <div class="panel">
           <div class="timeline-row">
@@ -435,7 +453,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T08-05/06</span><span class="g-cls">.transfer-box .intercity .transfer-note .transfer-title .inner-transfer .platform .bold</span><span class="g-src">index:95-100,366-369,525-534</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T08-05/06</span></summary><span class="g-cls">.transfer-box .intercity .transfer-note .transfer-title .inner-transfer .platform .bold</span><span class="g-src">index:95-100,366-369,525-534</span></details></figcaption>
       <div class="g-stage">
         <div class="timeline-row" style="grid-template-columns:1fr">
           <div>
@@ -446,7 +464,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T08-08/10</span><span class="g-cls">.axis .axis-time .axis-clock .axis-dash .axis-dash-l .axis-dash-r .axis-route .wrap .mode-badge .mode-gate .mode-chip</span><span class="g-src">index:157-183</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T08-08/10</span></summary><span class="g-cls">.axis .axis-time .axis-clock .axis-dash .axis-dash-l .axis-dash-r .axis-route .wrap .mode-badge .mode-gate .mode-chip</span><span class="g-src">index:157-183</span></details></figcaption>
       <div class="g-stage">
         <div class="g-togglebar"><button onclick="document.getElementById('axr').classList.toggle('wrap')">切换 .wrap（折行左对齐）</button></div>
         <div class="panel"><div class="axis">
@@ -463,7 +481,7 @@ button{cursor:pointer;pointer-events:auto}
         </div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T08-09/11</span><span class="g-cls">.preview .preview-node .preview-time .preview-station .preview-station-arrow .preview-line .preview-line-dot .summary .summary-time .summary-line .summary-num .metrics .metric .facts .fact .duration .query-route .route-top .route-main-info</span><span class="g-src">index:50-58,34-47,599-612,741-752</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T08-09/11</span></summary><span class="g-cls">.preview .preview-node .preview-time .preview-station .preview-station-arrow .preview-line .preview-line-dot .summary .summary-time .summary-line .summary-num .metrics .metric .facts .fact .duration .query-route .route-top .route-main-info</span><span class="g-src">index:50-58,34-47,599-612,741-752</span></details></figcaption>
       <div class="g-stage">
         <div class="route-list">
           <div class="route-card border-for-route">
@@ -488,7 +506,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T08-12</span><span class="g-cls">.tl-page .chip .tl-scroll .tl-wrap .tl-ref .tl-ref-time .tl-track .tl-col .tl-head .tl-dur .tl-dep .tl-canvas .tl-spacer .tl-capsule .tl-link .tl-line .tl-badge .tl-stop .tl-meta .tl-tail .tl-arr .tl-fare .tl-warn .tl-tail-pad .bar-main</span><span class="g-src">results-timeline:54-131</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T08-12</span></summary><span class="g-cls">.tl-page .chip .tl-scroll .tl-wrap .tl-ref .tl-ref-time .tl-track .tl-col .tl-head .tl-dur .tl-dep .tl-canvas .tl-spacer .tl-capsule .tl-link .tl-line .tl-badge .tl-stop .tl-meta .tl-tail .tl-arr .tl-fare .tl-warn .tl-tail-pad .bar-main</span><span class="g-src">results-timeline:54-131</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="tl-page"><div class="tl-wrap"><div class="tl-ref"></div><view class="tl-ref-time">08:05</view><div class="tl-scroll"><div class="tl-canvas"><div class="tl-track">
           <div class="tl-col"><div class="tl-head"><text class="tl-dur">18 分</text><text class="tl-dep">08:05</text></div><div class="tl-capsule"><div class="tl-link" style="background:#3970e5"></div><div class="tl-line"><text class="tl-badge" style="background:#3970e5">3号线</text></div><div class="tl-link" style="background:#3970e5"></div><div class="tl-stop">珠江新城</div></div><div class="tl-tail"><text class="tl-arr">08:23</text><text class="tl-fare">5 元</text></div></div>
@@ -504,8 +522,8 @@ button{cursor:pointer;pointer-events:auto}
 <section class="g-sec" id="s-t09">
   <h2><span class="g-secid">T09</span> 城际时刻表</h2>
   <p class="g-note">行网格 72 / 1fr / 20 / 1fr / 54 / 24（340px 档收窄）；表头吸顶 <code>.tt-head-wrap</code>；展开行 <code>.is-open</code> 转 <code>--brand-tint</code>；chevron 是几何绘制（translate ±2.5px 校准值），不是字形。</p>
-  <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T09-01~08</span><span class="g-cls">.tt-query-summary .tt-query-point .tt-query-point-end .tt-query-label .tt-query-name .tt-query-link .tt-query-line .tt-controls .tt-section-title .tt-section-sub .tt-toolbar .tt-table-block .tt-card .tt-row .tt-head-wrap .tt-head .tt-cell .tt-code .tt-train-code .tt-time .tt-primary .tt-arrow .tt-duration .tt-more .tt-label .tt-main .is-open .tt-subrow .tt-sub-end .tt-sub-end-right .tt-sub-label .tt-sub-name .tt-sub-time .tt-chevron .open .tt-detail .tt-detail-head .tt-detail-train .tt-detail-route .tt-detail-stat .tt-station-head .tt-station-row .in-range .range-start .range-end .tt-station-name .tt-seq .tt-station-dot .tt-station-text .tt-footnote .tt-export-row .tt-export-btn .tt-screen-body</span><span class="g-src">timetable.wxss</span></figcaption>
-    <div class="g-stage" style="padding:14px">
+  <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T09-01~08</span></summary><span class="g-cls">.tt-query-summary .tt-query-point .tt-query-point-end .tt-query-label .tt-query-name .tt-query-link .tt-query-line .tt-controls .tt-section-title .tt-section-sub .tt-toolbar .tt-table-block .tt-card .tt-row .tt-head-wrap .tt-head .tt-cell .tt-code .tt-train-code .tt-time .tt-primary .tt-arrow .tt-duration .tt-more .tt-label .tt-main .is-open .tt-subrow .tt-sub-end .tt-sub-end-right .tt-sub-label .tt-sub-name .tt-sub-time .tt-chevron .open .tt-detail .tt-detail-head .tt-detail-train .tt-detail-route .tt-detail-stat .tt-station-head .tt-station-row .in-range .range-start .range-end .tt-station-name .tt-seq .tt-station-dot .tt-station-text .tt-footnote .tt-export-row .tt-export-btn .tt-screen-body</span><span class="g-src">timetable.wxss</span></details></figcaption>
+    <div class="g-stage bg-page" style="padding:14px">
       <div class="tt-screen-body">
       <div class="tt-query-summary">
         <div class="tt-query-point"><text class="tt-query-label">出发</text><text class="tt-query-name">广州东</text></div>
@@ -543,7 +561,7 @@ button{cursor:pointer;pointer-events:auto}
   <p class="g-note">半屏四件：通栏 / 只上圆角 24 / 贴底（safe 由 padding 吃）/ 只向上投影。配色独立选档：<code>--sheet</code>（同页底）或 <code>--card</code>（亮一档，dtp）。悬浮对话框档：宽 calc(100%−32px)、四角 24、投影向下。点「打开」体验 380ms 回弹滑入（62% 处 −3px 折返）。</p>
   <div class="g-togglebar"><button id="openSheet">打开半屏 sheet（station-picker）</button><button id="openDtp">打开日期时间（dtp · 卡底）</button><button id="openSnp">打开悬浮对话框（snp）</button><button id="toggleNb">显隐 nb sheet（冻结/重放）</button></div>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01/05/07</span><span class="g-cls">.sheet-mask .sheet-panel .picker-hidden .picker-closing .station-picker-head .station-picker-title .station-picker-close .station-picker-close-hover .station-picker-head-acts .station-picker-map .station-picker-map-glyph .station-picker-map-label .station-picker-list .station-picker-item .station-picker-title-row .station-picker-name .station-picker-mark .mark-tone-* .station-picker-meta .station-picker-translation .next-station</span><span class="g-src">station-picker.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-01/05/07</span></summary><span class="g-cls">.sheet-mask .sheet-panel .picker-hidden .picker-closing .station-picker-head .station-picker-title .station-picker-close .station-picker-close-hover .station-picker-head-acts .station-picker-map .station-picker-map-glyph .station-picker-map-label .station-picker-list .station-picker-item .station-picker-title-row .station-picker-name .station-picker-mark .mark-tone-* .station-picker-meta .station-picker-translation .next-station</span><span class="g-src">station-picker.wxss</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" id="vp-sheet" style="height:78vh">
           <div style="padding:14px;color:var(--text-2);font-size:12px">页面内容（演示遮罩之下）</div>
@@ -562,7 +580,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-02 · T07-09 · T13-08</span><span class="g-cls">.dtp-mask .dtp-panel .is-hidden .is-closing .dtp-head .dtp-title .dtp-input-row .dtp-input-wrap .dtp-input .dtp-input-hit .dtp-ph .dtp-quick .dtp-month .dtp-month-label .dtp-nav .dtp-press-round .dtp-week .dtp-week-cell .dtp-grid .dtp-cell .dtp-cell-inner .is-selected .is-today .is-out .is-disabled .dtp-press-flat .dtp-wheels .dtp-wheel .dtp-wheel-item .dtp-band .dtp-indicator .dtp-fade .dtp-fade-top .dtp-fade-bottom .dtp-unit .dtp-unit-a .dtp-unit-b</span><span class="g-src">datetime-picker.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-02 · T07-09 · T13-08</span></summary><span class="g-cls">.dtp-mask .dtp-panel .is-hidden .is-closing .dtp-head .dtp-title .dtp-input-row .dtp-input-wrap .dtp-input .dtp-input-hit .dtp-ph .dtp-quick .dtp-month .dtp-month-label .dtp-nav .dtp-press-round .dtp-week .dtp-week-cell .dtp-grid .dtp-cell .dtp-cell-inner .is-selected .is-today .is-out .is-disabled .dtp-press-flat .dtp-wheels .dtp-wheel .dtp-wheel-item .dtp-band .dtp-indicator .dtp-fade .dtp-fade-top .dtp-fade-bottom .dtp-unit .dtp-unit-a .dtp-unit-b</span><span class="g-src">datetime-picker.wxss</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" id="vp-dtp" style="height:78vh">
           <div style="padding:14px;color:var(--text-2);font-size:12px">页面内容</div>
@@ -590,7 +608,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-03 · T07-10 · T12-05/06</span><span class="g-cls">.snp-mask .snp-panel .snp-head .snp-title .snp-groups .snp-group .snp-line .snp-pill .snp-grid .snp-chip .snp-actions .snp-btn .snp-press · .nb-row .is-picked .nb-row-chk .is-on .check-glyph .nb-line .nb-line-dot .nb-head .nb-head-label .nb-head-hint .nb-pin .dest-glyph</span><span class="g-src">station-nav-picker.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-03 · T07-10 · T12-05/06</span></summary><span class="g-cls">.snp-mask .snp-panel .snp-head .snp-title .snp-groups .snp-group .snp-line .snp-pill .snp-grid .snp-chip .snp-actions .snp-btn .snp-press · .nb-row .is-picked .nb-row-chk .is-on .check-glyph .nb-line .nb-line-dot .nb-head .nb-head-label .nb-head-hint .nb-pin .dest-glyph</span><span class="g-src">station-nav-picker.wxss</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" id="vp-snp" style="height:78vh">
           <div style="padding:14px;color:var(--text-2);font-size:12px">页面内容</div>
@@ -609,7 +627,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-06</span><span class="g-cls">.line-grid-overlay .line-grid-expand-row .line-grid-scroll .line-grid-body .line-grid-expand-row .line-expand-arrow</span><span class="g-src">station-picker.wxss:64-86</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-06</span></summary><span class="g-cls">.line-grid-overlay .line-grid-expand-row .line-grid-scroll .line-grid-body .line-grid-expand-row .line-expand-arrow</span><span class="g-src">station-picker.wxss:64-86</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" style="height:240px">
           <div style="position:absolute;inset:0;display:flex;align-items:flex-end;background:var(--sheet);border-radius:12px 12px 0 0;justify-content:center;color:var(--text-3);font-size:11px">面板底层（被线路网格覆盖层盖住）</div>
@@ -627,8 +645,8 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">覆盖层 rail-fade-in 160ms；收回钮与展开钮是同一枚 T18-04 描边下箭头，靠 <code>rotate(180deg)</code> 翻成朝上，不加光学补偿（描边件墨迹带对称，按盒心居中即可）。选中那枚<b>既没注入底色也没给圆点</b>：实心底缺省落 <code>--brand</code>、圆点整个省略也不塌，不传线路色时同样成立。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-04 · T11-04</span><span class="g-cls">.er-sheet-mask .er-sheet .er-sheet-title .er-opts .er-opt .er-input .er-sheet-acts .er-sheet-ok · .ex-empty</span><span class="g-src">exit-review.wxss</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-04 · T11-04</span></summary><span class="g-cls">.er-sheet-mask .er-sheet .er-sheet-title .er-opts .er-opt .er-input .er-sheet-acts .er-sheet-ok · .ex-empty</span><span class="g-src">exit-review.wxss</span></details></figcaption>
+      <div class="g-stage bg-mask">
         <div class="er-sheet-mask" style="position:relative;inset:auto;border-radius:12px;overflow:hidden"><div class="er-sheet" style="border-radius:12px 12px 0 0">
           <div class="er-sheet-title">编辑出入口 · A1</div>
           <div class="er-opts"><view class="er-opt chip" data-hover-class="press-flat">已标坐标</view><view class="er-opt chip" data-hover-class="press-flat">缺坐标</view></div>
@@ -638,7 +656,7 @@ button{cursor:pointer;pointer-events:auto}
         <div class="ex-empty" style="margin-top:10px">本站暂无登记出入口，点「新增」开始补录。</div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01 · T11/T12 sd 族</span><span class="g-cls">.sd-mask .sd-panel .sd-head .sd-head-title .sd-close .sd-close-x .sd-body .sd-id .sd-id-main .sd-name .sd-sub .sd-nav .sd-nav-glyph .sd-tabs .sd-map .sd-sec .sd-sec-head .sd-sec-title .sd-st .sd-pill .sd-st-main .sd-st-to .sd-st-time .sd-strong .sd-ex .sd-ex-letter .sd-ex-main .sd-ex-road .sd-ex-guide .sd-ex-bus .sd-ex-bus-tag .sd-it .sd-it-name .sd-it-loc .sd-fac-cards .sd-fac-card .sd-fac-icon .sd-fac-glyph .sd-fac-gl-lift .sd-fac-gl-gate .sd-fac-gl-wc .sd-fac-main .sd-fac-name .sd-fac-loc .sd-fac-text .sd-empty</span><span class="g-src">station-detail-panel.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-01 · T11/T12 sd 族</span></summary><span class="g-cls">.sd-mask .sd-panel .sd-head .sd-head-title .sd-close .sd-close-x .sd-body .sd-id .sd-id-main .sd-name .sd-sub .sd-nav .sd-nav-glyph .sd-tabs .sd-map .sd-sec .sd-sec-head .sd-sec-title .sd-st .sd-pill .sd-st-main .sd-st-to .sd-st-time .sd-strong .sd-ex .sd-ex-letter .sd-ex-main .sd-ex-road .sd-ex-guide .sd-ex-bus .sd-ex-bus-tag .sd-it .sd-it-name .sd-it-loc .sd-fac-cards .sd-fac-card .sd-fac-icon .sd-fac-glyph .sd-fac-gl-lift .sd-fac-gl-gate .sd-fac-gl-wc .sd-fac-main .sd-fac-name .sd-fac-loc .sd-fac-text .sd-empty</span><span class="g-src">station-detail-panel.wxss</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" style="height:78vh">
           <div class="sd-mask demo-mask" style="animation:none">
@@ -666,7 +684,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01</span><span class="g-cls">.nb-sheet-mask .nb-sheet-panel .nb-sheet-hidden .nb-sheet-head .nb-sheet-title .nb-sheet-close .nb-sheet-close-x .nb-gate-wrap .nb-gate .nb-gate-icon .nb-gate-title .nb-gate-sub .nb-gate-actions .nb-gate-btn .is-primary · .nb-loc .nb-loc-main .nb-loc-name .nb-loc-sub .nb-act · .nb-head .nb-list .nb-empty .nb-row .nb-row-main .nb-row-top .nb-row-name .nb-row-dist .nb-row-lines · .nb-map-wrap .nb-map .nb-map-tag · .nb-done .is-dim</span><span class="g-src">map-station-picker.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-01</span></summary><span class="g-cls">.nb-sheet-mask .nb-sheet-panel .nb-sheet-hidden .nb-sheet-head .nb-sheet-title .nb-sheet-close .nb-sheet-close-x .nb-gate-wrap .nb-gate .nb-gate-icon .nb-gate-title .nb-gate-sub .nb-gate-actions .nb-gate-btn .is-primary · .nb-loc .nb-loc-main .nb-loc-name .nb-loc-sub .nb-act · .nb-head .nb-list .nb-empty .nb-row .nb-row-main .nb-row-top .nb-row-name .nb-row-dist .nb-row-lines · .nb-map-wrap .nb-map .nb-map-tag · .nb-done .is-dim</span><span class="g-src">map-station-picker.wxss</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" style="height:78vh">
           <div class="nb-sheet-mask demo-mask" id="nbMask" style="animation:none">
@@ -686,8 +704,8 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">.nb-sheet-mask/.nb-sheet-hidden 由上方「显隐」按钮演示（display:none + animation:none 冻结→重放，T10-07）；兜底列见下。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T10-01 · T06-08 · T11-04</span><span class="g-cls">.nb-gate-wrap .nb-gate .nb-gate-icon .nb-gate-title .nb-gate-sub .nb-gate-actions .nb-gate-btn .is-primary · .nb-empty</span><span class="g-src">map-station-picker.wxss:50-74,108-109</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T10-01 · T06-08 · T11-04</span></summary><span class="g-cls">.nb-gate-wrap .nb-gate .nb-gate-icon .nb-gate-title .nb-gate-sub .nb-gate-actions .nb-gate-btn .is-primary · .nb-empty</span><span class="g-src">map-station-picker.wxss:50-74,108-109</span></details></figcaption>
+      <div class="g-stage bg-mask">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div style="border-radius:14px;background:var(--sheet);padding:10px">
             <div class="nb-gate-wrap" style="position:static"><div class="nb-gate">
@@ -709,8 +727,8 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T11</span> 徽章与警示</h2>
   <p class="g-note">警示卡三态：<code>--warn</code>（默认/紧张）→ <code>.status-late</code> 红 → <code>.status-ok</code> 绿，投影随主色。文字时刻同三态（<code>.lasttime-time-warn</code> 族）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T11-01/02/03</span><span class="g-cls">.error .service-warning-card .status-late .status-ok .service-warning-icon .service-warning-title .service-warning-desc .lasttime-time-warn .lasttime-status-late .lasttime-status-ok .lasttime-close .lasttime-error</span><span class="g-src">index:29,700-824</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T11-01/02/03</span></summary><span class="g-cls">.error .service-warning-card .status-late .status-ok .service-warning-icon .service-warning-title .service-warning-desc .lasttime-time-warn .lasttime-status-late .lasttime-status-ok .lasttime-close .lasttime-error</span><span class="g-src">index:29,700-824</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="error">未查询到该时段方案，请调整出发时间。</div>
         <div class="service-warning-card"><view class="service-warning-icon">!</view><div class="service-warning-content"><div class="service-warning-title">换乘时间紧张（默认 --warn）</div><div class="service-warning-desc">换乘步行约需 4 分钟，当前预留 <text>2 分钟</text>。</div></div></div>
         <div class="service-warning-card status-late"><view class="service-warning-icon">!</view><div class="service-warning-content"><div class="service-warning-title">赶不上末班车（.status-late）</div><div class="service-warning-desc">末班 22:45 已发车。</div></div></div>
@@ -718,15 +736,15 @@ button{cursor:pointer;pointer-events:auto}
         <div class="lasttime-error" style="margin-top:12px">末班车查询失败，稍后再试。</div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T11-03</span><span class="g-cls">.timeline-row.lasttime-no-time .lasttime-time-warn .lasttime-close .timeline-last</span><span class="g-src">index:783-816</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T11-03</span></summary><span class="g-cls">.timeline-row.lasttime-no-time .lasttime-time-warn .lasttime-close .timeline-last</span><span class="g-src">index:783-816</span></details></figcaption>
       <div class="g-stage">
         <div class="panel"><div style="display:flex;justify-content:space-between;align-items:center"><text class="lasttime-time-warn">22:45</text><text style="color:var(--text-2);font-size:12px">3号线 往番禺广场 · 末班</text><view class="lasttime-close" data-hover-class="press">关闭</view></div>
         <div style="margin-top:8px"><text class="lasttime-time-warn lasttime-status-late">22:12</text> <text style="color:var(--text-2);font-size:12px">late</text>　<text class="lasttime-time-warn lasttime-status-ok">23:08</text> <text style="color:var(--text-2);font-size:12px">ok</text></div>
         <div class="timeline-row lasttime-no-time" style="margin-top:10px"><view class="rail" style="transform:none"><view class="node"></view><view class="rail-line" style="background:#d97706"></view></view><view><text class="meta-line">时刻缺失行（.lasttime-no-time：网格 25/1fr，无时间列）</text></view></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T11-04 · T07-13</span><span class="g-cls">.custom-stops .custom-stops-head .custom-stops-empty .custom-stop-row .custom-stop-no .custom-stop-pick .custom-dwell .custom-dwell-label .custom-dwell-input .custom-dwell-unit .custom-stop-del .del-x-icon .er-body .er-body-head .er-body-title .er-body-no .er-body-sub .er-lines .er-own .er-count .er-name .er-row-acts .er-body-acts .er-act .er-danger .er-add .ex-list .ex-list-head .ex-list-title .ex-row .is-todo .ex-row-no .ex-row-main .ex-row-sub .ex-name .ex-note .ex-ph .ex-point .is-on .ex-point-text .ex-dist .is-warn .ex-reverse .ex-del .ex-meta .ex-station .ex-station-edit</span><span class="g-src">index:928-939 · exit-review/survey</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T11-04 · T07-13</span></summary><span class="g-cls">.custom-stops .custom-stops-head .custom-stops-empty .custom-stop-row .custom-stop-no .custom-stop-pick .custom-dwell .custom-dwell-label .custom-dwell-input .custom-dwell-unit .custom-stop-del .del-x-icon .er-body .er-body-head .er-body-title .er-body-no .er-body-sub .er-lines .er-own .er-count .er-name .er-row-acts .er-body-acts .er-act .er-danger .er-add .ex-list .ex-list-head .ex-list-title .ex-row .is-todo .ex-row-no .ex-row-main .ex-row-sub .ex-name .ex-note .ex-ph .ex-point .is-on .ex-point-text .ex-dist .is-warn .ex-reverse .ex-del .ex-meta .ex-station .ex-station-edit</span><span class="g-src">index:928-939 · exit-review/survey</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="custom-stops"><div class="custom-stops-head"><text style="font-weight:800;font-size:13px">中转点</text></div>
           <div class="custom-stops-empty">还没添加中转点。自定义换乘会把路线拆成多段分别查询。</div>
           <div class="custom-stop-row"><text class="custom-stop-no">1</text><view class="custom-stop-pick input" style="min-height:40px;display:flex;align-items:center">珠江新城</view><div class="custom-dwell"><text class="custom-dwell-label">停留</text><input class="custom-dwell-input input" value="5"><text class="custom-dwell-unit">分</text></div><view class="custom-stop-del" data-hover-class="press-scale"><text class="del-x-icon">×</text></view></div>
@@ -753,10 +771,10 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G12/T12 图标 ================= -->
 <section class="g-sec" id="s-t12">
   <h2><span class="g-secid">T12</span> 图标</h2>
-  <p class="g-note">两族：①CSS 几何 chevron（<code>.action-glyph</code> 方块取上/右边框旋转，±1.5px 真机光学补偿；translate 必须写在 rotate 前）②mask SVG 单枚图形（零色值，颜色=currentColor，深浅自适应）。图形字符（‹ ⌂ × ⇄ ▾）按母本原样保留，禁 emoji 化。</p>
+  <p class="g-note">两族：①CSS 几何 chevron（<code>.action-glyph</code> 方块取上/右边框旋转，±1.5px 真机光学补偿；translate 必须写在 rotate 前）②mask SVG 单枚图形（零色值，颜色=currentColor，深浅自适应）。图形字符（‹ ⌂ × ⇄ ▾）按原样保留，禁 emoji 化。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T12-01/03</span><span class="g-cls">.action-glyph（4 向）.tt-chevron（开合）.nav-chev .expand-btn .action-glyph.open .leg-toggle</span><span class="g-src">index:583-595,112-128 · timetable:114-124 · detail.wxss</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T12-01/03</span></summary><span class="g-cls">.action-glyph（4 向）.tt-chevron（开合）.nav-chev .expand-btn .action-glyph.open .leg-toggle</span><span class="g-src">index:583-595,112-128 · timetable:114-124 · detail.wxss</span></details></figcaption>
+      <div class="g-stage bg-checker">
         <div style="display:flex;gap:22px;align-items:center;color:var(--text-2)">
           <span style="display:inline-flex;align-items:center;gap:6px"><view class="action-glyph" style="transform:rotate(45deg)"></view>右</span>
           <span style="display:inline-flex;align-items:center;gap:6px"><view class="action-glyph" style="transform:translateY(-1.5px) rotate(135deg)"></view>下</span>
@@ -766,8 +784,8 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T12-05/07/11</span><span class="g-cls">.nb-pin .dest-glyph .station-picker-map-glyph .pick-icon .del-x-icon .nearby-pin</span><span class="g-src">map:213-220 · station-picker:53-55 · index:1145-1150,938-939</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T12-05/07/11</span></summary><span class="g-cls">.nb-pin .dest-glyph .station-picker-map-glyph .pick-icon .del-x-icon .nearby-pin</span><span class="g-src">map:213-220 · station-picker:53-55 · index:1145-1150,938-939</span></details></figcaption>
+      <div class="g-stage bg-checker">
         <div style="display:flex;gap:18px;align-items:center;color:var(--brand)">
           <i class="nb-pin" style="width:18px;height:24.6px"></i><i class="dest-glyph" style="width:18px;height:18px;color:var(--text-2)"></i><i class="station-picker-map-glyph"></i><i class="nearby-pin"></i>
           <view class="station-manual-pick" style="position:static;width:26px;height:26px"><view class="pick-icon"><view></view><view></view><view></view></view></view>
@@ -775,8 +793,8 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T12-06/08/09</span><span class="g-cls">.check-glyph（60 画布×0.3333）.mode-gate .sd-fac-glyph .sd-fac-gl-lift/-gate/-wc</span><span class="g-src">map:130-146 · sd:141-144 · index:177-183</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T12-06/08/09</span></summary><span class="g-cls">.check-glyph（60 画布×0.3333）.mode-gate .sd-fac-glyph .sd-fac-gl-lift/-gate/-wc</span><span class="g-src">map:130-146 · sd:141-144 · index:177-183</span></details></figcaption>
+      <div class="g-stage bg-checker">
         <div style="display:flex;gap:18px;align-items:center">
           <span class="nb-row-chk is-on" style="visibility:visible"><i class="check-glyph"></i></span>
           <view class="mode-gate" style="width:20px;height:20px;background-color:var(--text-2)"></view>
@@ -790,9 +808,9 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G13/T13 按压档 ================= -->
 <section class="g-sec" id="s-t13">
   <h2><span class="g-secid">T13</span> 按压档（C 类 · 刚性 1:1 · 禁 ripple）</h2>
-  <p class="g-note">曲线 <code>cubic-bezier(.33,.33,.67,1)</code>（起手 1.0× 不窜、峰值 1.33×、缓停收尾）、时长 250ms、缩放 .96。三档判据：<b>.press</b>=中性浅底件（换底+缩放）；<b>.press-scale</b>=实心品牌/浅品牌底（只缩放，刷灰会色相跳变）；<b>.press-flat</b>=整宽行/列表行（只换底，缩放会与网格错位）。<b>基态组必须排在按压档之前</b>（同特异性后者胜——母本七轮教训）。</p>
+  <p class="g-note">曲线 <code>cubic-bezier(.33,.33,.67,1)</code>（起手 1.0× 不窜、峰值 1.33×、缓停收尾）、时长 250ms、缩放 .96。三档判据：<b>.press</b>=中性浅底件（换底+缩放）；<b>.press-scale</b>=实心品牌/浅品牌底（只缩放，刷灰会色相跳变）；<b>.press-flat</b>=整宽行/列表行（只换底，缩放会与网格错位）。<b>基态组必须排在按压档之前</b>（同特异性后者胜——七轮实测教训）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T13-01/04/05</span><span class="g-cls">.press .press-scale .press-flat（按住体验）</span><span class="g-src">index:1222-1224</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T13-01/04/05</span></summary><span class="g-cls">.press .press-scale .press-flat（按住体验）</span><span class="g-src">index:1222-1224</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <view class="chip" data-hover-class="press">.press（中性底）</view>
@@ -802,7 +820,7 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">松手打断时从<b>当前所在位置</b>折返（reversing 语义），不会先沉到底再弹。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T13-02/03</span><span class="g-cls">基态组（各组按母本原样保留，不合并）</span><span class="g-src">各文件末块</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T13-02/03</span></summary><span class="g-cls">基态组（各组按母本原样保留，不合并）</span><span class="g-src">各文件末块</span></details></figcaption>
       <div class="g-stage">
         <p style="margin:0;font-size:12px;color:var(--text-2);line-height:1.8;font-family:Consolas,monospace">
           index 组（17 成员，transform only）<br>
@@ -813,7 +831,7 @@ button{cursor:pointer;pointer-events:auto}
         </p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T13-05/07</span><span class="g-cls">透明度档：.station-nav-hover .custom-entry-line:active .recent-clear:active .er-add:active · 禁用档</span><span class="g-src">detail.wxss · index:844,925 · exit-review</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T13-05/07</span></summary><span class="g-cls">透明度档：.station-nav-hover .custom-entry-line:active .recent-clear:active .er-add:active · 禁用档</span><span class="g-src">detail.wxss · index:844,925 · exit-review</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;gap:16px;align-items:center">
           <span class="station station-nav" data-hover-class="station-nav-hover" style="cursor:pointer">站名导航入口（opacity .55）</span>
@@ -830,25 +848,25 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T14</span> 进出场动效</h2>
   <p class="g-note">切屏 <code>screen-in</code> 220ms ease-out（translateY 12px + backface 防闪白）；局部一律 <code>rail-fade-in</code>（160/180/220ms，opacity-only——不在含 sticky/固定子结构的容器上造包含块）；半屏滑入 380ms <code>cubic-bezier(.32,.72,0,1)</code>，115% 起点、62% 处 −3px 折返回弹。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T14-01/02</span><span class="g-cls">screen-in · rail-fade-in（重放）</span><span class="g-src">index:720-732,878-892</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T14-01/02</span></summary><span class="g-cls">screen-in · rail-fade-in（重放）</span><span class="g-src">index:720-732,878-892</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="g-togglebar"><button onclick="replayAnim(this.previousElementSibling,'screen-in 220ms ease-out backwards')">重放切屏</button><button onclick="replayAnim(document.getElementById('fadeDemo'),'rail-fade-in 180ms ease-out')">重放淡入</button></div>
         <div class="panel" id="fadeDemo"><div class="h2">淡入面板</div><div class="hint">rail-fade-in · opacity-only</div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T14-03/04</span><span class="g-cls">picker-mask-in/out · picker-panel-in/out（62% 折返）· nearby-pulse</span><span class="g-src">station-picker:14-31,180</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T14-03/04</span></summary><span class="g-cls">picker-mask-in/out · picker-panel-in/out（62% 折返）· nearby-pulse</span><span class="g-src">station-picker:14-31,180</span></details></figcaption>
       <div class="g-stage"><p style="margin:0;font-size:12px;color:var(--text-2)">到 T10 区点「打开半屏 sheet」体验完整曲线；nearby-pulse 骨架在 T07-08 样片常驻播放。</p></div>
     </figure>
   </div>
 </section>
 
 
-<!-- ================= G15/T17 跨项目回收件 ================= -->
+<!-- ================= G15/T17 跨项目组件 ================= -->
 <section class="g-sec" id="s-t17">
-  <h2><span class="g-secid">T17</span> 跨项目回收件（origin=另一产品，真值源=其 ui-kit/app.css）</h2>
-  <p class="g-note">这些件不在本系统的原始母本里 —— 由另一个产品开发时沉淀、经对账回收入册（T17 段，真值源是该产品的样式文件）。改名两项：.tt-flat-*（平铺式时刻表）、.facts-plain/.fact-plain（防 T08-11 撞名）。.tag 的 .132em 补偿挂 Y-R1 开放项。</p>
+  <h2><span class="g-secid">T17</span> 跨项目组件（外部产品沉淀）</h2>
+  <p class="g-note">这些件不来自本系统的原始版本 —— 由另一个产品开发时沉淀入册（T17 段）。改名两项：.tt-flat-*（平铺式时刻表）、.facts-plain/.fact-plain（防 T08-11 撞名）。.tag 的 .132em 补偿挂 Y-R1 开放项。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-01</span><span class="g-cls">.stop-list .stop-row .stop-pill .stop-main .stop-dir .stop-eta .stop-clock .stop-sub .stop-arrow .is-none</span><span class="g-src">ui-kit:281-294</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-01</span></summary><span class="g-cls">.stop-list .stop-row .stop-pill .stop-main .stop-dir .stop-eta .stop-clock .stop-sub .stop-arrow .is-none</span><span class="g-src">ui-kit:281-294</span></details></figcaption>
       <div class="g-stage">
         <div class="stop-list">
           <div class="stop-row"><text class="stop-pill line-pill" style="background:#3970e5">3号线</text><div class="stop-main"><div class="stop-dir">往番禺广场方向</div><div class="stop-sub">下一站：珠江新城</div></div><text class="stop-eta">2 分</text><text class="stop-arrow">›</text></div>
@@ -857,7 +875,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-02</span><span class="g-cls">.bus-timeline .timeline-row .is-current .is-last .st-cell .node .lead-stub .bus-tri .bus-tri-node .bus-tri-gap .eta-row .eta-bar .eta-card .eta-cars .eta-car .eta-when .eta-when-label .eta-clock .eta-sub .eta-at .eta-none</span><span class="g-src">ui-kit:363-414</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-02</span></summary><span class="g-cls">.bus-timeline .timeline-row .is-current .is-last .st-cell .node .lead-stub .bus-tri .bus-tri-node .bus-tri-gap .eta-row .eta-bar .eta-card .eta-cars .eta-car .eta-when .eta-when-label .eta-clock .eta-sub .eta-at .eta-none</span><span class="g-src">ui-kit:363-414</span></details></figcaption>
       <div class="g-stage">
         <div class="bus-timeline">
           <div class="timeline-row"><view class="rail"><view class="node">1</view><view class="rail-line" style="background:var(--text-3)"></view></view><view class="st-cell"><view class="station" style="font-size:var(--fs-strong-16)">体育西路</view></view></div>
@@ -869,7 +887,7 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">选中行收短 52→38（min-height）；lead-stub 从节点圆底引出、与贴轴详情卡连成一根；eta-row 必须与轴行相邻兄弟。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-03</span><span class="g-cls">.tt-flat-table .tt-flat-row .tt-flat-hour .tt-flat-items .tt-flat-min .is-next .tt-flat-short-flag .tt-flat-legend .tt-flat-summary</span><span class="g-src">ui-kit:416-430（改名 .tt-flat-*）</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-03</span></summary><span class="g-cls">.tt-flat-table .tt-flat-row .tt-flat-hour .tt-flat-items .tt-flat-min .is-next .tt-flat-short-flag .tt-flat-legend .tt-flat-summary</span><span class="g-src">ui-kit:416-430（改名 .tt-flat-*）</span></details></figcaption>
       <div class="g-stage">
         <div class="tt-flat-summary"><span><b>首班</b> 06:12</span><span><b>末班</b> 23:15</span><span><b>间隔</b> 约 8 分</span></div>
         <div class="tt-flat-table">
@@ -879,14 +897,14 @@ button{cursor:pointer;pointer-events:auto}
         <div class="tt-flat-legend"><b>高亮</b> = 下一班 · <b>短</b> = 短线/次级班次</div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-04/05</span><span class="g-cls">.sample-tip .is-stale · .notice-strip .notice-head .notice-title .notice-close .notice-body .notice-chevron .open</span><span class="g-src">ui-kit:436-451</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-04/05</span></summary><span class="g-cls">.sample-tip .is-stale · .notice-strip .notice-head .notice-title .notice-close .notice-body .notice-chevron .open</span><span class="g-src">ui-kit:436-451</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="sample-tip">以上为 06:00 快照数据，非实时。</div>
         <div class="sample-tip is-stale">快照已超过 30 分钟，请谨慎参考。</div>
         <div class="notice-strip"><div class="notice-head"><text class="notice-title">10 月 30 日起 3 号线末班延长 30 分钟</text><text class="notice-chevron open"></text><view class="notice-close">×</view></div><div class="notice-body">详情：因节假日运营调整，10 月 30 日至 11 月 2 日，3 号线全线末班车延长 30 分钟。</div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-06</span><span class="g-cls">.skeleton .skeleton.line .w20~.w100 .skeleton-pick .skeleton-row .tall .cover-skeleton .sm-skeleton</span><span class="g-src">app.css:289-301</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-06</span></summary><span class="g-cls">.skeleton .skeleton.line .w20~.w100 .skeleton-pick .skeleton-row .tall .cover-skeleton .sm-skeleton</span><span class="g-src">app.css:289-301</span></details></figcaption>
       <div class="g-stage">
         <div class="skeleton line w100" style="margin-bottom:6px"></div>
         <div class="skeleton line w75" style="margin-bottom:6px"></div>
@@ -906,25 +924,25 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">全档 12 枚（w20~w100），按内容预估宽度选用；skeleton-row/tall/cover-skeleton/sm-skeleton 为行与封面的成套骨架。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-07</span><span class="g-cls">.state-card .state-title .state-desc .state-btn</span><span class="g-src">app.css:284-288</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-07</span></summary><span class="g-cls">.state-card .state-title .state-desc .state-btn</span><span class="g-src">app.css:284-288</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="state-card"><div class="state-title">加载失败</div><div class="state-desc">网络连接超时，请检查网络后重试。</div><button class="state-btn" data-hover-class="press-scale">重新加载</button></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-08</span><span class="g-cls">.adv-toggle .open .adv-toggle-text .adv-count .adv-chev .adv-panel .adv-field .adv-label .adv-input .adv-chips .adv-apply</span><span class="g-src">app.css:220-251</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-08</span></summary><span class="g-cls">.adv-toggle .open .adv-toggle-text .adv-count .adv-chev .adv-panel .adv-field .adv-label .adv-input .adv-chips .adv-apply</span><span class="g-src">app.css:220-251</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="adv-toggle open"><text class="adv-toggle-text">高级搜索（已展开）</text><text class="adv-count">3</text><view class="adv-chev"></view></div>
         <div class="adv-panel"><div class="adv-field"><div class="adv-label">作者</div><div class="adv-input"><input placeholder="按作者筛选" placeholder-class="input-ph"></div></div><div class="adv-chips dtp-quicks" style="padding:0"><button class="dtp-chip">连载中</button><button class="dtp-chip">已完结</button></div><button class="adv-apply" data-hover-class="press-scale">应用筛选</button></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-09</span><span class="g-cls">.cat-bar .cat-scroll-wrap .cat-scroll .cat-scroll-inner .cat-chip .active .cat-expand .open .cat-expand-arrow .cat-panel .cat-panel-title .cat-pick-grid</span><span class="g-src">app.css:252-282</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-09</span></summary><span class="g-cls">.cat-bar .cat-scroll-wrap .cat-scroll .cat-scroll-inner .cat-chip .active .cat-expand .open .cat-expand-arrow .cat-panel .cat-panel-title .cat-pick-grid</span><span class="g-src">app.css:252-282</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="cat-bar"><div class="cat-scroll-wrap"><div class="cat-scroll"><div class="cat-scroll-inner"><button class="chip cat-chip active" data-hover-class="press-scale">全部</button><button class="chip cat-chip" data-hover-class="press-scale">恋爱</button><button class="chip cat-chip" data-hover-class="press-scale">奇幻</button><button class="chip cat-chip" data-hover-class="press-scale">日常</button></div></div></div><view class="cat-expand open"><text class="cat-expand-arrow">▾</text></view></div>
         <div class="cat-panel"><div class="cat-panel-title">作品分类</div><div class="cat-pick-grid"><button class="chip cat-chip" data-hover-class="press-scale">百合</button><button class="chip cat-chip" data-hover-class="press-scale">治愈</button><button class="chip cat-chip" data-hover-class="press-scale">校园</button></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-10/11</span><span class="g-cls">.sort-dir .asc .desc · .find-icon .fi-ring .fi-handle</span><span class="g-src">app.css:119-132 · ui-kit:537-540</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-10/11</span></summary><span class="g-cls">.sort-dir .asc .desc · .find-icon .fi-ring .fi-handle</span><span class="g-src">app.css:119-132 · ui-kit:537-540</span></details></figcaption>
+      <div class="g-stage bg-checker">
         <div style="display:flex;gap:20px;align-items:center;color:var(--text-2);font-size:13px">
           <span>更新时间 <i class="sort-dir desc"></i></span>
           <span>热度 <i class="sort-dir asc"></i></span>
@@ -933,13 +951,13 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">三角视觉重心在 y=12（距底 1/3），两枚对齐才都正；不用文字箭头（基线不一致）、不用 border 三角（0 高盒没法对中）。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-12</span><span class="g-cls">.tag .tag.brand（.132em 补偿挂 Y-R1 开放项）</span><span class="g-src">app.css:96-99</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-12</span></summary><span class="g-cls">.tag .tag.brand（.132em 补偿挂 Y-R1 开放项）</span><span class="g-src">app.css:96-99</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><text class="tag">同人</text><text class="tag">原创</text><text class="tag brand">百合</text><text class="tag brand">连载中</text></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-13</span><span class="g-cls">.bnav .cell .on .bn-ico .home .search（图标规范：24 栅格/1.8 描边/圆头/mask+currentColor/绘制 24px 防糊）</span><span class="g-src">app.css:178-199</span></figcaption>
-      <div class="g-stage pad0">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-13</span></summary><span class="g-cls">.bnav .cell .on .bn-ico .home .search（图标规范：24 栅格/1.8 描边/圆头/mask+currentColor/绘制 24px 防糊）</span><span class="g-src">app.css:178-199</span></details></figcaption>
+      <div class="g-stage pad0 bg-page">
         <div class="bnav" style="position:relative;left:0;right:auto;transform:none;max-width:100%">
           <view class="cell on" data-hover-class="press-flat"><i class="bn-ico home"></i>首页</view>
           <view class="cell" data-hover-class="press-flat"><i class="bn-ico search"></i>搜索</view>
@@ -949,13 +967,13 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">业务图标按规范自绘（24 栅格/1.8 描边/mask），资产内置 home/search 两枚通用形。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-14</span><span class="g-cls">.detail-top .detail-name .detail-meta .facts-plain .fact-plain .k .v（无底三列指标）</span><span class="g-src">app.css:134-144</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-14</span></summary><span class="g-cls">.detail-top .detail-name .detail-meta .facts-plain .fact-plain .k .v（无底三列指标）</span><span class="g-src">app.css:134-144</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="detail-top"><div class="cover-sm" style="width:76px;height:102px;border-radius:var(--radius-ctrl)"></div><div style="min-width:0"><div class="detail-name"> Beispiel作品名 </div><div class="detail-meta">作者 · 状态 · 12 卷</div></div></div>
         <div class="facts-plain"><view class="fact-plain"><span class="k">评分</span><span class="v">8.7</span></view><view class="fact-plain"><span class="k">收藏</span><span class="v">1.2 万</span></view><view class="fact-plain"><span class="k">更新</span><span class="v">昨日</span></view></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-15</span><span class="g-cls">.toc-row .toc-no .toc-name .current .toc-read .toc-vol .toc-vol-name .in-sheet</span><span class="g-src">app.css:155-158,318-325</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-15</span></summary><span class="g-cls">.toc-row .toc-no .toc-name .current .toc-read .toc-vol .toc-vol-name .in-sheet</span><span class="g-src">app.css:155-158,318-325</span></details></figcaption>
       <div class="g-stage">
         <div style="background:var(--card);border-radius:16px;padding:4px 0">
           <div class="toc-vol"><text class="toc-vol-name">第一卷</text></div>
@@ -966,7 +984,7 @@ button{cursor:pointer;pointer-events:auto}
         </div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-17（参考件·非核心）</span><span class="g-cls">.cover .cover-sm .picks .is-3 .pick-title .pick-line .shelf-progress .shelf-progress-bar .progress</span><span class="g-src">app.css:61-70,163,520-524</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-17（参考件·非核心）</span></summary><span class="g-cls">.cover .cover-sm .picks .is-3 .pick-title .pick-line .shelf-progress .shelf-progress-bar .progress</span><span class="g-src">app.css:61-70,163,520-524</span></details></figcaption>
       <div class="g-stage bg-page">
         <div class="picks is-3" style="padding:0">
           <div><div class="cover" style="background:var(--brand-tint)"></div><div class="pick-title">编辑推荐标题最多三行截断的示范文本</div><div class="pick-line">推荐语两行截断示范</div></div>
@@ -977,8 +995,8 @@ button{cursor:pointer;pointer-events:auto}
         <div class="progress"><view style="width:40%"></view></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-19 / T17-19c</span><span class="g-cls">.set-list .set-row .set-main .set-title .set-sub .set-chev .is-danger</span><span class="g-src">origin=另一产品 mine.vue；行改居中、箭头改图形件；第三行按 T23 口径③ 修正</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-19 / T17-19c</span></summary><span class="g-cls">.set-list .set-row .set-main .set-title .set-sub .set-chev .is-danger</span><span class="g-src">origin=另一产品 mine.vue；行改居中、箭头改图形件；第三行按 T23 口径③ 修正</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="set-list">
           <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">我的书架</div><div class="set-sub">12 本</div></div><view class="glyph glyph-chevron set-chev"></view></div>
           <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">历史记录</div><div class="set-sub">36 条</div></div><view class="glyph glyph-chevron set-chev"></view></div>
@@ -995,8 +1013,8 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T23</span> 设置页族（自建 · 只补语义缺口）</h2>
   <p class="g-note">行几何一律回 T17-19。本族只加一个分组标题、两个行状态，以及选择页的两条形态约定。三条口径：一页自洽 / 箭头＝有下一层 / 确认动作不放箭头。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T23-01 / T23-02</span><span class="g-cls">.set-group-title .set-list .set-row .set-title .set-sub .set-chev .set-main .is-danger</span><span class="g-src">自建（母本无设置页）</span></figcaption>
-      <div class="g-stage" style="background:var(--bg);padding:14px">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T23-01 / T23-02</span></summary><span class="g-cls">.set-group-title .set-list .set-row .set-title .set-sub .set-chev .set-main .is-danger</span><span class="g-src">自建（母本无设置页）</span></details></figcaption>
+      <div class="g-stage bg-page" style="background:var(--bg);padding:14px">
         <div class="set-group-title">通用</div>
         <div class="set-list">
           <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">语言</div><div class="set-sub">简体中文</div></div><view class="glyph glyph-chevron set-chev"></view></div>
@@ -1010,8 +1028,8 @@ button{cursor:pointer;pointer-events:auto}
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T23-03 / T23-04</span><span class="g-cls">.set-list .set-row .is-picked .set-main .set-title .set-sub .nb-row-chk .is-on .check-glyph .select-bar .select-count .select-act</span><span class="g-src">自建：选择页（单选点即生效 / 多选待收尾）</span></figcaption>
-      <div class="g-stage" style="background:var(--bg);padding:14px">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T23-03 / T23-04</span></summary><span class="g-cls">.set-list .set-row .is-picked .set-main .set-title .set-sub .nb-row-chk .is-on .check-glyph .select-bar .select-count .select-act</span><span class="g-src">自建：选择页（单选点即生效 / 多选待收尾）</span></details></figcaption>
+      <div class="g-stage bg-page" style="background:var(--bg);padding:14px">
         <div class="set-group-title">铃声（单选，点即生效，不返回）</div>
         <div class="set-list">
           <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">默认</div></div><div class="nb-row-chk is-on"><div class="check-glyph"></div></div></div>
@@ -1033,8 +1051,8 @@ button{cursor:pointer;pointer-events:auto}
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">版式参考</span><span class="g-cls">.set-group-title .set-list .set-row .set-main .set-title .set-sub</span><span class="g-src">只读展示页：不占件号，不进设置页</span></figcaption>
-      <div class="g-stage" style="background:var(--bg);padding:14px">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">版式参考</span></summary><span class="g-cls">.set-group-title .set-list .set-row .set-main .set-title .set-sub</span><span class="g-src">只读展示页：不占件号，不进设置页</span></details></figcaption>
+      <div class="g-stage bg-page" style="background:var(--bg);padding:14px">
         <div class="set-group-title">账号信息（只读，整页不可点）</div>
         <div class="set-list">
           <div class="set-row"><div class="set-main"><div class="set-title">用户名</div><div class="set-sub">梓叶桑</div></div></div>
@@ -1052,7 +1070,7 @@ button{cursor:pointer;pointer-events:auto}
   <h2><span class="g-secid">T24</span> 菜单（自建 · 由按钮打开）</h2>
   <p class="g-note">短动作浮层：由现有按钮打开，只放当前上下文的 3~7 个动作。壳 <code>.menu-layer + .menu</code>，行 <code>.menu-item</code>；危险动作转 T21，不进菜单直接执行。正文入口有两种皮：通用「更多」用裸三点（T18-09），筛选 / 排序用品牌文字 + T18-05 —— <strong>v1.23 起资产已有筛选 / 排序图标（T18-12 / 13 / 14）</strong>，但正文触发器是否改为图标本版未定，未定之前仍走文字档，不要自行取舍。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-01 / T24-02 / T24-03</span><span class="g-cls">.menu-layer .menu .menu-item .menu-main .menu-text .menu-desc .menu-meta .menu-check .is-checked .is-danger .is-disabled .has-desc .menu-group-label .menu-sep</span><span class="g-src">自建：docs/设计稿-菜单.html</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T24-01 / T24-02 / T24-03</span></summary><span class="g-cls">.menu-layer .menu .menu-item .menu-main .menu-text .menu-desc .menu-meta .menu-check .is-checked .is-danger .is-disabled .has-desc .menu-group-label .menu-sep</span><span class="g-src">自建：docs/设计稿-菜单.html</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="g-menu-stage">
           <div class="summary" style="position:absolute;left:14px;right:14px;top:14px;padding:14px">
@@ -1076,8 +1094,8 @@ button{cursor:pointer;pointer-events:auto}
       <p class="g-hint">壳 20 / 内距 6 / 行 44·15·600 / radius 14；勾选槽 20 常驻，危险行只换字色（按压换 <code>--error-bg</code>），禁用 <code>.4</code> + 行尾值。菜单只发起动作，清空这类要点下去转 T21。</p>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-04 / T24-05 / T24-06</span><span class="g-cls">.icon-btn.menu-trigger.is-open .menu-dots .is-edge .menu-text-trigger .glyph-more-disc .glyph-more .glyph-caret-down .bnav .cell.menu-trigger.is-open</span><span class="g-src">自建：顶栏圆钮 / 正文裸三点 / 正文文字 + T18-05 / 底栏更多</span></figcaption>
-      <div class="g-stage" style="display:grid;gap:16px">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T24-04 / T24-05 / T24-06</span></summary><span class="g-cls">.icon-btn.menu-trigger.is-open .menu-dots .is-edge .menu-text-trigger .glyph-more-disc .glyph-more .glyph-caret-down .bnav .cell.menu-trigger.is-open</span><span class="g-src">自建：顶栏圆钮 / 正文裸三点 / 正文文字 + T18-05 / 底栏更多</span></details></figcaption>
+      <div class="g-stage bg-page" style="display:grid;gap:16px">
         <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
           <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
           <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
@@ -1101,7 +1119,7 @@ button{cursor:pointer;pointer-events:auto}
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T24-07</span><span class="g-cls">menu-in-soft · menu-out · menu-fade-out · --dur-menu-in / --dur-menu-out / --ease-menu-close</span><span class="g-src">自建：锚点固定；只缩放、不位移</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T24-07</span></summary><span class="g-cls">menu-in-soft · menu-out · menu-fade-out · --dur-menu-in / --dur-menu-out / --ease-menu-close</span><span class="g-src">自建：锚点固定；只缩放、不位移</span></details></figcaption>
       <div class="g-stage">
         <p class="g-hint" style="margin:0">打开 200ms：58% 处 <code>scale 1.012</code> 后落回；只做 scale，锚点角由 <code>--menu-origin</code> 钉死，只有离锚点最远的两条边在动。关闭 180ms：scale 从 1 连续收到 .92，透明度前 35% 保持 1、之后淡出 —— 缩放不拆两段，避免接缝顿挫。上方 T24-01 菜单在页面加载时会播一次；刷新可重看。</p>
       </div>
@@ -1113,7 +1131,7 @@ button{cursor:pointer;pointer-events:auto}
 <section class="g-sec" id="s-pattern">
   <h2><span class="g-secid">T17-16</span> 版式参考：文件详情页整页 pattern</h2>
   <p class="g-note">pattern = 组件的 approved 组合示范：由 T17-14 详情头 + T08-11 facts（plain 变体）+ T06-12 原语钮 + T04-01 panel + T17-05 公告 + T17-15 目录族拼装。**整页编排不进资产包**——本节 HTML 即编排参考（间距节奏：区块间 14px、页边 14px、panel 内 14 16）。</p>
-  <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-16</span><span class="g-cls">pattern：detail-top → facts-plain → .actions(btn-*) → .panel(长文块，版式见注) → notice-strip → toc-vol/toc-row</span><span class="g-src">编排参考：另一产品 detail.vue</span></figcaption>
+  <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-16</span></summary><span class="g-cls">pattern：detail-top → facts-plain → .actions(btn-*) → .panel(长文块，版式见注) → notice-strip → toc-vol/toc-row</span><span class="g-src">编排参考：另一产品 detail.vue</span></details></figcaption>
     <div class="g-stage pad0">
       <div class="demo-viewport" style="height:auto;overflow:visible;border-radius:12px">
         <div style="max-width:420px;margin:0 auto;background:var(--bg);min-height:600px">
@@ -1137,13 +1155,13 @@ button{cursor:pointer;pointer-events:auto}
 
 
 
-<!-- ================= G17/T19 票务指南弹层（母本 2026-10-31 新增页） ================= -->
+<!-- ================= G17/T19 票务指南弹层（2026-10-31 新增页） ================= -->
 <section class="g-sec" id="s-t18">
-  <h2><span class="g-secid">T18</span> 图形件（origin=本仓，真值源=本仓代码）</h2>
-  <p class="g-note">这批件的几何不再从母本字符照抄，而是与 Flutter 侧 <code>foundation/glyphs.dart</code> 共用同一个 <b>24×24 viewBox、同一条 path</b>：两个宿主逐像素同源。理由是字符的墨迹位置随字体与像素密度浮动（同一份样式实测：无头 Chrome 居中、桌面 Chrome 的 <code>×</code> 高 1.9px），只能靠 <code>translateY</code> 打补丁；图形件没有基线问题。线宽按 Flutter 的 2px 屏幕像素换算成 viewBox 单位（<code>2×24/盒尺寸</code>），逐件写死。</p>
+  <h2><span class="g-secid">T18</span> 图形件（本仓自建）</h2>
+  <p class="g-note">这批件的几何不再从字符照抄，而是与 Flutter 侧 <code>foundation/glyphs.dart</code> 共用同一个 <b>24×24 viewBox、同一条 path</b>：两个宿主逐像素同源。理由是字符的墨迹位置随字体与像素密度浮动（同一份样式实测：无头 Chrome 居中、桌面 Chrome 的 <code>×</code> 高 1.9px），只能靠 <code>translateY</code> 打补丁；图形件没有基线问题。线宽按 Flutter 的 2px 屏幕像素换算成 viewBox 单位（<code>2×24/盒尺寸</code>），逐件写死。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-01</span><span class="g-cls">.glyph .glyph-back（返回 ‹）</span><span class="g-src">19 盒 · 描边 2px · 墨迹 13.1px</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-01</span></summary><span class="g-cls">.glyph .glyph-back（返回 ‹）</span><span class="g-src">19 盒 · 描边 2px · 墨迹 13.1px</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;align-items:center;gap:14px">
           <view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view>
           <view class="back" data-hover-class="press"><view class="glyph glyph-back" style="width:24px;height:24px"></view></view>
@@ -1152,27 +1170,27 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">底色来自 <code>.back</code>（42 圆 / <code>--card</code>），字形只负责墨迹；颜色走 <code>currentColor</code>，换品牌色不用改件。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-11</span><span class="g-cls">.glyph .glyph-home（回首页 ⌂ · 栈根态）</span><span class="g-src">19 盒 · 描边 2px（stroke-unit 2.53）· 屋顶 + 屋身两条 path</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-11</span></summary><span class="g-cls">.glyph .glyph-home（回首页 ⌂ · 栈根态）</span><span class="g-src">19 盒 · 描边 2px（stroke-unit 2.53）· 屋顶 + 屋身两条 path</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;align-items:center;gap:14px">
           <view class="back" data-hover-class="press"><view class="glyph glyph-home"></view></view>
           <view class="back" data-hover-class="press"><view class="glyph glyph-home" style="width:24px;height:24px"></view></view>
           <view class="glyph glyph-home" style="width:19px;height:19px;color:var(--brand)"></view>
         </div>
-        <p class="g-hint">返回钮的栈根态（canBack=false，没有上一页可退，点它回首页）。形状取底导 <code>.bn-ico.home</code> 同一条 path 只删掉那道门 —— 门洞在 19px 下只剩 1px 多，保留会糊成实心块。盒与描边沿用 <code>.glyph-back</code>，两个状态视觉同重；逐值照抄母本 index.wxss:258-265。</p>
+        <p class="g-hint">返回钮的栈根态（canBack=false，没有上一页可退，点它回首页）。形状取底导 <code>.bn-ico.home</code> 同一条 path 只删掉那道门 —— 门洞在 19px 下只剩 1px 多，保留会糊成实心块。盒与描边沿用 <code>.glyph-back</code>，两个状态视觉同重。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-02</span><span class="g-cls">.glyph .glyph-close（关闭 ×）</span><span class="g-src">26 盒 · 描边 2px · 墨迹 12.8px</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-02</span></summary><span class="g-cls">.glyph .glyph-close（关闭 ×）</span><span class="g-src">26 盒 · 描边 2px · 墨迹 12.8px</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;align-items:center;gap:14px">
           <view class="sheet-close"><view class="glyph glyph-close"></view></view>
           <view class="sheet-close"><view class="glyph glyph-close" style="width:18px;height:18px"></view></view>
         </div>
-        <p class="g-hint">26 盒是为把墨迹做到 12.8px 反算出来的（母本 30 号字符 × 实测 12.77px），不是随便给的尺寸 —— 盒小了叉会显瘦，盒大了会顶到圆边。</p>
+        <p class="g-hint">26 盒是为把墨迹做到 12.8px 反算出来的（30 号字符实测 12.77px），不是随便给的尺寸 —— 盒小了叉会显瘦，盒大了会顶到圆边。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-03</span><span class="g-cls">.glyph .glyph-chevron（右箭头 ›）</span><span class="g-src">16 盒 · 描边 2px · 墨迹 11.3px</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-03</span></summary><span class="g-cls">.glyph .glyph-chevron（右箭头 ›）</span><span class="g-src">16 盒 · 描边 2px · 墨迹 11.3px</span></details></figcaption>
+      <div class="g-stage bg-checker">
         <div style="display:flex;align-items:center;gap:14px;color:var(--text-3)">
           <view class="glyph glyph-chevron"></view>
           <view class="glyph glyph-chevron" style="width:11px;height:11px"></view>
@@ -1181,7 +1199,7 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">行尾箭头用它，别再拿 <code>.time</code>（时间戳）这类语义类名装字符箭头。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-04</span><span class="g-cls">.glyph .glyph-chevron-down（下箭头 ▾）</span><span class="g-src">14 盒 · stroke 3.43（屏幕线宽 2px）· 墨迹≈9×5.5px</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-04</span></summary><span class="g-cls">.glyph .glyph-chevron-down（下箭头 ▾）</span><span class="g-src">14 盒 · stroke 3.43（屏幕线宽 2px）· 墨迹≈9×5.5px</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:16px;color:var(--text-3)">
           <view class="glyph glyph-chevron-down"></view>
@@ -1191,25 +1209,25 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">左起：主档（14 盒）／站选器线路条的展开钮（34 圆）／收起钮（同一枚 <code>rotate(180deg)</code>）。<b>14 盒不是随手取的</b>：Flutter 侧同一处是 <code>size:14</code>、线宽恒 2dp，换算成 mask 是 14 盒 + stroke-unit 3.43（照抄 3 会细成 1.75px）。描边件的墨迹带关于画布 y=12 对称，按盒心居中即可，<b>不要加光学补偿</b> —— 那是 T18-05 实心三角的事。改盒必须同步改 stroke-unit（= 2×24/盒）。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-05</span><span class="g-cls">.glyph .glyph-caret-down（字尾小三角）</span><span class="g-src">7 盒 · 实心 · 墨迹 5.0×4.7px</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-05</span></summary><span class="g-cls">.glyph .glyph-caret-down（字尾小三角）</span><span class="g-src">7 盒 · 实心 · 墨迹 5.0×4.7px</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:18px">
           <view style="display:flex;align-items:center;color:var(--text-3)"><text style="font-size:12px">出发日期</text><view class="glyph glyph-caret-down" style="margin-left:6px"></view></view>
           <view style="display:flex;align-items:center;color:var(--text-3)"><text style="font-size:12px">出发时间</text><view class="glyph glyph-caret-down" style="margin-left:6px"></view></view>
         </div>
-        <p class="g-hint">7 盒是照母本 12px 字符 <code>▾</code> 的实机墨迹（5.0×4.7）反算的，盒底留 2.3px 让墨迹落回原来的基线位置。它<b>只贴在文字后面</b>当「这里能点开」的提示（<code>vertical-align:-2px</code> 让它贴住文字底部）；独立摆放的展开/收起钮用 T18-04 描边下箭头。两件的分界是语义，不是大小。</p>
+        <p class="g-hint">7 盒是照 12px 字符 <code>▾</code> 的实机墨迹（5.0×4.7）反算的，盒底留 2.3px 让墨迹落回原来的基线位置。它<b>只贴在文字后面</b>当「这里能点开」的提示（<code>vertical-align:-2px</code> 让它贴住文字底部）；独立摆放的展开/收起钮用 T18-04 描边下箭头。两件的分界是语义，不是大小。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-06</span><span class="g-cls">.glyph .glyph-swap（交换 ⇄）</span><span class="g-src">24 盒 · 描边 1.6 · 墨迹 14.8×14.8px</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-06</span></summary><span class="g-cls">.glyph .glyph-swap（交换 ⇄）</span><span class="g-src">24 盒 · 描边 1.6 · 墨迹 14.8×14.8px</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:20px">
           <view class="swap-face"><view class="glyph glyph-swap"></view></view>
           <view class="glyph glyph-swap" style="color:var(--brand)"></view>
         </div>
-        <p class="g-hint">墨迹 14.8×14.8 与母本 16px 字符 <code>⇄</code> 的实机一致，中心正好在盒心 —— 放进 34 圆（<code>.swap-face</code>）不用再补位移。16px 的 ⇄ 各家字体墨迹差很多，这四条直线是全平台唯一稳定的画法。</p>
+        <p class="g-hint">墨迹 14.8×14.8 与 16px 字符 <code>⇄</code> 的实机一致，中心正好在盒心 —— 放进 34 圆（<code>.swap-face</code>）不用再补位移。16px 的 ⇄ 各家字体墨迹差很多，这四条直线是全平台唯一稳定的画法。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-07</span><span class="g-cls">.glyph .glyph-pick（列表三横条）</span><span class="g-src">13×10 盒 · 三条 2px · 圆角 1</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-07</span></summary><span class="g-cls">.glyph .glyph-pick（列表三横条）</span><span class="g-src">13×10 盒 · 三条 2px · 圆角 1</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:20px;color:var(--text-2)">
           <view class="glyph glyph-pick"></view>
@@ -1218,10 +1236,10 @@ button{cursor:pointer;pointer-events:auto}
             <view class="glyph glyph-pick"></view>
           </view>
         </div>
-        <p class="g-hint">非方形盒（13×10，同 <code>.nb-pin</code>），mask 按 contain 等比缩放。三条 2px、间距 2px 与母本 <code>.pick-icon</code> 逐值一致；用一枚 mask 替掉原来的三个 <code>view</code>，是因为三个绘制盒在非整数像素比下会各自吸附、条间距不齐。</p>
+        <p class="g-hint">非方形盒（13×10，同 <code>.nb-pin</code>），mask 按 contain 等比缩放。三条 2px、间距 2px 与 <code>.pick-icon</code> 逐值一致；用一枚 mask 替掉原来的三个 <code>view</code>，是因为三个绘制盒在非整数像素比下会各自吸附、条间距不齐。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-08</span><span class="g-cls">.glyph .glyph-switch-left / .glyph-switch-right（选择器切换箭头对）</span><span class="g-src">13 盒 · 描边 2px · 墨迹≈5.8×9.6px · 对齐 Flutter size 13</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-08</span></summary><span class="g-cls">.glyph .glyph-switch-left / .glyph-switch-right（选择器切换箭头对）</span><span class="g-src">13 盒 · 描边 2px · 墨迹≈5.8×9.6px · 对齐 Flutter size 13</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;justify-content:space-between;width:200px;color:var(--text-strong)">
           <view class="glyph glyph-switch-left"></view>
@@ -1231,8 +1249,8 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">月份切换的左右成对件：13 盒 / stroke-unit 3.69（= 2×24/13）/ 屏幕线宽 2px，取 Flutter 侧 <code>date_time_picker_sheet.dart:411-414 / :436-439</code> 的 <code>size: 13</code>。两枚都要重画 mask —— 不要拿 16 盒的 T18-03 缩到 13 盒（线宽会掉到 1.63px）。单枚出现的左箭头（顶栏返回）仍用 T18-01，行尾通用右箭头仍用 T18-03。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-12</span><span class="g-cls">.glyph .glyph-filter（筛选 · 漏斗）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 17×15</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-12</span></summary><span class="g-cls">.glyph .glyph-filter（筛选 · 漏斗）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 17×15</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;align-items:center;gap:16px">
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-filter"></view></view>
           <view class="glyph glyph-filter" style="color:var(--text-2)"></view>
@@ -1241,8 +1259,8 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">漏斗轮廓，24 盒 / stroke-unit 2 / 圆头圆角。<b>为什么不画三横条</b>：三横条已被 T18-07 <code>.glyph-pick</code> 占住（车站列表 / 线路网格入口），同框放两枚三横条分不清哪个是「打开列表」。颈宽 5 / 内净空 3 是硬下限 —— 2px 描边左右各吃 1px，再窄必糊成一团（同 T18-11 删门）。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-13 / T18-14</span><span class="g-cls">.glyph .glyph-sort-asc / .glyph .glyph-sort-desc（排序 · 正序 / 倒序）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16.9×16.4 · 两枚为上下镜像</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-13 / T18-14</span></summary><span class="g-cls">.glyph .glyph-sort-asc / .glyph .glyph-sort-desc（排序 · 正序 / 倒序）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16.9×16.4 · 两枚为上下镜像</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;align-items:center;gap:16px">
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-sort-asc"></view></view>
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-sort-desc"></view></view>
@@ -1252,8 +1270,8 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">构图：<b>左竖箭头 + 右三条等长横线</b>。等长是刻意的 —— 长短递减在这套语言里读作「数据量」，等长才读作「列表顺序」。两枚是同一件的上下镜像：三条横线逐值相同（y 6.5 / 12 / 17.5，x 13.5→19.5），只把箭头翻过来。<br>箭头是 45° 对称双翼：单翼（勾形）会被读成「已完成」，与「方向」的语义正好相反。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-15 / T18-16</span><span class="g-cls">.glyph .glyph-favorite / .glyph .glyph-favorite-on（收藏 · 未选中 / 已选中）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 17×15.5 · 家族第一枚「同形两态」</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-15 / T18-16</span></summary><span class="g-cls">.glyph .glyph-favorite / .glyph .glyph-favorite-on（收藏 · 未选中 / 已选中）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 17×15.5 · 家族第一枚「同形两态」</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:flex;align-items:center;gap:16px">
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-favorite"></view></view>
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-favorite-on"></view></view>
@@ -1264,7 +1282,7 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">两态的 path <b>逐字相同</b>，只差根上的 <code>fill</code>，并且选中态保留同一道 2px 描边 —— 只填不描，选中态外轮廓会瘦 1px，切换时心形「缩一下」，这种缺陷最容易被当成动画抖过去。选中靠<b>填色</b>（形状差异，色弱可辨），不靠颜色；要不要同时改色（第三颗用了 <code>--brand</code>）是宿主的事。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18-17</span><span class="g-cls">.glyph .glyph-share（分享 · 三节点两连线）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16×16.8</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-17</span></summary><span class="g-cls">.glyph .glyph-share（分享 · 三节点两连线）</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16×16.8</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border-radius:16px;width:fit-content">
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-filter"></view></view>
@@ -1275,7 +1293,7 @@ button{cursor:pointer;pointer-events:auto}
         <p class="g-hint">构图：右上 / 中左 / 右下三个节点，中左那个分别连另外两个（之字走向）。<b>为什么是空心环</b>：做成实心点会与同框的 T18-10（三点实心圆）撞形，环让两枚在小尺寸下仍能区分。两段连线的端点落在环外缘（距圆心 3.4 = r 2.4 + 半个线宽），圆头端点与环合流，不留缝也不扎进环心。<br>上面四颗同框即是这六枚的典型用法：<b>线宽、盒尺寸、墨迹占比一致</b>，放进工具栏不会有一枚显出「细」或「大」。</p>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T18 对照</span><span class="g-cls">字符版（历史）vs 图形版（现行）</span><span class="g-src">母本已全部换用图形件，字符版只剩迁移对照价值</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18 对照</span></summary><span class="g-cls">字符版（历史）vs 图形版（现行）</span><span class="g-src">母本已全部换用图形件，字符版只剩迁移对照价值</span></details></figcaption>
       <div class="g-stage">
         <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
           <div style="text-align:center"><view class="back"><view class="glyph glyph-back"></view></view><p class="g-hint" style="margin-top:6px">图形</p></div>
@@ -1286,17 +1304,17 @@ button{cursor:pointer;pointer-events:auto}
           <div style="text-align:center"><view class="nb-sheet-close"><text class="nb-sheet-close-x">×</text></view><p class="g-hint" style="margin-top:6px">nb-sheet 字符版</p></div>
           <div style="text-align:center"><view class="ig-close"><text class="ig-close-x">×</text></view><p class="g-hint" style="margin-top:6px">ig-panel 字符版</p></div>
         </div>
-        <p class="g-hint">back / close 的两个字符类已随 v1.22.2 从资产清出（母本 2026-11-07 核过：五个字符类在母本 wxml/wxss 均为零引用、已全量换用图形件），上面只留图形版样片，<b>新页面一律用图形版</b>。下面三个字符类（sd-panel / nb-sheet / ig-panel 的 ×）母本同样已换图形件，资产里是否跟着清掉，等定。</p>
+        <p class="g-hint">back / close 的两个字符类已随 v1.22.2 从资产清出（2026-11-07 核过：五个字符类在上游 wxml/wxss 均为零引用、已全量换用图形件），上面只留图形版样片，<b>新页面一律用图形版</b>。下面三个字符类（sd-panel / nb-sheet / ig-panel 的 ×）上游同样已换图形件，资产里是否跟着清掉，等定。</p>
       </div>
     </figure>
   </div>
 </section>
 
 <section class="g-sec" id="s-t19">
-  <h2><span class="g-secid">T19</span> 票务指南弹层（origin=母本新增页 intercity-guide）</h2>
+  <h2><span class="g-secid">T19</span> 票务指南弹层（新增页 intercity-guide）</h2>
   <p class="g-note">壳形态新档：**面板高度内容自适应、上限 86vh**（内容短的弹层用，固定 78vh 会下半截空）；滚动区**通栏化**（margin -14px 抵消面板内边距 + padding 补位，滚动裁剪边界退到面板边缘——卡片阴影不再被裁出硬边，.sd-body 同款）。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T19-01/02/03/04/06/07</span><span class="g-cls">.ig-mask .ig-panel .is-closing .is-hidden .ig-head .ig-head-title .ig-close .ig-close-x .ig-body .ig-lead .ig-card .ig-sys-title .blue .red .ig-p1 .ig-p2 .ig-dot .ig-pt .hl-b .hl-r .ig-switch-row .ig-switch-title .ig-foot .ig-inline-ico .ig-ico-phone .ig-ico-id .ig-ico-qr .ig-ico-card</span><span class="g-src">components/intercity-guide/intercity-guide.wxss</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T19-01/02/03/04/06/07</span></summary><span class="g-cls">.ig-mask .ig-panel .is-closing .is-hidden .ig-head .ig-head-title .ig-close .ig-close-x .ig-body .ig-lead .ig-card .ig-sys-title .blue .red .ig-p1 .ig-p2 .ig-dot .ig-pt .hl-b .hl-r .ig-switch-row .ig-switch-title .ig-foot .ig-inline-ico .ig-ico-phone .ig-ico-id .ig-ico-qr .ig-ico-card</span><span class="g-src">components/intercity-guide/intercity-guide.wxss</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport" style="height:auto">
           <div style="max-width:420px;margin:0 auto;position:relative;background:var(--bg);min-height:560px">
@@ -1334,10 +1352,10 @@ button{cursor:pointer;pointer-events:auto}
 
 <section class="g-sec" id="g-t21">
   <h2><span class="g-secid">T21</span> 确认对话框（组合件 · 不新增壳类）</h2>
-  <p class="g-note">壳/头/钮**全部复用既有件**：<code>.snp-mask/.snp-panel</code>（T10-03 悬浮对话框档，**不是** T10-01 半屏的 78vh）＋ <code>.snp-head/.snp-title</code>（T10-05）＋ <code>.dtp-actions/.dtp-btn</code>（T06-06）。本族只补两件缺的子件：<code>.snp-body</code>（正文）与 <code>.dtp-btn.is-danger</code>（危险档）。母本组件自有 <code>.confirm-*</code> 名，资产侧不复制。</p>
+  <p class="g-note">壳/头/钮**全部复用既有件**：<code>.snp-mask/.snp-panel</code>（T10-03 悬浮对话框档，**不是** T10-01 半屏的 78vh）＋ <code>.snp-head/.snp-title</code>（T10-05）＋ <code>.dtp-actions/.dtp-btn</code>（T06-06）。本族只补两件缺的子件：<code>.snp-body</code>（正文）与 <code>.dtp-btn.is-danger</code>（危险档）。上游组件自有 <code>.confirm-*</code> 名，资产侧不复制。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T21-01</span><span class="g-cls">.snp-mask .snp-panel .snp-head .snp-title .snp-body .dtp-actions .dtp-btn .is-cancel .is-confirm .is-danger</span><span class="g-src">组合：T10-03 ＋ T10-05 ＋ T06-06（母本 components/confirm-dialog）</span></figcaption>
-      <div class="g-stage pad0">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T21-01</span></summary><span class="g-cls">.snp-mask .snp-panel .snp-head .snp-title .snp-body .dtp-actions .dtp-btn .is-cancel .is-confirm .is-danger</span><span class="g-src">组合：T10-03 ＋ T10-05 ＋ T06-06（母本 components/confirm-dialog）</span></details></figcaption>
+      <div class="g-stage pad0 bg-mask">
         <div class="snp-mask" style="position:relative;inset:auto;display:flex;align-items:flex-end;justify-content:center;padding:22px 0;animation:none">
           <div class="snp-panel" style="max-height:none;animation:none">
             <div class="snp-head"><div class="snp-title">删除保存的方案？</div></div>
@@ -1366,10 +1384,10 @@ button{cursor:pointer;pointer-events:auto}
 
 <section class="g-sec" id="g-t22">
   <h2><span class="g-secid">T22</span> 列表管理（卡级选中 · 勾槽 · 管理底栏 · 顶栏动作）</h2>
-  <p class="g-note">母本类名是页面私有的 <code>.saved-*</code>，资产侧改通用名（2026-11-07 定稿：通用名更适合不面向单一产品的资产包）。<strong>卡内部版式不进件号</strong>：卡头/标题/时间行/时长全部由现有件拼（T04-01 卡壳 ＋ <code>.route-top</code> ＋ T08 <code>.duration</code> ＋ T08-08 轴 ＋ T08-11 facts），最后一张就是拼装示范。</p>
+  <p class="g-note">上游类名是页面私有的 <code>.saved-*</code>，资产侧改通用名（2026-11-07 定稿：通用名更适合不面向单一产品的资产包）。<strong>卡内部版式不进件号</strong>：卡头/标题/时间行/时长全部由现有件拼（T04-01 卡壳 ＋ <code>.route-top</code> ＋ T08 <code>.duration</code> ＋ T08-08 轴 ＋ T08-11 facts），最后一张就是拼装示范。</p>
   <div class="g-grid">
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-03</span><span class="g-cls">.route-card.is-selectable .route-card.is-selected .nb-row-chk.is-hollow .is-on .check-glyph .station-chip.is-strong .warning-badge.is-compact .duration .route-top</span><span class="g-src">母本 .saved-card / .saved-check / .saved-stale / .saved-warning</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T22-03</span></summary><span class="g-cls">.route-card.is-selectable .route-card.is-selected .nb-row-chk.is-hollow .is-on .check-glyph .station-chip.is-strong .warning-badge.is-compact .duration .route-top</span><span class="g-src">母本 .saved-card / .saved-check / .saved-stale / .saved-warning</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div style="display:grid;gap:12px">
           <div class="route-card is-selectable" style="padding-bottom:18px">
             <div class="route-top"><div style="min-width:0;font-size:var(--fs-strong-16);font-weight:800;line-height:1.35">体育西路 → 广州塔</div><div class="nb-row-chk is-hollow"><div class="check-glyph"></div></div></div>
@@ -1392,8 +1410,8 @@ button{cursor:pointer;pointer-events:auto}
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-01 / T22-02</span><span class="g-cls">.select-bar .select-all .select-count .select-del .is-disabled</span><span class="g-src">母本 index.wxss .saved-select-bar 族</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T22-01 / T22-02</span></summary><span class="g-cls">.select-bar .select-all .select-count .select-del .is-disabled</span><span class="g-src">母本 index.wxss .saved-select-bar 族</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="select-bar" style="position:relative;left:0;bottom:auto;transform:none;max-width:none;border-radius:14px 14px 0 0">
           <div class="select-all">全选</div>
           <div class="select-count">已选 2 项</div>
@@ -1411,30 +1429,30 @@ button{cursor:pointer;pointer-events:auto}
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-04</span><span class="g-cls">.ios-fixed-topbar .topbar-main .topbar-actions .topbar-action</span><span class="g-src">母本 index.wxss .topbar-action</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T22-04</span></summary><span class="g-cls">.ios-fixed-topbar .topbar-main .topbar-actions .topbar-action</span><span class="g-src">母本 index.wxss .topbar-action</span></details></figcaption>
       <div class="g-stage pad0">
         <div class="demo-viewport"><div class="ios-fixed-topbar is-translucent"><div class="topbar-main"><div class="title">轨交速查</div></div><div class="topbar-actions"><div class="topbar-action">选择</div></div></div></div>
         <p class="g-hint">顶栏文字动作：40 高（踩可用性红线、**不成档**，最近似档是 42 圆钮）、15·650 品牌色。放进 <code>.topbar-actions</code>，与 T03-02c 三子项配套用。</p>
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T17-05b</span><span class="g-cls">.notice-strip.is-quiet .notice-dot .notice-text .notice-action</span><span class="g-src">母本 detail 页 .snapshot-note 族</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T17-05b</span></summary><span class="g-cls">.notice-strip.is-quiet .notice-dot .notice-text .notice-action</span><span class="g-src">母本 detail 页 .snapshot-note 族</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="notice-strip is-quiet"><div class="notice-dot"></div><div class="notice-text">已保存 · 11 月 5 日 19:15 查询</div><div class="notice-action">重新查询</div></div>
         <div class="notice-strip"><div class="notice-head"><div class="notice-title">公告条原档（对照）：品牌浅底、13/700</div><div class="notice-close">×</div></div></div>
         <p class="g-hint">静默档 = 结构与公告条同源、配色与字号改写：<code>--fill</code> 底 ＋ <code>--text-strong</code> 字 ＋ 12/400 ＋ 内距 6·14，行尾动作换成 40 高文字。</p>
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T06-01b</span><span class="g-cls">.actions.is-compact .primary</span><span class="g-src">母本 .actions.is-compact（详情保存）</span></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T06-01b</span></summary><span class="g-cls">.actions.is-compact .primary</span><span class="g-src">母本 .actions.is-compact（详情保存）</span></details></figcaption>
       <div class="g-stage">
         <div class="actions is-compact"><div class="primary">保存路线</div></div>
         <p class="g-hint">非全宽主钮：单枚 50% 居中、min 156；几何仍走 T06-01/T06-12（48·radius14·15·750），本档只改布局。</p>
       </div>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><span class="g-id">T22-组合</span><span class="g-cls">.route-card .route-top .duration .axis .axis-time .axis-clock .axis-dash .axis-route .mode-chip .mode-badge .facts .fact</span><span class="g-src">版式示范：已存卡 = 现有件拼装，不占件号</span></figcaption>
-      <div class="g-stage">
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T22-组合</span></summary><span class="g-cls">.route-card .route-top .duration .axis .axis-time .axis-clock .axis-dash .axis-route .mode-chip .mode-badge .facts .fact</span><span class="g-src">版式示范：已存卡 = 现有件拼装，不占件号</span></details></figcaption>
+      <div class="g-stage bg-page">
         <div class="route-card is-selectable" style="padding-bottom:18px">
           <div class="route-top"><div style="min-width:0;font-size:var(--fs-strong-16);font-weight:800;line-height:1.35">体育西路 → 广州塔</div><div class="nb-row-chk is-hollow"><div class="check-glyph"></div></div></div>
           <div style="display:flex;align-items:center;gap:8px;margin-top:5px"><span style="font-size:var(--fs-small-12);color:var(--text-2)">今天 19:15 出发</span></div>
@@ -1455,7 +1473,7 @@ button{cursor:pointer;pointer-events:auto}
 </section>
 
 
-<p style="margin-top:60px;color:var(--text-3);font-size:11px;text-align:center">RTGo_slate · 令牌 + 组件 + 展示页 · 数值 1:1 照抄</p>
+<p style="margin-top:60px;color:var(--text-3);font-size:11px;text-align:center">RTGo_slate · 令牌 + 组件 + 样片 · 数值 1:1 照抄自真实上线产品</p>
 </div>
 
 <script>
@@ -1484,6 +1502,21 @@ document.getElementById('themes').addEventListener('click',function(e){
   h.classList.remove('theme-dark','theme-light');hb.classList.remove('theme-dark','theme-light');
   if(b.dataset.t!=='auto'){h.classList.add('theme-'+b.dataset.t);hb.classList.add('theme-'+b.dataset.t);}
   renderTokens();
+});
+
+/* 工程模式：一键展开/收起全部样片工程标注（details.g-meta）。localStorage 记忆（键 rtgo-gallery-workmode）；
+   对外读者默认折叠态，作者核对时一键展开 ≈ 改造前完整信息量。 */
+var WORKMODE_KEY='rtgo-gallery-workmode';
+var workBtn=document.getElementById('workmode');
+function setWorkmode(on){
+  document.querySelectorAll('details.g-meta').forEach(function(d){d.open=on;});
+  workBtn.classList.toggle('on',on);
+}
+try{ if(localStorage.getItem(WORKMODE_KEY)==='1') setWorkmode(true); }catch(e){}
+workBtn.addEventListener('click',function(){
+  var on=!workBtn.classList.contains('on');
+  try{ localStorage.setItem(WORKMODE_KEY,on?'1':'0'); }catch(e){}
+  setWorkmode(on);
 });
 
 /* T01 色彩令牌（值读自计算样式，gallery 不写死色值） */
