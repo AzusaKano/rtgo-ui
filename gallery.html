@@ -15,42 +15,43 @@ html.theme-dark{color-scheme:dark}
 html.theme-light{color-scheme:light}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
 .g-top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--topbar-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--topbar-bd)}
-.g-top b{font-size:16px;color:var(--text)}
-.g-top .g-links{display:flex;gap:10px;font-size:12px;color:var(--text-2)}
+.g-top b{font-size:var(--fs-strong-16);color:var(--text)}
+.g-top .g-links{display:flex;gap:10px;font-size:var(--fs-small-12);color:var(--text-2)}
 .g-top a{color:var(--brand);text-decoration:none}
 .g-work{margin-left:auto;display:flex}
-.g-work button{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);font-size:12px;cursor:pointer}
-.g-work button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+/* chrome 钮（工程模式 / 主题三钮 / 样片演示切换钮同规则）：文档页无对应系统件
+   （44px .chip 不适配文档顶栏），胶水 + 令牌：基态对齐 .chip 基态（pills-bg 底 / 500 / 全圆胶囊）；
+   选中态用系统次钮配色（.btn-secondary 同族）。 */
+.g-work button,.g-themes button,.g-togglebar button{padding:4px 12px;border-radius:var(--radius-pill);border:1px solid var(--border);background:var(--pills-bg);color:var(--text);font-size:var(--fs-small-12);font-weight:500;cursor:pointer}
+.g-work button.on,.g-themes button.on,.g-togglebar button.on{background:var(--brand-tint);color:var(--brand);border-color:var(--brand)}
 .g-themes{margin-left:0;display:flex;gap:6px}
-.g-themes button{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);font-size:12px;cursor:pointer}
-.g-themes button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
 .g-wrap{max-width:1080px;margin:0 auto;padding:26px 20px 80px}
 .g-hero{margin:6px 0 22px}
-.g-hero h1{margin:0 0 6px;font-size:26px;font-weight:800;color:var(--text)}
-.g-hero p{margin:0;color:var(--text-2);font-size:13px;line-height:1.7}
-.g-hero code{font-family:Consolas,monospace;font-size:12px;color:var(--brand)}
-.g-hero-meta{margin-top:10px;border:1px dashed var(--border);border-radius:8px}
-.g-hero-detail{margin:0;padding:0 12px 10px;font-size:12px;color:var(--text-2);line-height:1.7}
+.g-hero h1{margin:0 0 6px;font-size:var(--fs-hero-26);font-weight:800;color:var(--text)}
+.g-hero p{margin:0;color:var(--text-2);font-size:var(--fs-sub-13);line-height:1.7}
+.g-hero code{font-family:monospace;font-size:var(--fs-small-12);color:var(--brand)}
+.g-hero-meta{margin-top:10px;border:1px solid var(--border);border-radius:var(--radius-box)}
+.g-hero-detail{margin:0;padding:0 12px 10px;font-size:var(--fs-small-12);color:var(--text-2);line-height:1.7}
 .g-sec{margin-top:44px;scroll-margin-top:56px}
-.g-sec>h2{margin:0 0 4px;font-size:19px;font-weight:800;color:var(--text);display:flex;align-items:baseline;gap:10px}
-.g-sec>h2 .g-secid{font-size:12px;font-weight:600;color:var(--brand);font-family:Consolas,monospace}
-.g-sec>p.g-note{margin:0 0 14px;font-size:12px;color:var(--text-2);line-height:1.7}
+.g-sec>h2{margin:0 0 4px;font-size:var(--fs-strong-19);font-weight:800;color:var(--text);display:flex;align-items:baseline;gap:10px}
+.g-sec>h2 .g-secid{font-size:var(--fs-small-12);font-weight:600;color:var(--brand);font-family:monospace}
+.g-sec>p.g-note{margin:0 0 14px;font-size:var(--fs-small-12);color:var(--text-2);line-height:1.7}
 .g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 /* scroll-margin-top：顶栏是 sticky 的，索引跳转时不给留位，目标样片的
-   「ID + 类名」标签栏会被顶栏盖住（索引运行时生成，2026-11-21 实测 144 条）。
+   「ID + 类名」标签栏会被顶栏盖住（索引运行时生成，144 条）。
    值 = 顶栏高 49 + 余量。 */
-.g-spec{margin:0;border:1px dashed var(--border);border-radius:12px;overflow:hidden;background:var(--card);scroll-margin-top:64px}
+.g-spec{margin:0;border:1px solid var(--border);border-radius:var(--radius-box);overflow:hidden;background:var(--card);scroll-margin-top:64px}
 /* 工程标注默认折叠（details.g-meta）：summary 只留弱化件号徽章；
    展开后件号/类名/出处三行齐全，与折叠前逐字一致。顶栏「工程模式」可一键全展开。 */
 .g-spec>.g-tag{display:block;padding:0;border-bottom:1px solid var(--border-weak);background:var(--bg)}
 .g-meta summary{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;list-style:none;user-select:none}
 .g-meta summary::-webkit-details-marker{display:none}
-.g-meta summary::before{content:"▸";flex:none;font-size:10px;color:var(--text-3)}
+.g-meta summary::before{content:"▸";flex:none;font-size:var(--fs-tag-10);color:var(--text-3)}
 .g-meta[open] summary::before{content:"▾"}
-.g-meta summary .g-id{font-family:Consolas,monospace;font-size:11px;font-weight:600;color:var(--text-3)}
+.g-meta summary .g-id{font-family:monospace;font-size:var(--fs-micro-11);font-weight:600;color:var(--text-3)}
 .g-meta summary:hover .g-id{color:var(--text-2)}
-.g-meta .g-cls{display:block;padding:1px 12px 0;font-family:Consolas,monospace;font-size:11px;color:var(--text-2);word-break:break-all}
-.g-meta .g-src{display:block;padding:0 12px 8px;font-size:10px;color:var(--text-3);font-family:Consolas,monospace}
+.g-meta .g-cls{display:block;padding:1px 12px 0;font-family:monospace;font-size:var(--fs-micro-11);color:var(--text-2);word-break:break-all}
+.g-meta .g-src{display:block;padding:0 12px 8px;font-size:var(--fs-tag-10);color:var(--text-3);font-family:monospace}
 .g-stage{padding:16px;min-height:56px}
 .g-stage.bg-page{background:var(--bg)}
 /* 舞台词汇扩展：bg-mask=浮层件（遮罩色示意真实层次）；bg-checker=透明件（棋盘格示意零底墨迹）。全走令牌。 */
@@ -59,33 +60,31 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Micros
 .g-stage.pad0{padding:0}
 .g-swatch{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:8px}
 .g-swatch i{display:block;width:34px;height:22px;border-radius:6px;border:1px solid var(--border);flex:none}
-.g-swatch .g-vn{font-family:Consolas,monospace;font-size:11px;color:var(--text)}
-.g-swatch .g-vv{margin-left:auto;font-family:Consolas,monospace;font-size:11px;color:var(--text-2)}
+.g-swatch .g-vn{font-family:monospace;font-size:var(--fs-micro-11);color:var(--text)}
+.g-swatch .g-vv{margin-left:auto;font-family:monospace;font-size:var(--fs-micro-11);color:var(--text-2)}
 .g-fsrow{display:flex;align-items:baseline;gap:12px;padding:7px 8px;border-bottom:1px solid var(--border-weak)}
 .g-fsrow:last-child{border-bottom:0}
-.g-fsrow .g-vn{font-family:Consolas,monospace;font-size:11px;color:var(--text-2);flex:none;width:130px}
-.g-fsrow .g-fs{margin-left:auto;font-family:Consolas,monospace;font-size:10px;color:var(--text-3);flex:none}
+.g-fsrow .g-vn{font-family:monospace;font-size:var(--fs-micro-11);color:var(--text-2);flex:none;width:130px}
+.g-fsrow .g-fs{margin-left:auto;font-family:monospace;font-size:var(--fs-tag-10);color:var(--text-3);flex:none}
 .demo-viewport{--status-bar-height:0px;position:relative;height:190px;overflow:hidden;background:var(--bg);border-radius:8px;border:1px solid var(--border-weak)}
 .demo-viewport .ios-fixed-topbar,.demo-viewport .fixed-topbar{position:absolute}
 .demo-viewport .screen{position:absolute}
 .demo-viewport .sheet-mask,.demo-viewport .dtp-mask,.demo-viewport .snp-mask,.demo-viewport .nb-sheet-mask,.demo-viewport .sd-mask{position:absolute}
 .demo-mask{position:absolute;inset:0;z-index:20}
 .g-panel-ctx{background:var(--card);border-radius:16px;padding:4px}
-.g-hint{margin:10px 2px 0;font-size:11px;color:var(--text-3);line-height:1.6}
+.g-hint{margin:10px 2px 0;font-size:var(--fs-micro-11);color:var(--text-3);line-height:1.6}
 .g-togglebar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.g-togglebar button{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);font-size:12px;cursor:pointer}
-.g-togglebar button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
 .g-tokensec{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
-.g-tokengroup{border:1px dashed var(--border);border-radius:12px;padding:8px 6px}
-.g-tokengroup h3{margin:2px 6px 8px;font-size:12px;color:var(--text-strong);font-weight:700}
+.g-tokengroup{border:1px solid var(--border);border-radius:var(--radius-inner);padding:8px 6px}
+.g-tokengroup h3{margin:2px 6px 8px;font-size:var(--fs-small-12);color:var(--text-strong);font-weight:700}
 button{cursor:pointer;pointer-events:auto}
 [data-hover-class]{-webkit-tap-highlight-color:transparent;user-select:none}
-.g-kbd{font-family:Consolas,monospace;background:var(--fill);border-radius:4px;padding:1px 5px;font-size:11px;color:var(--text-strong)}
-.g-index{margin:18px 0 0;border:1px dashed var(--border);border-radius:12px;padding:10px 12px}
-.g-index .g-it{font-size:11px;color:var(--text-3);margin-bottom:6px}
-.g-index a{display:inline-block;font-family:Consolas,monospace;font-size:11px;color:var(--brand);text-decoration:none;padding:2px 6px;border-radius:6px}
+.g-kbd{font-family:monospace;background:var(--fill);border-radius:4px;padding:1px 5px;font-size:var(--fs-micro-11);color:var(--text-strong)}
+.g-index{margin:18px 0 0;border:1px solid var(--border);border-radius:var(--radius-box);padding:10px 12px}
+.g-index .g-it{font-size:var(--fs-micro-11);color:var(--text-3);margin-bottom:6px}
+.g-index a{display:inline-block;font-family:monospace;font-size:var(--fs-micro-11);color:var(--brand);text-decoration:none;padding:2px 6px;border-radius:var(--radius-chip)}
 .g-index a:hover{background:var(--brand-tint);color:var(--brand)}
-.g-spec:target{outline:2px solid var(--brand);outline-offset:2px;border-radius:12px}
+.g-spec:target{outline:2px solid var(--brand);outline-offset:2px;border-radius:var(--radius-box)}
 /* T24 菜单样片：只在展示层给一个定位舞台；.menu 本身仍用资产值 */
 .g-menu-stage{position:relative;height:370px;border-radius:16px;background:var(--bg);border:1px solid var(--border-weak);overflow:hidden}
 .g-bn-demo .bnav{position:relative;left:0;transform:none;max-width:100%;border-radius:14px;overflow:hidden}
@@ -99,9 +98,9 @@ button{cursor:pointer;pointer-events:auto}
   <span class="g-links">
     <a href="docs/组件手册.md">组件手册</a><a href="件号表.md">件号表</a><a href="rtgo-slate.css">rtgo-slate.css</a>
   </span>
-  <span class="g-work"><button id="workmode" type="button">工程模式</button></span>
+  <span class="g-work"><button id="workmode" type="button" data-hover-class="press">工程模式</button></span>
   <span class="g-themes" id="themes">
-    <button data-t="auto" class="on">跟随系统</button><button data-t="light">浅色</button><button data-t="dark">深色</button>
+    <button data-t="auto" class="on" data-hover-class="press">跟随系统</button><button data-t="light" data-hover-class="press">浅色</button><button data-t="dark" data-hover-class="press">深色</button>
   </span>
 </header>
 
@@ -136,7 +135,7 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G3/T03 顶栏 ================= -->
 <section class="g-sec" id="s-t03">
   <h2><span class="g-secid">T03</span> 顶栏与返回</h2>
-  <p class="g-note">顶栏两档：<code>.ios-fixed-topbar</code>（72px）为**默认档 = 微信小程序方案**——不透明底 <code>--bg</code> + 强边框 <code>--topbar-bd-strong</code>，那套是修苹果端小程序渲染 bug 的补丁；不做小程序的宿主（Flutter / Web / 原生）加 <code>.is-translucent</code> 用半透明档（T03-02b）。<code>.fixed-topbar</code> 为历史代际（O-01 保留备用，其底色/边框即半透明档的出处）。<code>.sticky-topbar</code> 经 M0 审阅已移除（O-02）。</p>
+  <p class="g-note">顶栏两档：<code>.ios-fixed-topbar</code>（72px）为**默认档 = 微信小程序方案**——不透明底 <code>--bg</code> + 强边框 <code>--topbar-bd-strong</code>，那套是修苹果端小程序渲染 bug 的补丁；不做小程序的宿主（Flutter / Web / 原生）加 <code>.is-translucent</code> 用半透明档（T03-02b）。<code>.fixed-topbar</code> 为历史代际（O-01 保留备用，其底色/边框即半透明档的出处）。<code>.sticky-topbar</code> 经审阅已移除（O-02）。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-01/02/04/05</span></summary><span class="g-cls">.ios-fixed-topbar .back .glyph .glyph-back .title .sub</span><span class="g-src">index:473-521,228-258</span></details></figcaption>
       <div class="g-stage pad0"><div class="demo-viewport">
@@ -172,7 +171,7 @@ button{cursor:pointer;pointer-events:auto}
         <div class="topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div class="bar-main"><div class="title">乘车方案</div><div class="sub">随页面滚动的普通顶栏</div></div></div>
       </div>
     </figure>
-    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-03（孤儿 O-01 保留）</span></summary><span class="g-cls">.fixed-topbar（历史代际，母本已无页面引用；.sticky-topbar 已按 M0 移除）</span><span class="g-src">index:376-395</span></details></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T03-03（孤儿 O-01 保留）</span></summary><span class="g-cls">.fixed-topbar（历史代际，母本已无页面引用；.sticky-topbar 已按审阅移除）</span><span class="g-src">index:376-395</span></details></figcaption>
       <div class="g-stage pad0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div class="demo-viewport"><div class="fixed-topbar"><view class="back" data-hover-class="press"><view class="glyph glyph-back"></view></view><div><div class="title">fixed-topbar</div><div class="sub">v1 · 居中固定</div></div></div></div>
       </div></div>
@@ -1003,7 +1002,7 @@ button{cursor:pointer;pointer-events:auto}
           <div class="set-row is-danger" data-hover-class="press-flat"><div class="set-main"><div class="set-title">清除阅读记录</div><div class="set-sub">清空历史与进度，书架收藏保留</div></div></div>
           <div class="set-row" data-hover-class="press-flat"><div class="set-main"><div class="set-title">关于</div></div><view class="glyph glyph-chevron set-chev"></view></div>
         </div>
-        <p class="g-hint">第三行是**就地动作**（点了弹确认，没有下一层），所以按 T23 口径③ 去掉箭头、转 <code>--danger</code>：箭头只会承诺"还有内容"。前两行与第四行有下一层，才挂箭头。行高不写死，靠 14px 内距撑。</p>
+        <p class="g-hint">第三行是**就地动作**（点了弹确认，没有下一层），所以去掉箭头、转 <code>--danger</code>：箭头只会承诺"还有内容"。前两行与第四行有下一层，才挂箭头。行高不写死，靠 14px 内距撑。</p>
       </div>
     </figure>
   </div>
@@ -1059,7 +1058,7 @@ button{cursor:pointer;pointer-events:auto}
           <div class="set-row"><div class="set-main"><div class="set-title">UID</div><div class="set-sub">585764</div></div></div>
           <div class="set-row"><div class="set-main"><div class="set-title">注册于</div><div class="set-sub">2024-03-18</div></div></div>
         </div>
-        <p class="g-hint">按口径①：这类信息**不放在设置页里**，单开一页。整页没有箭头、没有按压、没有控件 —— 一页之内自洽。</p>
+        <p class="g-hint">这类信息**不放在设置页里**，单开一页。整页没有箭头、没有按压、没有控件 —— 一页之内自洽。</p>
       </div>
     </figure>
   </div>
@@ -1473,7 +1472,7 @@ button{cursor:pointer;pointer-events:auto}
 </section>
 
 
-<p style="margin-top:60px;color:var(--text-3);font-size:11px;text-align:center">RTGo_slate · 令牌 + 组件 + 样片</p>
+<p style="margin-top:60px;color:var(--text-3);font-size:var(--fs-micro-11);text-align:center">RTGo_slate · 令牌 + 组件 + 样片</p>
 </div>
 
 <script>
@@ -1494,7 +1493,7 @@ document.addEventListener('pointerdown',function(e){
 
 /* 主题切换：只挂类。两档令牌在 theme-overrides.css 里（构建脚本从令牌层生成），
    gallery 不复制值、也不在运行时改作用域 —— 运行时改写会吃掉以字母开头的声明
-   （background:/color: 被当成选择器），2026-11-02 就此翻过一次车。 */
+   （background:/color: 被当成选择器）。 */
 document.getElementById('themes').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('#themes button').forEach(function(x){x.classList.toggle('on',x===b)});
