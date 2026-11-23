@@ -1067,7 +1067,7 @@ button{cursor:pointer;pointer-events:auto}
 <!-- ================= G16/T24 菜单 ================= -->
 <section class="g-sec" id="g-t24">
   <h2><span class="g-secid">T24</span> 菜单（自建 · 由按钮打开）</h2>
-  <p class="g-note">短动作浮层：由现有按钮打开，只放当前上下文的 3~7 个动作。壳 <code>.menu-layer + .menu</code>，行 <code>.menu-item</code>；危险动作转 T21，不进菜单直接执行。正文入口有两种皮：通用「更多」用裸三点（T18-09），筛选 / 排序用品牌文字 + T18-05 —— <strong>v1.23 起资产已有筛选 / 排序图标（T18-12 / 13 / 14）</strong>，但正文触发器是否改为图标本版未定，未定之前仍走文字档，不要自行取舍。</p>
+  <p class="g-note">短动作浮层：由现有按钮打开，只放当前上下文的 3~7 个动作。壳 <code>.menu-layer + .menu</code>，行 <code>.menu-item</code>；危险动作转 T21，不进菜单直接执行。正文入口有两种皮：通用「更多」用裸三点（T18-19 <code>.glyph-more-bare</code>），筛选 / 排序用品牌文字 + T18-05 —— <strong>v1.23 起资产已有筛选 / 排序图标（T18-12 / 13 / 14）</strong>，但正文触发器是否改为图标本版未定，未定之前仍走文字档，不要自行取舍。</p>
   <div class="g-grid">
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T24-01 / T24-02 / T24-03</span></summary><span class="g-cls">.menu-layer .menu .menu-item .menu-main .menu-text .menu-desc .menu-meta .menu-check .is-checked .is-danger .is-disabled .has-desc .menu-group-label .menu-sep</span><span class="g-src">自建：docs/设计稿-菜单.html</span></details></figcaption>
       <div class="g-stage pad0">
@@ -1093,28 +1093,28 @@ button{cursor:pointer;pointer-events:auto}
       <p class="g-hint">壳 20 / 内距 6 / 行 44·15·600 / radius 14；勾选槽 20 常驻，危险行只换字色（按压换 <code>--error-bg</code>），禁用 <code>.4</code> + 行尾值。菜单只发起动作，清空这类要点下去转 T21。</p>
     </figure>
 
-    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T24-04 / T24-05 / T24-06</span></summary><span class="g-cls">.icon-btn.menu-trigger.is-open .menu-dots .is-edge .menu-text-trigger .glyph-more-disc .glyph-more .glyph-caret-down .bnav .cell.menu-trigger.is-open</span><span class="g-src">自建：顶栏圆钮 / 正文裸三点 / 正文文字 + T18-05 / 底栏更多</span></details></figcaption>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T24-04 / T24-05 / T24-06</span></summary><span class="g-cls">.icon-btn.menu-trigger.is-open .menu-dots .is-edge .menu-text-trigger .glyph-more-disc .glyph-more-bare .bn-ico.more .glyph-caret-down .bnav .cell.menu-trigger.is-open</span><span class="g-src">自建：顶栏圆钮 / 正文裸三点 / 正文文字 + T18-05 / 底栏更多</span></details></figcaption>
       <div class="g-stage bg-page" style="display:grid;gap:16px">
         <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
           <button class="icon-btn" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
           <button class="icon-btn menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more-disc"></i></button>
-          <button class="menu-dots" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
-          <button class="menu-dots menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="menu-dots" aria-label="更多操作"><i class="glyph glyph-more-bare"></i></button>
+          <button class="menu-dots menu-trigger is-open" aria-label="更多操作"><i class="glyph glyph-more-bare"></i></button>
           <button class="menu-text-trigger">筛选<i class="glyph glyph-caret-down"></i></button>
           <button class="menu-text-trigger">排序<i class="glyph glyph-caret-down"></i></button>
         </div>
         <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--card)">
           <div style="flex:1;min-width:0"><div class="station" style="margin-bottom:4px">广州南站</div><div class="meta">高铁 · 城际 · 地铁 2 / 7 / 22 号线</div></div>
-          <button class="menu-dots is-edge" aria-label="更多操作"><i class="glyph glyph-more"></i></button>
+          <button class="menu-dots is-edge" aria-label="更多操作"><i class="glyph glyph-more-bare"></i></button>
         </div>
         <div class="g-bn-demo">
           <nav class="bnav" aria-label="底部导航">
             <button class="cell"><span class="bn-ico home"></span><span>查询</span></button>
             <button class="cell on"><span class="bn-ico search"></span><span>结果</span></button>
-            <button class="cell menu-trigger is-open"><span class="g-bn-more"><i class="glyph glyph-more"></i></span><span>更多</span></button>
+            <button class="cell menu-trigger is-open"><span class="bn-ico more"></span><span>更多</span></button>
           </nav>
         </div>
-        <p class="g-hint">顶栏 42 圆钮用 <code>.glyph-more-disc</code>（T18-10，24 盒）/ 正文裸三点（无圆底、无边框，视觉 20 / 热区 44；卡片右缘加 <code>.is-edge</code>）/ 正文品牌文字 + T18-05 / 底栏更多格用中性 <code>--press</code> + 深字。筛选、排序图标 v1.23 已进资产（T18-12 / 13 / 14），见 T18 节样片；正文触发器是否改为图标本版未定，不要自行决定。<br>三点在两个宿主里的档位不同是故意的：圆钮 42 用 T18-10（点 3.5），正文与底栏用 T18-09（20 盒、点 2.0），同一套「点径 : 空隙 ≈ 1.17:1」比例，按容器各自反算。不要拿一档去套另一处。</p>
+        <p class="g-hint">顶栏 42 圆钮用 <code>.glyph-more-disc</code>（T18-10，24 盒）/ 正文裸三点（无圆底、无边框，视觉 20 / 热区 44；卡片右缘加 <code>.is-edge</code>）/ 正文品牌文字 + T18-05 / 底栏更多格用中性 <code>--press</code> + 深字。筛选、排序图标 v1.23 已进资产（T18-12 / 13 / 14），见 T18 节样片；正文触发器是否改为图标本版未定，不要自行决定。<br>三点在三处的档位不同：圆钮 42 用 T18-10（24 盒、点径 3.5），正文裸档用 <code>.glyph-more-bare</code>（20 盒、点径 2.9），底栏用 <code>.bn-ico.more</code>（形状 ×1.12、点径 3.9）。同一套「点径 : 空隙 ≈ 1.17:1」比例，按容器各自反算，不要拿一档去套另一处。T18-09（点径 2.0）是旧档，只在 T18 节作对照。</p>
       </div>
     </figure>
 
@@ -1290,6 +1290,60 @@ button{cursor:pointer;pointer-events:auto}
           <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-share"></view></view>
         </div>
         <p class="g-hint">构图：右上 / 中左 / 右下三个节点，中左那个分别连另外两个（之字走向）。<b>空心环</b>：做成实心点会与同框的 T18-10（三点实心圆）撞形，环让两枚在小尺寸下仍能区分。两段连线的端点落在环外缘（距圆心 3.4 = r 2.4 + 半个线宽），圆头端点与环合流，不留缝也不扎进环心。<br>上面四颗同框即是这六枚的典型用法：<b>线宽、盒尺寸、墨迹占比一致</b>，放进工具栏不会有一枚显出「细」或「大」。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-18</span></summary><span class="g-cls">.glyph-<b>download</b> .glyph-downloaded .glyph-scan .glyph-add .glyph-history .glyph-settings</span><span class="g-src">24 盒 · 描边 2px · 墨迹 16.0~17.2</span></details></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-download"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-downloaded"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-scan"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-add"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-history"></view></view>
+          <view class="icon-btn" data-hover-class="press"><view class="glyph glyph-settings"></view></view>
+        </div>
+        <p class="g-hint">下载 / 已下载 / 扫码 / 新建 / 历史 / 设置。与上面 T18-12~17 同档：24 盒、描边 2px、圆头圆角，墨迹占 42 圆直径 38~41%，同框不显轻。<br>下载与已下载共用同一只托盘（x 4.8~19.2、深 3.0、圆角 1.9），只换上半件：竖杆加双翼是「待下载」，勾是「已下载」。两枚墨迹宽都是 16.4，并排时左右边与下缘对齐；勾少一笔，面积比箭头轻 10%（79.3 对 88.6px²），不要靠加长或加粗补重。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-19</span></summary><span class="g-cls">.glyph-<b>&lt;名&gt;</b>-bare（正文裸档）</span><span class="g-src">20 盒 · 描边 2.4 · 墨迹 13.7~14.7</span></details></figcaption>
+      <div class="g-stage">
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-download-bare"></view>下载到本地</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-downloaded-bare"></view>已下载 · 3 个文件</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-scan-bare"></view>扫一扫</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-add-bare"></view>新建路线</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-history-bare"></view>浏览记录</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-settings-bare"></view>设置</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-filter-bare"></view>筛选</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-favorite-bare"></view>收藏</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-share-bare"></view>分享</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-sort-asc-bare"></view>价格从低到高</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-sort-desc-bare"></view>时间从新到旧</span>
+          <span style="display:flex;align-items:center;gap:7px"><view class="glyph glyph-favorite-on-bare" style="color:var(--brand)"></view>已收藏</span>
+        </div>
+        <p class="g-hint">盒 20、描边按 <code>2 × 24 ÷ 20 = 2.4</code> 写回 viewBox，屏幕上仍是 2px。⚠ 不能拿 24 盒那版改个 <code>width</code>：线宽写在 SVG 里，缩盒会一起缩，屏幕线宽会掉到 1.67px。<br>更多在裸档是实心三枚点（点径 2.9 / 跨度 13.8）。T18-09（点径 2.0 / 跨度 12）<view class="glyph glyph-more" style="display:inline-block;vertical-align:-3px;margin:0 3px"></view> 自 v1.25 起为旧档，正文用 <code>.glyph-more-bare</code>。</p>
+      </div>
+    </figure>
+    <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18-20</span></summary><span class="g-cls">.bn-ico.<b>&lt;名&gt;</b>（底栏档）</span><span class="g-src">24 盒 · 形状 ×1.12 · 描边 1.607（= 1.8px 屏幕）· 墨迹 17.0~18.8</span></details></figcaption>
+      <div class="g-stage">
+        <div class="g-bn-demo">
+          <nav class="bnav" aria-label="底部导览">
+            <button class="cell"><span class="bn-ico home"></span><span>查询</span></button>
+            <button class="cell on"><span class="bn-ico downloaded"></span><span>已下载</span></button>
+            <button class="cell"><span class="bn-ico scan"></span><span>扫码</span></button>
+            <button class="cell"><span class="bn-ico add"></span><span>新建</span></button>
+            <button class="cell"><span class="bn-ico more"></span><span>更多</span></button>
+          </nav>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap;color:var(--text)">
+          <span class="bn-ico home"></span><span class="bn-ico search"></span>
+          <span class="bn-ico download"></span><span class="bn-ico downloaded"></span><span class="bn-ico scan"></span>
+          <span class="bn-ico add"></span><span class="bn-ico history"></span><span class="bn-ico settings"></span>
+          <span class="bn-ico filter"></span><span class="bn-ico sort-asc"></span><span class="bn-ico sort-desc"></span>
+          <span class="bn-ico favorite"></span><span class="bn-ico favorite-on"></span><span class="bn-ico share"></span>
+          <span class="bn-ico more"></span>
+        </div>
+        <p class="g-hint">底栏那一格比圆钮大一号：<code>.bn-ico.home</code> 墨迹 18.8、<code>.search</code> 18.3。本档把形状在 viewBox 内按 1.12 放大，描边写 1.607（×1.12 = 1.8px），墨迹落在 17.0~18.8，与 home / search 同粗。上面一排从左到右：home、search 是原有件，其余是新补的底栏档。<br>底栏不做按压三档、不加圆底，选中态只换 <code>color</code>（样片第二格是 <code>.cell.on</code>）。形状与 T18-18/19 逐字相同，只有外层 transform 与 stroke 不同，改形状时三档一起改。</p>
       </div>
     </figure>
     <figure class="g-spec"><figcaption class="g-tag"><details class="g-meta"><summary><span class="g-id">T18 对照</span></summary><span class="g-cls">字符版（历史）vs 图形版（现行）</span><span class="g-src">母本已全部换用图形件，字符版只剩迁移对照价值</span></details></figcaption>

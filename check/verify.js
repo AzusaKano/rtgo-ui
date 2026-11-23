@@ -917,6 +917,65 @@ cmpContains('T08-03', '数字等宽', 'idx', 'font-variant-numeric:tabular-nums'
     String(shareRings), shareRings === 6 ? '通过' : '不通过',
     '少一颗环会静默退化成「一点串两点」');
 
+  /* T18-18~20（v1.25）：第二批六枚 + 裸档 + 底栏档。
+     这三条查的是「档位关系」，泛型那条一条都查不到：
+     ① 六枚必须同档（24 盒 / stroke 2）；② 裸档必须 20 盒 / stroke 2.4；③ 底栏档必须 1.12 放大 / 1.607；
+     ④ 同一枚在三档里的 path 必须逐字相同 —— 这条是「改形状要三档一起改」的唯一看守。 */
+  const batch6 = ['glyph-download','glyph-downloaded','glyph-scan','glyph-add','glyph-history','glyph-settings'];
+  const b6ok = batch6.every(c => {
+    const b = blockOf(c);
+    const wk = (b.match(/-webkit-mask-image:url\("data:image\/svg/g) || []).length;
+    const std = (b.match(/(?:^|[^-])mask-image:url\("data:image\/svg/g) || []).length;
+    return b.includes('width:24px;height:24px') && b.includes("stroke-width='2'") &&
+      wk === 1 && std === 1 && galleryText.includes('.' + c);
+  });
+  row('T18-18', '第二批六枚（24 盒 / 描边 2 / 双前缀 mask / 样片全在）', '6 枚齐',
+    b6ok ? '齐' : '缺', b6ok ? '通过' : '不通过',
+    '少一枚、或哪一枚的盒/stroke 掉一档，同框里就会多出一枚显细的');
+
+  const tiers = ['more','filter','sort-asc','sort-desc','favorite','favorite-on','share',
+    'download','downloaded','scan','add','history','settings'];
+  const bareBad = tiers.filter(n => {
+    const b = blockOf('glyph-' + n + '-bare');
+    if (!b.includes('width:20px;height:20px')) return true;
+    /* 更多是实心点件，没有描边；跟根上 stroke 一起描，点径会从 3.5 变 5.5。 */
+    return n === 'more' ? !b.includes("stroke='none'") : !b.includes("stroke-width='2.4'");
+  });
+  row('T18-19', '裸档 13 枚（20 盒 / stroke 2.4 / 更多为实心无描边 / 样片）', '13 枚齐',
+    bareBad.length ? '缺 ' + bareBad.join(',') : '齐',
+    /* 裸档在 gallery 里也是类名用法（class="glyph glyph-xxx-bare"） */
+    !bareBad.length && tiers.every(n => new RegExp('glyph-' + n + '-bare(?:[\\s"\']|$)').test(galleryText)) ? '通过' : '不通过',
+    '裸档不是把 24 盒缩一缩：缩盒会连描边一起缩，屏幕线宽掉到 1.67px');
+
+  const bnBad = tiers.filter(n => {
+    const b = blockOf('bn-ico.' + n);
+    if (!b.includes('scale(1.12)')) return true;
+    return n === 'more' ? !b.includes("stroke='none'") : !b.includes("stroke-width='1.607'");
+  });
+  row('T18-20', '底栏档 13 枚（1.12 放大 / stroke 1.607 / .bn-ico 修饰类）', '13 枚齐',
+    bnBad.length ? '缺 ' + bnBad.join(',') : '齐',
+    /* 底栏档在 gallery 里是类名用法（class="bn-ico xxx"），不是 CSS 选择器串 */
+    !bnBad.length && tiers.every(n => new RegExp('bn-ico\\s+' + n + '(?![\\w-])').test(galleryText)) ? '通过' : '不通过',
+    '1.607 × 1.12 = 1.8px 屏幕线宽；两项必须成对出现，单改一项就不是 1.8px');
+
+  const firstD = (cls) => { const m = blockOf(cls).match(/d='([^']+)'/); return m ? m[1] : ''; };
+  const srcBad = tiers.filter(n => n !== 'more').filter(n =>
+    firstD('glyph-' + n) !== firstD('glyph-' + n + '-bare') ||
+    firstD('glyph-' + n) !== firstD('bn-ico.' + n));
+  row('T18-18/19/20', '同一枚在三档里的 path 逐字相同（只差 transform 与 stroke）', '三档同串',
+    srcBad.length ? '不同 ' + srcBad.join(',') : '同串',
+    srcBad.length ? '不通过' : '通过',
+    '三档各存一份 path，改一处不改另两处会静默分叉：同一枚图标在正文和底栏长得不一样');
+
+  const favOnTiers = ['glyph-favorite-on','glyph-favorite-on-bare','bn-ico.favorite-on'];
+  const favOnOk = favOnTiers.every(c => {
+    const b = blockOf(c);
+    return b.includes("fill='%23000'") && b.includes("stroke='%23000'");
+  });
+  row('T18-16/19/20', '收藏选中态三档都是填色 + 保留同一道描边', 'fill 与 stroke 都在',
+    favOnOk ? '都在' : '缺', favOnOk ? '通过' : '不通过',
+    '只填不描，三档的外轮廓会各自瘦 1px，切换时心形像缩了一下');
+
   const hasCompare = galleryText.includes('字符版（历史）vs 图形版（现行）');
   row('T18-对照', '样片含字符版与图形版的对照（迁移依据）', '有', hasCompare ? '有' : '缺',
     hasCompare ? '通过' : '不通过', '两版并存时没有对照，宿主会不知道新页面该用哪个');
