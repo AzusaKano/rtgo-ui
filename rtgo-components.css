@@ -1799,17 +1799,17 @@ button::after{display:none;width:0;height:0;border:0}
    墨迹尺寸 = 路径跨度 × 盒/24 + 线宽，早期三件都对齐了母本对应字符的实测墨迹。
    ----------------
    v1.16 起本族与 Flutter `SlateGlyphKind` 对齐（16 种），本仓出一一对应的类名；
-   v1.20 增 .glyph-more（T18-09）——Flutter 侧暂无对应 kind，跨端待补：
+   v1.20 增 .glyph-more（T18-09）：
      back / chevronLeft → .glyph-back（两 kind 共用一条 path，只出一枚）
        ⚠ 2026-11-08 起左右成对改用 T18-08（.glyph-switch-left / .glyph-switch-right，13 盒）：
          单枚左箭头才用 .glyph-back；成对场合不要缩它 —— 线宽按 19 盒反算，缩盒会变细（见该件注释）。
      close → .glyph-close · chevronRight → .glyph-chevron · chevronDown → .glyph-chevron-down
      caretDown → .glyph-caret-down（实心三角，与 chevron 不同件）· swap → .glyph-swap
      pick → .glyph-pick（照母本三横条，与 Flutter 的点线形状不同，见该件注释）
-     more → .glyph-more（v1.20 本仓自建；Flutter 侧暂无对应 kind，三枚实心点）
+     more → .glyph-more（v1.20 本仓自建；三枚实心点）
      filter / sortAsc / sortDesc / favorite / favoriteOn / share → .glyph-filter / .glyph-sort-asc /
        .glyph-sort-desc / .glyph-favorite / .glyph-favorite-on / .glyph-share（v1.23 本仓自建；
-       Flutter 侧暂无对应 kind，跨端待补。24 盒统一档，不预造 16 盒档）
+       24 盒统一档，不预造 16 盒档）
      home / search → .bn-ico.home / .bn-ico.search（在 T17-13 底栏族里，不重复造）
      mapPin / nearbyPin → .nb-pin · mapFind → .station-picker-map-glyph
      navArrow → .sd-nav-glyph · destFlag → .dest-glyph · check → .check-glyph
